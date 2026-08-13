@@ -15,10 +15,10 @@ const productFields = `
   name,
   description,
   price,
-  category,
+  "category": category->slug.current,
   petType,
-  sizes,
-  colors,
+  "sizes": sizes[].name,
+  "colors": colors[].name,
   "image": image.asset->url,
   featured,
   badge

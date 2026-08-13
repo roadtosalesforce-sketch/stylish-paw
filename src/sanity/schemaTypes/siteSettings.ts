@@ -1,0 +1,17 @@
+import {defineField, defineType} from "sanity";
+
+export const siteSettingsType = defineType({
+  name: "siteSettings", title: "Shop Settings", type: "document",
+  fields: [
+    defineField({name: "shopName", title: "Shop name", type: "string", initialValue: "Furry Fairy Pets", validation: (rule) => rule.required()}),
+    defineField({name: "announcement", title: "Announcement bar", type: "string", description: "Example: Free delivery over 200 PLN"}),
+    defineField({name: "heroTitle", title: "Homepage headline", type: "string"}),
+    defineField({name: "heroText", title: "Homepage introduction", type: "text", rows: 3}),
+    defineField({name: "heroImage", title: "Homepage image", type: "image", options: {hotspot: true}}),
+    defineField({name: "contactEmail", title: "Contact email", type: "string"}),
+    defineField({name: "instagram", title: "Instagram URL", type: "url"}),
+    defineField({name: "shippingNote", title: "Shipping note", type: "text", rows: 3}),
+    defineField({name: "returnsNote", title: "Returns note", type: "text", rows: 3}),
+  ],
+  preview: {prepare: () => ({title: "Furry Fairy Pets shop settings"})},
+});
