@@ -5,13 +5,19 @@ import { ProductGrid } from "@/components/product-grid";
 import { getFeaturedProducts } from "@/sanity/lib/products";
 import { TrustBar } from "@/components/trust-bar";
 import { ArrowRight, Heart, Ruler, Sparkles } from "lucide-react";
+import {getHomepageContent} from "@/sanity/lib/content";
 
 export default async function Home() {
-  const featured = await getFeaturedProducts();
+  const [featured, homepage] = await Promise.all([
+    getFeaturedProducts(),
+    getHomepageContent(),
+  ]);
+  const story = homepage?.sections?.find((section) => section._type === "storyBlock");
+  const newsletter = homepage?.sections?.find((section) => section._type === "newsletterBlock");
 
   return (
     <>
-      <Hero />
+      <Hero content={homepage?.hero} />
       <TrustBar />
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -54,15 +60,15 @@ export default async function Home() {
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-20 sm:px-6 md:grid-cols-2 lg:px-8"><div className="flex min-h-80 flex-col justify-end overflow-hidden rounded-[2rem] bg-charcoal p-8 text-white sm:p-10"><Sparkles className="h-6 w-6 text-coral"/><p className="mt-auto text-xs font-bold uppercase tracking-[.18em] text-stone-300">Seasonal collection</p><h2 className="mt-3 max-w-md font-display text-4xl font-bold">Ready for rainy-day adventures</h2><Link className="mt-6 inline-flex items-center gap-2 font-bold text-coral" href="/shop?category=raincoats">Explore rainwear <ArrowRight className="h-4 w-4"/></Link></div><div className="flex min-h-80 flex-col justify-end rounded-[2rem] bg-[#e5eee3] p-8 sm:p-10"><Ruler className="h-7 w-7 text-sage-dark"/><p className="mt-auto text-xs font-bold uppercase tracking-[.18em] text-sage-dark">Find the right fit</p><h2 className="mt-3 max-w-md font-display text-4xl font-bold">Comfort begins with the right measurements</h2><Link className="mt-6 inline-flex items-center gap-2 font-bold text-charcoal" href="/pages/size-guide">View size guide <ArrowRight className="h-4 w-4"/></Link></div></section>
 
-      <section className="border-y border-stone-200 bg-[#fbf8f2] py-20"><div className="mx-auto max-w-4xl px-4 text-center sm:px-6"><Heart className="mx-auto h-7 w-7 text-coral"/><p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-coral">The Furry Fairy promise</p><h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Style should never come at the cost of comfort.</h2><p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">We focus on easy-to-understand sizing, thoughtful fits and pieces made for real life with pets—not just the photograph.</p></div></section>
+      <section className="border-y border-stone-200 bg-[#fbf8f2] py-20"><div className="mx-auto max-w-4xl px-4 text-center sm:px-6"><Heart className="mx-auto h-7 w-7 text-coral"/><p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-coral">The Furry Fairy promise</p><h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{story?.title || "Style should never come at the cost of comfort."}</h2><p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{story?.text || "We focus on easy-to-understand sizing, thoughtful fits and pieces made for real life with pets—not just the photograph."}</p></div></section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-sage to-sage-dark px-8 py-12 text-center text-white sm:px-16">
           <h2 className="font-display text-2xl font-bold sm:text-3xl">
-            Join the Furry Fairy Family
+            {newsletter?.title || "Join the Furry Fairy Family"}
           </h2>
           <p className="mx-auto mt-3 max-w-md text-white/90">
-            Get 10% off your first order and early access to new collections.
+            {newsletter?.text || "New collections, fit tips and a little everyday magic."}
           </p>
           <form className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
             <input

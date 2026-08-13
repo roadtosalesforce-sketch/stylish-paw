@@ -1,13 +1,72 @@
+import type {Metadata} from "next";
 import Link from "next/link";
 import {notFound} from "next/navigation";
+import {PortableText} from "next-sanity";
+import {getContentPage} from "@/sanity/lib/content";
 
-const pages: Record<string,{eyebrow:string;title:string;intro:string;content:string[]}> = {
-  "size-guide": {eyebrow:"A better fit starts here",title:"Size & Fit Guide",intro:"A few simple measurements make choosing comfortable clothing much easier.",content:["Measure the neck where the collar naturally rests.","Measure the widest part of the chest, just behind the front legs.","Measure the back from the collar line to the base of the tail.","If your pet is between sizes, choose the larger size for comfort."]},
-  "shipping-returns": {eyebrow:"Helpful information",title:"Shipping & Returns",intro:"Clear delivery and return information will be published here before the store opens for orders.",content:["Delivery methods and timing are being prepared.","Return eligibility and instructions will be displayed before checkout is enabled."]},
-  "about-us": {eyebrow:"Our story",title:"A little magic for everyday life",intro:"Furry Fairy Pets brings together comfort, personality and joyful design for dogs and cats.",content:["We believe pet clothing should feel as good as it looks.","Our edit is built around thoughtful fit, easy care and expressive details."]},
-  "care-guide": {eyebrow:"Keep favourites looking their best",title:"Care Guide",intro:"Always follow the product label first. These simple habits help pet clothing last longer.",content:["Fasten closures before washing.","Use a gentle cycle and mild detergent.","Air dry whenever possible."]},
-  "contact": {eyebrow:"We are here to help",title:"Contact",intro:"Questions about sizing, products or an order? Customer support details will appear here before launch.",content:["For now, please use the brand social channels for general enquiries."]},
-  "faq": {eyebrow:"Quick answers",title:"Frequently Asked Questions",intro:"Sizing, delivery and care answers will be expanded as the collection launches.",content:["Use the Size Guide before choosing a variant.","Product pages will show materials, fit notes and care instructions.","Checkout will display available delivery methods before payment."]},
-};
+type Props = {params: Promise<{slug: string}>};
 
-export default async function ContentPage({params}:{params:Promise<{slug:string}>}) { const {slug}=await params; const page=pages[slug]; if(!page) notFound(); return <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6"><Link href="/" className="text-sm font-bold text-coral">← Back home</Link><p className="mt-12 text-xs font-bold uppercase tracking-[.18em] text-sage">{page.eyebrow}</p><h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">{page.title}</h1><p className="mt-5 max-w-2xl text-xl leading-relaxed text-stone-600">{page.intro}</p><div className="mt-10 grid gap-4">{page.content.map((text,index)=><div key={text} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200"><span className="mr-3 font-display text-xl font-bold text-coral">{String(index+1).padStart(2,"0")}</span><span className="text-stone-700">{text}</span></div>)}</div></div> }
+export async function generateMetadata({params}: Props): Promise<Metadata> {
+  const {slug} = await params;
+  const page = await getContentPage(slug);
+  return page
+    ? {title: page.seoTitle || page.title, description: page.seoDescription || page.intro}
+    : {};
+}
+
+export default async function ContentPage({params}: Props) {
+  const {slug} = await params;
+  const page = await getContentPage(slug);
+  if (!page) notFound();
+
+  return (
+    <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+      <Link href="/" className="text-sm font-bold text-coral">← Back home</Link>
+      {page.eyebrow ? (
+        <p className="mt-12 text-xs font-bold uppercase tracking-[.18em] text-sage">
+          {page.eyebrow}
+        </p>
+      ) : null}
+      <h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">{page.title}</h1>
+      {page.intro ? (
+        <p className="mt-5 max-w-2xl text-xl leading-relaxed text-stone-600">{page.intro}</p>
+      ) : null}
+      {page.body?.length ? (
+        <div className="mt-12 space-y-6 text-lg leading-relaxed text-stone-700">
+          <PortableText
+            value={page.body}
+            components={{
+              block: {
+                h2: ({children}) => <h2 className="pt-4 font-display text-3xl font-bold text-charcoal">{children}</h2>,
+                h3: ({children}) => <h3 className="pt-3 font-display text-2xl font-bold text-charcoal">{children}</h3>,
+                normal: ({children}) => <p>{children}</p>,
+              },
+              list: {
+                bullet: ({children}) => <ul className="list-disc space-y-2 pl-6">{children}</ul>,
+                number: ({children}) => <ol className="list-decimal space-y-2 pl-6">{children}</ol>,
+              },
+              types: {
+                infoBox: ({value}) => {
+                  const info = value as {title?: string; text?: string};
+                  return (
+                    <aside className="rounded-2xl bg-[#eef3ec] p-6 ring-1 ring-sage/20">
+                      <h3 className="font-display text-xl font-bold text-charcoal">{info.title}</h3>
+                      <p className="mt-2 text-base text-stone-700">{info.text}</p>
+                    </aside>
+                  );
+                },
+                image: ({value}) => {
+                  const image = value as {url?: string; alt?: string};
+                  return image.url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={image.url} alt={image.alt || ""} className="my-8 w-full rounded-3xl" />
+                  ) : null;
+                },
+              },
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}

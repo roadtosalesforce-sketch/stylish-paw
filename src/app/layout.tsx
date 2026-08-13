@@ -3,6 +3,7 @@ import { Nunito, Fraunces } from "next/font/google";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Providers } from "@/components/providers";
+import {getShopSettings} from "@/sanity/lib/content";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -23,18 +24,23 @@ export const metadata: Metadata = {
   openGraph:{title:"Furry Fairy Pets",description:"Comfortable style for dogs and cats.",type:"website",url:"https://www.furryfairypets.com"},
 };
 
-export default function RootLayout({
+// Published Sanity changes appear on the storefront within about a minute.
+export const revalidate = 60;
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getShopSettings();
+
   return (
     <html lang="en" className={`${nunito.variable} ${fraunces.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-cream font-sans text-charcoal antialiased">
         <Providers>
-          <Header />
+          <Header announcement={settings?.announcement} shopName={settings?.shopName} />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <Footer settings={settings} />
         </Providers>
       </body>
     </html>

@@ -11,18 +11,18 @@ const shopGroups = [
   {title: "By Pet", links: [["Gifts for Dogs", "dogs"], ["Gifts for Cats", "cats"], ["Everyday Essentials", "essentials"], ["Celebration Looks", "celebration"]]},
 ];
 
-export function Header() {
+export function Header({announcement, shopName}: {announcement?: string; shopName?: string}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-[#fffdf9]/95 backdrop-blur-md">
-      <div className="bg-charcoal px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[.14em] text-white sm:text-xs">Designed for comfort, made for memorable moments</div>
+      <div className="bg-charcoal px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[.14em] text-white sm:text-xs">{announcement || "Designed for comfort, made for memorable moments"}</div>
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-coral text-white shadow-sm transition-transform group-hover:scale-105">
             <Sparkles className="h-4 w-4" />
           </span>
           <span className="font-display text-xl font-bold tracking-tight text-charcoal">
-            Furry Fairy Pets
+            {shopName || "Furry Fairy Pets"}
           </span>
         </Link>
 
