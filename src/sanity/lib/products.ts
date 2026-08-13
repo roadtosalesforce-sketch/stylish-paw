@@ -13,7 +13,7 @@ const productFields = `
   "id": _id,
   "slug": slug.current,
   name,
-  description,
+  "description": coalesce(pt::text(description), description),
   price,
   "category": category->slug.current,
   petType,

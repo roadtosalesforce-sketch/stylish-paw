@@ -24,3 +24,9 @@ body {
   background: var(--cream);
   color: var(--charcoal);
 }
+
+::selection { background: color-mix(in srgb, var(--coral) 25%, white); }
+
+button, a { -webkit-tap-highlight-color: transparent; }
+
+summary::-webkit-details-marker { display: none; }

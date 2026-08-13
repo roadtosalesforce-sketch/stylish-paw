@@ -12,6 +12,11 @@ export const siteSettingsType = defineType({
     defineField({name: "instagram", title: "Instagram URL", type: "url"}),
     defineField({name: "shippingNote", title: "Shipping note", type: "text", rows: 3}),
     defineField({name: "returnsNote", title: "Returns note", type: "text", rows: 3}),
+    defineField({name:"supportEmail",title:"Customer support email",type:"string"}),
+    defineField({name:"defaultSeoTitle",title:"Default SEO title",type:"string",validation:r=>r.max(60)}),
+    defineField({name:"defaultSeoDescription",title:"Default SEO description",type:"text",rows:3,validation:r=>r.max(160)}),
+    defineField({name:"socialLinks",title:"Social links",type:"array",of:[{type:"object",fields:[{name:"platform",title:"Platform",type:"string",options:{list:["Instagram","TikTok","Facebook","Pinterest"]}},{name:"url",title:"URL",type:"url"}]}]}),
+    defineField({name:"footerColumns",title:"Footer columns",type:"array",of:[{type:"object",fields:[{name:"title",title:"Column title",type:"string"},{name:"links",title:"Links",type:"array",of:[{type:"object",fields:[{name:"label",title:"Label",type:"string"},{name:"href",title:"Link",type:"string"}]}]}]}]}),
   ],
   preview: {prepare: () => ({title: "Furry Fairy Pets shop settings"})},
 });

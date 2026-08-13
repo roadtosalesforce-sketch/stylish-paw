@@ -9,7 +9,9 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("category").title("Categories"),
       S.documentTypeListItem("collection").title("Collections"),
       S.documentTypeListItem("sizeGuide").title("Size guides"),
+      S.documentTypeListItem("page").title("Pages"),
       S.divider(),
+      S.listItem().title("Homepage").id("homepage").child(S.document().schemaType("homepage").documentId("homepage")),
       S.listItem()
         .title("Shop settings")
         .id("siteSettings")

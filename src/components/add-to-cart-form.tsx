@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/cart-context";
+import { SizeGuideDialog } from "./size-guide-dialog";
 
 export function AddToCartForm({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -23,7 +24,7 @@ export function AddToCartForm({ product }: { product: Product }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="mb-2 block text-sm font-semibold text-charcoal">Size</label>
+        <div className="mb-3 flex items-center justify-between gap-4"><label className="block text-sm font-semibold text-charcoal">Choose size</label><SizeGuideDialog /></div>
         <div className="flex flex-wrap gap-2">
           {product.sizes.map((s) => (
             <button
@@ -43,7 +44,7 @@ export function AddToCartForm({ product }: { product: Product }) {
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-semibold text-charcoal">Color</label>
+        <label className="mb-2 block text-sm font-semibold text-charcoal">Choose colour</label>
         <div className="flex flex-wrap gap-2">
           {product.colors.map((c) => (
             <button
@@ -86,7 +87,7 @@ export function AddToCartForm({ product }: { product: Product }) {
       <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="submit"
-          className={`flex-1 rounded-full py-3.5 text-sm font-semibold text-white shadow-md transition-all ${
+          className={`flex-1 rounded-full py-4 text-sm font-bold text-white shadow-md transition-all ${
             added
               ? "bg-sage"
               : "bg-coral hover:bg-coral-dark hover:shadow-lg"

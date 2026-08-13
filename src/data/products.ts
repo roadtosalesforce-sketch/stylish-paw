@@ -7,7 +7,7 @@ export const products: Product[] = [
     name: "Cozy Knit Dog Sweater",
     description:
       "Soft merino-blend knit sweater with a ribbed turtleneck. Perfect for chilly morning walks. Machine washable and designed for comfort without restricting movement.",
-    price: 34.99,
+    price: 139,
     category: "sweaters",
     petType: "dog",
     sizes: ["XS", "S", "M", "L", "XL"],
@@ -22,7 +22,7 @@ export const products: Product[] = [
     name: "Rainy Day Pup Parka",
     description:
       "Waterproof shell with sealed seams and a cozy fleece lining. Reflective trim keeps your pup visible on gloomy days. Adjustable hood and velcro belly closure.",
-    price: 42.99,
+    price: 179,
     category: "raincoats",
     petType: "dog",
     sizes: ["S", "M", "L", "XL"],
@@ -36,7 +36,7 @@ export const products: Product[] = [
     name: "Classic Plaid Cat Bandana",
     description:
       "Lightweight cotton bandana with a snap closure that sits comfortably without tugging fur. Reversible design gives you two looks in one.",
-    price: 12.99,
+    price: 59,
     category: "accessories",
     petType: "cat",
     sizes: ["One Size"],
@@ -50,7 +50,7 @@ export const products: Product[] = [
     name: "Halloween Bat Wings Costume",
     description:
       "Lightweight felt wings attach with an elastic chest strap. No fuss, no zippers — just slip on and watch your pet steal the show at every party.",
-    price: 28.99,
+    price: 119,
     category: "costumes",
     petType: "both",
     sizes: ["S", "M", "L"],
@@ -64,7 +64,7 @@ export const products: Product[] = [
     name: "Summer Mesh Cooling Vest",
     description:
       "Breathable mesh fabric with UPF 30 sun protection. Soak in water, wring out, and put on for hours of cooling relief during hot summer adventures.",
-    price: 24.99,
+    price: 109,
     category: "outerwear",
     petType: "dog",
     sizes: ["S", "M", "L", "XL"],
@@ -77,7 +77,7 @@ export const products: Product[] = [
     name: "Luxury Fleece Hoodie",
     description:
       "Ultra-soft microfleece hoodie with a drawstring hood and kangaroo pocket. Because your pet deserves streetwear-level comfort.",
-    price: 38.99,
+    price: 159,
     category: "sweaters",
     petType: "dog",
     sizes: ["XS", "S", "M", "L"],
@@ -91,7 +91,7 @@ export const products: Product[] = [
     name: "Reflective Safety Jacket",
     description:
       "360° reflective piping and a lightweight windbreaker shell. Essential gear for evening walks and early-morning jogs.",
-    price: 36.99,
+    price: 149,
     category: "outerwear",
     petType: "dog",
     sizes: ["S", "M", "L", "XL"],
@@ -104,7 +104,7 @@ export const products: Product[] = [
     name: "Holiday Reindeer Sweater",
     description:
       "Festive jacquard knit with embroidered reindeer and a jingle bell collar. The ultimate holiday photo-op sweater for dogs and cats alike.",
-    price: 32.99,
+    price: 139,
     category: "sweaters",
     petType: "both",
     sizes: ["XS", "S", "M", "L"],

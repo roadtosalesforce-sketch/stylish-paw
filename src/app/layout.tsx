@@ -16,9 +16,11 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Furry Fairy Pets — Magical Style for Every Pet",
+  metadataBase: new URL("https://www.furryfairypets.com"),
+  title: {default:"Furry Fairy Pets — Comfortable Style for Dogs & Cats",template:"%s | Furry Fairy Pets"},
   description:
-    "Playful, comfortable clothing and accessories made for dogs and cats with a little everyday magic.",
+    "Comfortable, expressive clothing and accessories for dogs and cats, with helpful sizing and a playful touch.",
+  openGraph:{title:"Furry Fairy Pets",description:"Comfortable style for dogs and cats.",type:"website",url:"https://www.furryfairypets.com"},
 };
 
 export default function RootLayout({
