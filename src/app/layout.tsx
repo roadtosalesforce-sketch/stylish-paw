@@ -21,6 +21,26 @@ export const metadata: Metadata = {
   title: {default:"Furry Fairy Pets — Comfortable Style for Dogs & Cats",template:"%s | Furry Fairy Pets"},
   description:
     "Comfortable, expressive clothing and accessories for dogs and cats, with helpful sizing and a playful touch.",
+  icons: {
+    icon: [
+      {
+        url: "/furry-fairy-favicon.ico?v=2",
+        sizes: "32x32",
+        type: "image/x-icon",
+      },
+      {
+        url: "/icon.svg?v=2",
+        sizes: "any",
+        type: "image/svg+xml",
+      },
+    ],
+    shortcut: "/furry-fairy-favicon.ico?v=2",
+    apple: {
+      url: "/furry-fairy-apple-icon.png?v=2",
+      sizes: "180x180",
+      type: "image/png",
+    },
+  },
   openGraph:{title:"Furry Fairy Pets",description:"Comfortable style for dogs and cats.",type:"website",url:"https://www.furryfairypets.com"},
 };
 
