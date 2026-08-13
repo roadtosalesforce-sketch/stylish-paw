@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Hero } from "@/components/hero";
 import { CategoryLinks } from "@/components/category-filter";
 import { ProductGrid } from "@/components/product-grid";
-import { getFeaturedProducts } from "@/data/products";
+import { getFeaturedProducts } from "@/sanity/lib/products";
 
-export default function Home() {
-  const featured = getFeaturedProducts();
+export default async function Home() {
+  const featured = await getFeaturedProducts();
 
   return (
     <>
@@ -52,7 +52,7 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-sage to-sage-dark px-8 py-12 text-center text-white sm:px-16">
           <h2 className="font-display text-2xl font-bold sm:text-3xl">
-            Join the PawStyle Pack
+            Join the Furry Fairy Family
           </h2>
           <p className="mx-auto mt-3 max-w-md text-white/90">
             Get 10% off your first order and early access to new collections.

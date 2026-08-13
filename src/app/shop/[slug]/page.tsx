@@ -2,20 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartForm } from "@/components/add-to-cart-form";
-import { getProductBySlug, products } from "@/data/products";
+import { getProductBySlug } from "@/sanity/lib/products";
 import { formatPrice } from "@/lib/format";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
-
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
 

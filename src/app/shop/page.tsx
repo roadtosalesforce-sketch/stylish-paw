@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { CategoryFilter } from "@/components/category-filter";
 import { ProductGrid } from "@/components/product-grid";
-import { products } from "@/data/products";
+import { getProducts } from "@/sanity/lib/products";
 import type { Category } from "@/types/product";
 
 interface ShopPageProps {
@@ -11,6 +11,7 @@ interface ShopPageProps {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const { category } = await searchParams;
+  const products = await getProducts();
   const filtered =
     category && category !== "all"
       ? products.filter((p) => p.category === (category as Category))

@@ -16,9 +16,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "PawStyle — Premium Pet Apparel",
+  title: "Furry Fairy Pets — Magical Style for Every Pet",
   description:
-    "Shop cozy sweaters, raincoats, costumes, and accessories for dogs and cats. Free shipping on orders $50+.",
+    "Playful, comfortable clothing and accessories made for dogs and cats with a little everyday magic.",
 };
 
 export default function RootLayout({

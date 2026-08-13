@@ -7,7 +7,7 @@ export function Footer() {
         <div>
           <div className="mb-3 flex items-center gap-2">
             <span className="text-xl">🐾</span>
-            <span className="font-display text-lg font-bold text-white">PawStyle</span>
+            <span className="font-display text-lg font-bold text-white">Furry Fairy Pets</span>
           </div>
           <p className="text-sm leading-relaxed text-stone-400">
             Premium pet apparel designed for comfort, style, and every adventure
@@ -71,7 +71,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-stone-700 py-4 text-center text-xs text-stone-500">
-        © {new Date().getFullYear()} PawStyle. Made with love for pets everywhere.
+        © {new Date().getFullYear()} Furry Fairy Pets. Made with a little magic for pets everywhere.
       </div>
     </footer>
   );

@@ -17,7 +17,7 @@ export function Header() {
             🐾
           </span>
           <span className="font-display text-xl font-bold tracking-tight text-charcoal">
-            PawStyle
+            Furry Fairy Pets
           </span>
         </Link>
 

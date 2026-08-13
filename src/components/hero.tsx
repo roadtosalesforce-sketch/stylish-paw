@@ -12,12 +12,12 @@ export function Hero() {
             <span>New arrivals every week</span>
           </p>
           <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-charcoal sm:text-5xl lg:text-6xl">
-            Dress your pet in{" "}
-            <span className="text-coral">paw-some</span> style
+            A little magic for{" "}
+            <span className="text-coral">every furry friend</span>
           </h1>
           <p className="mt-5 max-w-md text-lg leading-relaxed text-stone-600">
-            From cozy sweaters to festive costumes — premium apparel that keeps
-            your furry friend comfortable and camera-ready.
+            Playful clothing and accessories designed to keep dogs and cats
+            comfortable, expressive, and camera-ready.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
