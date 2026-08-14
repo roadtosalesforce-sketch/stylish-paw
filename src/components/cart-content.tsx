@@ -2,11 +2,46 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import {useState} from "react";
 import { useCart } from "@/context/cart-context";
 import { formatPrice } from "@/lib/format";
 
 export function CartContent() {
   const { items, subtotal, updateQuantity, removeItem, clearCart } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  async function startCheckout() {
+    setIsCheckingOut(true);
+    setCheckoutError("");
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            productId: item.product.id,
+            size: item.size,
+            color: item.color,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+      const result = (await response.json()) as {url?: string; error?: string};
+
+      if (!response.ok || !result.url) {
+        throw new Error(result.error || "Checkout could not be started.");
+      }
+
+      window.location.assign(result.url);
+    } catch (error) {
+      setCheckoutError(
+        error instanceof Error ? error.message : "Checkout could not be started.",
+      );
+      setIsCheckingOut(false);
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -156,13 +191,21 @@ export function CartContent() {
 
         <button
           type="button"
-          className="mt-6 w-full rounded-full bg-coral py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-coral-dark"
+          onClick={startCheckout}
+          disabled={isCheckingOut}
+          className="mt-6 w-full rounded-full bg-coral py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-coral-dark disabled:cursor-wait disabled:opacity-70"
         >
-          Checkout
+          {isCheckingOut ? "Opening secure checkout…" : "Secure Checkout"}
         </button>
-        <p className="mt-3 text-center text-xs text-stone-400">
-          Demo store — checkout is not connected to payments
-        </p>
+        {checkoutError ? (
+          <p className="mt-3 text-center text-xs font-medium text-red-600" role="alert">
+            {checkoutError}
+          </p>
+        ) : (
+          <p className="mt-3 text-center text-xs text-stone-400">
+            Secure payment powered by Stripe
+          </p>
+        )}
       </div>
     </div>
   );
