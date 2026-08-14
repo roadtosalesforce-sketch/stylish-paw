@@ -22,14 +22,26 @@ export const metadata: Metadata = {
   description:
     "Comfortable, expressive clothing and accessories for dogs and cats, with helpful sizing and a playful touch.",
   icons: {
-    icon: {
-      url: "/furry-fairy-tab-icon-v3.svg",
-      sizes: "any",
-      type: "image/svg+xml",
-    },
-    shortcut: "/furry-fairy-tab-icon-v3.svg",
+    icon: [
+      {
+        url: "/furry-fairy-tab-icon-v4.ico",
+        sizes: "32x32",
+        type: "image/x-icon",
+      },
+      {
+        url: "/furry-fairy-tab-icon-v4.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+      {
+        url: "/furry-fairy-tab-icon-v3.svg",
+        sizes: "any",
+        type: "image/svg+xml",
+      },
+    ],
+    shortcut: "/furry-fairy-tab-icon-v4.ico",
     apple: {
-      url: "/furry-fairy-apple-icon.png?v=3",
+      url: "/furry-fairy-tab-icon-v4.png",
       sizes: "180x180",
       type: "image/png",
     },
