@@ -42,7 +42,11 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   if (!client) return fallbackProducts.find((item) => item.slug === slug);
   try {
-    return (await client.fetch<Product | null>(`*[_type == "product" && slug.current == $slug][0] {${productFields}}`, {slug})) || undefined;
+    const product = await client.fetch<Product | null>(
+      `*[_type == "product" && slug.current == $slug][0] {${productFields}}`,
+      {slug},
+    );
+    return product ?? fallbackProducts.find((item) => item.slug === slug);
   } catch {
     return fallbackProducts.find((item) => item.slug === slug);
   }
