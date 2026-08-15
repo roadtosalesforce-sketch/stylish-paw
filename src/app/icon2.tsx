@@ -8,7 +8,7 @@ export const size = {
 export const contentType = "image/png";
 
 const cream = "#fff7ed";
-const ink = "#403230";
+const ink = "#3f302f";
 
 export default function Icon() {
   return new ImageResponse(
