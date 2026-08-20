@@ -2,13 +2,16 @@ import type {Metadata} from "next";
 import Link from "next/link";
 import {notFound} from "next/navigation";
 import {PortableText} from "next-sanity";
+import {getDictionary} from "@/i18n/dictionaries";
+import {getLocale} from "@/i18n/server";
 import {getContentPage} from "@/sanity/lib/content";
 
 type Props = {params: Promise<{slug: string}>};
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
   const {slug} = await params;
-  const page = await getContentPage(slug);
+  const locale = await getLocale();
+  const page = await getContentPage(slug, locale);
   return page
     ? {title: page.seoTitle || page.title, description: page.seoDescription || page.intro}
     : {};
@@ -16,12 +19,14 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
 export default async function ContentPage({params}: Props) {
   const {slug} = await params;
-  const page = await getContentPage(slug);
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const page = await getContentPage(slug, locale);
   if (!page) notFound();
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-      <Link href="/" className="text-sm font-bold text-coral">← Back home</Link>
+      <Link href="/" className="text-sm font-bold text-coral">{dict.pages.back}</Link>
       {page.eyebrow ? (
         <p className="mt-12 text-xs font-bold uppercase tracking-[.18em] text-sage">
           {page.eyebrow}

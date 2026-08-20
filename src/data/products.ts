@@ -1,4 +1,5 @@
 import type { Product } from "@/types/product";
+import type {Locale} from "@/i18n/dictionaries";
 
 export const products: Product[] = [
   {
@@ -122,6 +123,34 @@ export const categories = [
   { id: "accessories", label: "Accessories" },
   { id: "outerwear", label: "Outerwear" },
 ] as const;
+
+const polishProducts: Record<string, {name: string; description: string; colors: Record<string, string>; sizes?: Record<string, string>}> = {
+  "cozy-knit-dog-sweater": {name: "Przytulny dzianinowy sweter dla psa", description: "Miękki sweter z mieszanki wełny merino z prążkowanym golfem. Idealny na chłodne poranne spacery, wygodny i nieograniczający ruchów.", colors: {Cream: "Kremowy", Sage: "Szałwiowy", Rust: "Rdzawy"}},
+  "rainy-day-pup-parka": {name: "Parka dla psa na deszczowe dni", description: "Wodoodporna warstwa zewnętrzna, uszczelnione szwy i przytulna polarowa podszewka. Odblaskowe elementy poprawiają widoczność w pochmurne dni.", colors: {Yellow: "Żółty", Navy: "Granatowy", Red: "Czerwony"}},
+  "classic-plaid-cat-bandana": {name: "Klasyczna bandana w kratę dla kota", description: "Lekka bawełniana bandana z wygodnym zapięciem na napy. Dwustronny wzór daje dwa różne wyglądy.", colors: {"Plaid Red": "Czerwona krata", "Plaid Green": "Zielona krata", "Plaid Blue": "Niebieska krata"}, sizes: {"One Size": "Jeden rozmiar"}},
+  "halloween-bat-wings-costume": {name: "Kostium z nietoperzymi skrzydłami na Halloween", description: "Lekkie filcowe skrzydła mocowane elastycznym paskiem na klatce piersiowej. Bez zamków i zbędnego zamieszania — gotowe na każdą imprezę.", colors: {Black: "Czarny", Purple: "Fioletowy"}},
+  "summer-mesh-cooling-vest": {name: "Letnia kamizelka chłodząca z siateczki", description: "Oddychająca siateczka z ochroną przeciwsłoneczną UPF 30. Namocz, wyciśnij i załóż, aby zapewnić pupilowi ulgę w upalne dni.", colors: {"Sky Blue": "Błękitny", Mint: "Miętowy", Coral: "Koralowy"}},
+  "luxury-fleece-hoodie": {name: "Luksusowa bluza polarowa", description: "Wyjątkowo miękka bluza z mikropolaru z kapturem i kieszenią kangurką. Komfort w prawdziwie miejskim stylu.", colors: {"Heather Grey": "Szary melanż", "Blush Pink": "Pudrowy róż", Charcoal: "Antracytowy"}},
+  "reflective-safety-jacket": {name: "Odblaskowa kurtka bezpieczeństwa", description: "Odblaskowa lamówka 360° i lekka, wiatroodporna warstwa. Niezbędna na wieczorne spacery i poranne bieganie.", colors: {"Neon Orange": "Neonowy pomarańczowy", "Neon Green": "Neonowy zielony"}},
+  "holiday-reindeer-sweater": {name: "Świąteczny sweter z reniferem", description: "Świąteczna dzianina żakardowa z haftowanym reniferem. Idealny sweter do zimowych zdjęć zarówno dla psów, jak i kotów.", colors: {"Red/Green": "Czerwony/zielony", "Navy/Gold": "Granatowy/złoty"}},
+};
+
+export function getFallbackProducts(locale: Locale): Product[] {
+  return products.map((product) => {
+    const polish = polishProducts[product.slug];
+    return {
+      ...product,
+      nameEn: product.name,
+      namePl: polish?.name,
+      descriptionEn: product.description,
+      descriptionPl: polish?.description,
+      colorLabelsPl: polish?.colors,
+      sizeLabelsPl: polish?.sizes,
+      name: locale === "pl" ? polish?.name || product.name : product.name,
+      description: locale === "pl" ? polish?.description || product.description : product.description,
+    };
+  });
+}
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);

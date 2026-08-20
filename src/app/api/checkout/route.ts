@@ -1,4 +1,6 @@
 import Stripe from "stripe";
+import {getDictionary, isLocale, type Locale} from "@/i18n/dictionaries";
+import {optionLabel} from "@/i18n/product-labels";
 import {getProducts} from "@/sanity/lib/products";
 
 export const runtime = "nodejs";
@@ -26,18 +28,22 @@ function isCheckoutItem(value: unknown): value is CheckoutItem {
 export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
 
-  if (!secretKey) {
-    return Response.json(
-      {error: "Payments are being activated. Please try again shortly."},
-      {status: 503},
-    );
-  }
-
   let payload: unknown;
   try {
     payload = await request.json();
   } catch {
-    return Response.json({error: "Invalid checkout request."}, {status: 400});
+    return Response.json({error: getDictionary("en").checkout.invalidRequest}, {status: 400});
+  }
+
+  const requestedLocale =
+    payload && typeof payload === "object" && "locale" in payload
+      ? (payload as {locale?: unknown}).locale
+      : undefined;
+  const locale: Locale = typeof requestedLocale === "string" && isLocale(requestedLocale) ? requestedLocale : "en";
+  const dict = getDictionary(locale);
+
+  if (!secretKey) {
+    return Response.json({error: dict.checkout.activating}, {status: 503});
   }
 
   const requestedItems =
@@ -51,10 +57,10 @@ export async function POST(request: Request) {
     requestedItems.length > 50 ||
     !requestedItems.every(isCheckoutItem)
   ) {
-    return Response.json({error: "Your cart is not valid."}, {status: 400});
+    return Response.json({error: dict.checkout.invalidCart}, {status: 400});
   }
 
-  const products = await getProducts();
+  const products = await getProducts(locale);
   const productsById = new Map(products.map((product) => [product.id, product]));
 
   try {
@@ -78,7 +84,7 @@ export async function POST(request: Request) {
             unit_amount: unitAmount,
             product_data: {
               name: product.name,
-              description: `${item.size} · ${item.color}`,
+              description: `${optionLabel(product, "size", item.size, locale)} · ${optionLabel(product, "color", item.color, locale)}`,
               images: product.image.startsWith("https://") ? [product.image] : undefined,
               metadata: {
                 productId: product.id,
@@ -114,7 +120,7 @@ export async function POST(request: Request) {
         {
           shipping_rate_data: {
             type: "fixed_amount",
-            display_name: subtotal >= 5000 ? "Free shipping" : "Standard shipping",
+            display_name: subtotal >= 5000 ? dict.checkout.freeShipping : dict.checkout.standardShipping,
             fixed_amount: {
               amount: subtotal >= 5000 ? 0 : 599,
               currency: "pln",
@@ -128,7 +134,7 @@ export async function POST(request: Request) {
       ],
       phone_number_collection: {enabled: true},
       allow_promotion_codes: true,
-      locale: "auto",
+      locale,
       metadata: {store: "Furry Fairy Pets"},
     });
 
@@ -143,14 +149,14 @@ export async function POST(request: Request) {
       ["PRODUCT_NOT_FOUND", "INVALID_VARIANT", "INVALID_PRICE"].includes(error.message)
     ) {
       return Response.json(
-        {error: "A product in your cart has changed. Please refresh and try again."},
+        {error: dict.checkout.changed},
         {status: 409},
       );
     }
 
     console.error("Unable to create Stripe Checkout session", error);
     return Response.json(
-      {error: "Checkout could not be started. Please try again."},
+      {error: dict.checkout.failed},
       {status: 500},
     );
   }

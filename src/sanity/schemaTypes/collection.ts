@@ -4,8 +4,10 @@ export const collectionType = defineType({
   name: "collection", title: "Collections", type: "document",
   fields: [
     defineField({name: "title", title: "Name", type: "string", validation: (rule) => rule.required()}),
+    defineField({name: "titlePl", title: "Name (Polish)", type: "string"}),
     defineField({name: "slug", title: "Slug", type: "slug", options: {source: "title"}, validation: (rule) => rule.required()}),
     defineField({name: "description", title: "Story", type: "text", rows: 4}),
+    defineField({name: "descriptionPl", title: "Story (Polish)", type: "text", rows: 4}),
     defineField({name: "heroImage", title: "Cover image", type: "image", options: {hotspot: true}}),
     defineField({name: "active", title: "Active", type: "boolean", initialValue: true}),
   ],

@@ -37,13 +37,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setItems(JSON.parse(stored));
-    } catch {
-      /* ignore corrupt storage */
-    }
-    setHydrated(true);
+    const timeout = window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) setItems(JSON.parse(stored));
+      } catch {
+        /* ignore corrupt storage */
+      }
+      setHydrated(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, []);
 
   useEffect(() => {

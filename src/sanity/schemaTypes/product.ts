@@ -5,6 +5,7 @@ const option = defineArrayMember({
   name: "productOption",
   fields: [
     defineField({name: "name", title: "Option name", type: "string", validation: (rule) => rule.required()}),
+    defineField({name: "namePl", title: "Option name (Polish)", type: "string"}),
     defineField({name: "sku", title: "SKU", type: "string"}),
     defineField({name: "stock", title: "Stock", type: "number", initialValue: 0, validation: (rule) => rule.min(0)}),
   ],
@@ -17,6 +18,7 @@ export const productType = defineType({
   type: "document",
   groups: [
     {name: "basic", title: "Basic", default: true},
+    {name: "polish", title: "Polish / Polski"},
     {name: "media", title: "Photos"},
     {name: "variants", title: "Sizes & colours"},
     {name: "commerce", title: "Price & stock"},
@@ -25,9 +27,11 @@ export const productType = defineType({
   ],
   fields: [
     defineField({name: "name", title: "Product name", type: "string", group: "basic", validation: (rule) => rule.required().max(100)}),
+    defineField({name: "namePl", title: "Product name (Polish)", type: "string", group: "polish", validation: (rule) => rule.max(100)}),
     defineField({name: "slug", title: "URL slug", type: "slug", group: "basic", options: {source: "name", maxLength: 96}, validation: (rule) => rule.required()}),
     defineField({name: "shortDescription", title: "Short description", type: "string", group: "basic", validation: (rule) => rule.max(160)}),
     defineField({name: "description", title: "Full description", type: "array", group: "basic", of:[defineArrayMember({type:"block",styles:[{title:"Normal",value:"normal"},{title:"Heading 3",value:"h3"}],lists:[{title:"Bullets",value:"bullet"}]})], validation: (rule) => rule.required()}),
+    defineField({name: "descriptionPl", title: "Full description (Polish)", type: "array", group: "polish", of:[defineArrayMember({type:"block",styles:[{title:"Normal",value:"normal"},{title:"Heading 3",value:"h3"}],lists:[{title:"Bullets",value:"bullet"}]})]}),
     defineField({name: "category", title: "Category", type: "reference", to: [{type: "category"}], group: "basic", validation: (rule) => rule.required()}),
     defineField({name: "collections", title: "Collections", type: "array", of: [{type: "reference", to: [{type: "collection"}]}], group: "basic"}),
     defineField({name: "petType", title: "Pet type", type: "string", group: "basic", options: {layout: "radio", list: [{title: "Dog", value: "dog"}, {title: "Cat", value: "cat"}, {title: "Dogs & cats", value: "both"}]}, validation: (rule) => rule.required()}),
@@ -35,7 +39,7 @@ export const productType = defineType({
     defineField({name: "image", title: "Main photo", type: "image", group: "media", options: {hotspot: true}, fields: [{name: "alt", title: "Alternative text", type: "string", validation: (rule) => rule.required()}], validation: (rule) => rule.required()}),
     defineField({name: "gallery", title: "Photo gallery", type: "array", group: "media", of: [{type: "image", options: {hotspot: true}, fields: [{name: "alt", title: "Alternative text", type: "string"}]}]}),
     defineField({name: "sizes", title: "Sizes", type: "array", group: "variants", of: [option], validation: (rule) => rule.required().min(1)}),
-    defineField({name: "colors", title: "Colours", type: "array", group: "variants", of: [defineArrayMember({type: "object", name: "colour", fields: [defineField({name: "name", title: "Colour name", type: "string", validation: (rule) => rule.required()}), defineField({name: "hex", title: "Colour code", type: "string", description: "Example: #E8795E"})], preview: {select: {title: "name", subtitle: "hex"}}})], validation: (rule) => rule.required().min(1)}),
+    defineField({name: "colors", title: "Colours", type: "array", group: "variants", of: [defineArrayMember({type: "object", name: "colour", fields: [defineField({name: "name", title: "Colour name", type: "string", validation: (rule) => rule.required()}), defineField({name: "namePl", title: "Colour name (Polish)", type: "string"}), defineField({name: "hex", title: "Colour code", type: "string", description: "Example: #E8795E"})], preview: {select: {title: "name", subtitle: "hex"}}})], validation: (rule) => rule.required().min(1)}),
     defineField({name: "price", title: "Price", type: "number", group: "commerce", validation: (rule) => rule.required().positive()}),
     defineField({name: "compareAtPrice", title: "Previous price", type: "number", group: "commerce", description: "Shown crossed out during a sale", validation: (rule) => rule.positive()}),
     defineField({name: "currency", title: "Currency", type: "string", group: "commerce", initialValue: "PLN", readOnly: true}),

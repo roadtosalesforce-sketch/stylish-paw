@@ -4,8 +4,10 @@ export const categoryType = defineType({
   name: "category", title: "Categories", type: "document",
   fields: [
     defineField({name: "title", title: "Name", type: "string", validation: (rule) => rule.required()}),
+    defineField({name: "titlePl", title: "Name (Polish)", type: "string"}),
     defineField({name: "slug", title: "Slug", type: "slug", options: {source: "title"}, validation: (rule) => rule.required()}),
     defineField({name: "description", title: "Description", type: "text", rows: 3}),
+    defineField({name: "descriptionPl", title: "Description (Polish)", type: "text", rows: 3}),
     defineField({name: "image", title: "Category image", type: "image", options: {hotspot: true}}),
     defineField({name: "sortOrder", title: "Display order", type: "number", initialValue: 100}),
   ],

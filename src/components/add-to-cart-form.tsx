@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/cart-context";
 import { SizeGuideDialog } from "./size-guide-dialog";
+import type {Dictionary, Locale} from "@/i18n/dictionaries";
+import {optionLabel} from "@/i18n/product-labels";
 
-export function AddToCartForm({ product }: { product: Product }) {
+export function AddToCartForm({ product, locale, dict }: { product: Product; locale: Locale; dict: Dictionary }) {
   const { addItem } = useCart();
   const router = useRouter();
   const [size, setSize] = useState(product.sizes[0]);
@@ -24,7 +26,7 @@ export function AddToCartForm({ product }: { product: Product }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <div className="mb-3 flex items-center justify-between gap-4"><label className="block text-sm font-semibold text-charcoal">Choose size</label><SizeGuideDialog /></div>
+        <div className="mb-3 flex items-center justify-between gap-4"><label className="block text-sm font-semibold text-charcoal">{dict.product.chooseSize}</label><SizeGuideDialog dict={dict} /></div>
         <div className="flex flex-wrap gap-2">
           {product.sizes.map((s) => (
             <button
@@ -37,14 +39,14 @@ export function AddToCartForm({ product }: { product: Product }) {
                   : "bg-white text-stone-600 ring-1 ring-stone-200 hover:ring-charcoal/30"
               }`}
             >
-              {s}
+              {optionLabel(product, "size", s, locale)}
             </button>
           ))}
         </div>
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-semibold text-charcoal">Choose colour</label>
+        <label className="mb-2 block text-sm font-semibold text-charcoal">{dict.product.chooseColour}</label>
         <div className="flex flex-wrap gap-2">
           {product.colors.map((c) => (
             <button
@@ -57,14 +59,14 @@ export function AddToCartForm({ product }: { product: Product }) {
                   : "bg-white text-stone-600 ring-1 ring-stone-200 hover:ring-charcoal/30"
               }`}
             >
-              {c}
+              {optionLabel(product, "color", c, locale)}
             </button>
           ))}
         </div>
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-semibold text-charcoal">Quantity</label>
+        <label className="mb-2 block text-sm font-semibold text-charcoal">{dict.product.quantity}</label>
         <div className="inline-flex items-center rounded-lg ring-1 ring-stone-200">
           <button
             type="button"
@@ -93,7 +95,7 @@ export function AddToCartForm({ product }: { product: Product }) {
               : "bg-coral hover:bg-coral-dark hover:shadow-lg"
           }`}
         >
-          {added ? "Added to cart ✓" : "Add to Cart"}
+          {added ? dict.product.added : dict.product.add}
         </button>
         <button
           type="button"
@@ -103,7 +105,7 @@ export function AddToCartForm({ product }: { product: Product }) {
           }}
           className="rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-charcoal ring-1 ring-stone-200 transition-all hover:ring-coral/40"
         >
-          Buy Now
+          {dict.product.buy}
         </button>
       </div>
     </form>

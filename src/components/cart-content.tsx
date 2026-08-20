@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {useState} from "react";
 import { useCart } from "@/context/cart-context";
+import type {Dictionary, Locale} from "@/i18n/dictionaries";
+import {optionLabel, productName} from "@/i18n/product-labels";
 import { formatPrice } from "@/lib/format";
 
-export function CartContent() {
+export function CartContent({locale, dict}: {locale: Locale; dict: Dictionary}) {
   const { items, subtotal, updateQuantity, removeItem, clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -20,6 +22,7 @@ export function CartContent() {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
+          locale,
           items: items.map((item) => ({
             productId: item.product.id,
             size: item.size,
@@ -31,13 +34,13 @@ export function CartContent() {
       const result = (await response.json()) as {url?: string; error?: string};
 
       if (!response.ok || !result.url) {
-        throw new Error(result.error || "Checkout could not be started.");
+        throw new Error(result.error || dict.cart.error);
       }
 
       window.location.assign(result.url);
     } catch (error) {
       setCheckoutError(
-        error instanceof Error ? error.message : "Checkout could not be started.",
+        error instanceof Error ? error.message : dict.cart.error,
       );
       setIsCheckingOut(false);
     }
@@ -48,16 +51,16 @@ export function CartContent() {
       <div className="py-20 text-center">
         <p className="mb-3 text-5xl">🛒</p>
         <h2 className="font-display text-2xl font-bold text-charcoal">
-          Your cart is empty
+          {dict.cart.emptyTitle}
         </h2>
         <p className="mt-2 text-stone-500">
-          Looks like your pet&apos;s wardrobe needs some love!
+          {dict.cart.emptyText}
         </p>
         <Link
           href="/shop"
           className="mt-8 inline-flex rounded-full bg-coral px-8 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-coral-dark"
         >
-          Start Shopping
+          {dict.cart.startShopping}
         </Link>
       </div>
     );
@@ -79,7 +82,7 @@ export function CartContent() {
               <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-stone-100 sm:h-28 sm:w-28">
                 <Image
                   src={item.product.image}
-                  alt={item.product.name}
+                  alt={productName(item.product, locale)}
                   fill
                   sizes="112px"
                   className="object-cover"
@@ -93,10 +96,10 @@ export function CartContent() {
                       href={`/shop/${item.product.slug}`}
                       className="font-display font-semibold text-charcoal hover:text-coral transition-colors"
                     >
-                      {item.product.name}
+                      {productName(item.product, locale)}
                     </Link>
                     <p className="mt-1 text-sm text-stone-500">
-                      {item.size} · {item.color}
+                      {optionLabel(item.product, "size", item.size, locale)} · {optionLabel(item.product, "color", item.color, locale)}
                     </p>
                   </div>
                   <button
@@ -106,7 +109,7 @@ export function CartContent() {
                     }
                     className="text-sm text-stone-400 hover:text-coral transition-colors"
                   >
-                    Remove
+                    {dict.cart.remove}
                   </button>
                 </div>
 
@@ -145,7 +148,7 @@ export function CartContent() {
                     </button>
                   </div>
                   <p className="font-semibold text-charcoal">
-                    {formatPrice(item.product.price * item.quantity)}
+                    {formatPrice(item.product.price * item.quantity, locale)}
                   </p>
                 </div>
               </div>
@@ -158,33 +161,33 @@ export function CartContent() {
           onClick={clearCart}
           className="text-sm text-stone-400 hover:text-coral transition-colors"
         >
-          Clear cart
+          {dict.cart.clear}
         </button>
       </div>
 
       <div className="h-fit rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200/80">
-        <h2 className="font-display text-lg font-bold text-charcoal">Order Summary</h2>
+        <h2 className="font-display text-lg font-bold text-charcoal">{dict.cart.summary}</h2>
 
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between">
-            <dt className="text-stone-500">Subtotal</dt>
-            <dd className="font-medium text-charcoal">{formatPrice(subtotal)}</dd>
+            <dt className="text-stone-500">{dict.cart.subtotal}</dt>
+            <dd className="font-medium text-charcoal">{formatPrice(subtotal, locale)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-stone-500">Shipping</dt>
+            <dt className="text-stone-500">{dict.cart.shipping}</dt>
             <dd className="font-medium text-charcoal">
-              {shipping === 0 ? "Free" : formatPrice(shipping)}
+              {shipping === 0 ? dict.cart.free : formatPrice(shipping, locale)}
             </dd>
           </div>
           {subtotal < 50 && (
             <p className="text-xs text-sage">
-              Add {formatPrice(50 - subtotal)} more for free shipping!
+              {dict.cart.freeShipping.replace("{amount}", formatPrice(50 - subtotal, locale))}
             </p>
           )}
           <div className="border-t border-stone-100 pt-3 flex justify-between">
-            <dt className="font-semibold text-charcoal">Total</dt>
+            <dt className="font-semibold text-charcoal">{dict.cart.total}</dt>
             <dd className="font-display text-xl font-bold text-charcoal">
-              {formatPrice(total)}
+              {formatPrice(total, locale)}
             </dd>
           </div>
         </dl>
@@ -195,7 +198,7 @@ export function CartContent() {
           disabled={isCheckingOut}
           className="mt-6 w-full rounded-full bg-coral py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-coral-dark disabled:cursor-wait disabled:opacity-70"
         >
-          {isCheckingOut ? "Opening secure checkout…" : "Secure Checkout"}
+          {isCheckingOut ? dict.cart.opening : dict.cart.checkout}
         </button>
         {checkoutError ? (
           <p className="mt-3 text-center text-xs font-medium text-red-600" role="alert">
@@ -203,7 +206,7 @@ export function CartContent() {
           </p>
         ) : (
           <p className="mt-3 text-center text-xs text-stone-400">
-            Secure payment powered by Stripe
+            {dict.cart.powered}
           </p>
         )}
       </div>

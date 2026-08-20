@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { categories } from "@/data/products";
+import type {Dictionary} from "@/i18n/dictionaries";
 
-export function CategoryFilter() {
+export function CategoryFilter({dict}: {dict: Dictionary}) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const active = searchParams.get("category") ?? "all";
@@ -33,14 +34,14 @@ export function CategoryFilter() {
               : "bg-white text-stone-600 ring-1 ring-stone-200 hover:ring-coral/40"
           }`}
         >
-          {cat.label}
+          {dict.common.categories[cat.id]}
         </button>
       ))}
     </div>
   );
 }
 
-export function CategoryLinks() {
+export function CategoryLinks({dict}: {dict: Dictionary}) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
       {categories.slice(1).map((cat) => (
@@ -52,7 +53,7 @@ export function CategoryLinks() {
           <span className="mb-2 text-3xl transition-transform group-hover:scale-110">
             {categoryEmoji(cat.id)}
           </span>
-          <span className="text-sm font-semibold text-charcoal">{cat.label}</span>
+          <span className="text-center text-sm font-semibold text-charcoal">{dict.common.categories[cat.id]}</span>
         </Link>
       ))}
     </div>

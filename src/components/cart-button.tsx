@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
 
-export function CartButton() {
+export function CartButton({label}: {label: string}) {
   const { itemCount } = useCart();
 
   return (
     <Link
       href="/cart"
       className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-charcoal shadow-sm ring-1 ring-stone-200 transition-all hover:ring-coral/40 hover:shadow-md"
-      aria-label={`Shopping cart with ${itemCount} items`}
+      aria-label={label.replace("{count}", String(itemCount))}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

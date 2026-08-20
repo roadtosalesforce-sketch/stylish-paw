@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { ArrowRight, Ruler } from "lucide-react";
 import type {HomepageContent} from "@/sanity/lib/content";
+import type {Dictionary} from "@/i18n/dictionaries";
 
-export function Hero({content}: {content?: HomepageContent["hero"]}) {
-  const eyebrow = content?.eyebrow || "Thoughtful design · Comfortable fit";
-  const title = content?.title || "Made to fit. Designed to delight.";
-  const text = content?.text || "Comfortable clothing for dogs and cats, designed for everyday walks, celebrations and all the moments worth remembering.";
-  const primaryLabel = content?.primaryLabel || "Shop New Arrivals";
+export function Hero({content, dict}: {content?: HomepageContent["hero"]; dict: Dictionary}) {
+  const eyebrow = content?.eyebrow || dict.hero.eyebrow;
+  const title = content?.title || dict.hero.title;
+  const text = content?.text || dict.hero.text;
+  const primaryLabel = content?.primaryLabel || dict.hero.primary;
   const primaryLink = content?.primaryLink || "/shop?category=new";
-  const secondaryLabel = content?.secondaryLabel || "Find Your Pet's Size";
+  const secondaryLabel = content?.secondaryLabel || dict.hero.secondary;
   const secondaryLink = content?.secondaryLink || "/pages/size-guide";
   const image = content?.image || "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80";
 
@@ -49,13 +50,13 @@ export function Hero({content}: {content?: HomepageContent["hero"]}) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image}
-              alt="Happy dog wearing a cozy sweater"
+              alt={dict.hero.imageAlt}
               className="h-full w-full object-cover"
             />
           </div>
           <div className="absolute -bottom-4 left-4 rounded-2xl bg-white px-5 py-3 shadow-lg ring-1 ring-stone-100 sm:-left-4">
-            <p className="text-xs font-medium text-stone-500">Need help choosing?</p>
-            <p className="font-display text-base font-bold text-charcoal">Simple size guidance</p>
+            <p className="text-xs font-medium text-stone-500">{dict.hero.help}</p>
+            <p className="font-display text-base font-bold text-charcoal">{dict.hero.guidance}</p>
           </div>
         </div>
       </div>
