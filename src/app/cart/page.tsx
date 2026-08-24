@@ -12,7 +12,11 @@ export default async function CartPage() {
         {dict.cart.title}
       </h1>
       <div className="mt-8">
-        <CartContent locale={locale} dict={dict} />
+        <CartContent
+          locale={locale}
+          dict={dict}
+          inPostToken={process.env.NEXT_PUBLIC_INPOST_GEOWIDGET_TOKEN}
+        />
       </div>
     </div>
   );

@@ -4,16 +4,31 @@ import Image from "next/image";
 import Link from "next/link";
 import {useState} from "react";
 import { useCart } from "@/context/cart-context";
+import {InPostLockerSelector} from "@/components/inpost-locker-selector";
 import type {Dictionary, Locale} from "@/i18n/dictionaries";
 import {optionLabel, productName} from "@/i18n/product-labels";
 import { formatPrice } from "@/lib/format";
+import {
+  FREE_SHIPPING_THRESHOLD_PLN,
+  INPOST_LOCKER_CODE_PATTERN,
+  INPOST_LOCKER_PRICE_PLN,
+} from "@/lib/shipping";
 
-export function CartContent({locale, dict}: {locale: Locale; dict: Dictionary}) {
+export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: Dictionary; inPostToken?: string}) {
   const { items, subtotal, updateQuantity, removeItem, clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+  const [parcelLocker, setParcelLocker] = useState("");
+  const [parcelLockerAddress, setParcelLockerAddress] = useState("");
 
   async function startCheckout() {
+    const normalizedLocker = parcelLocker.trim().toUpperCase();
+    if (!INPOST_LOCKER_CODE_PATTERN.test(normalizedLocker)) {
+      setCheckoutError(dict.cart.lockerRequired);
+      document.getElementById("inpost-locker-code")?.focus();
+      return;
+    }
+
     setIsCheckingOut(true);
     setCheckoutError("");
 
@@ -23,6 +38,11 @@ export function CartContent({locale, dict}: {locale: Locale; dict: Dictionary}) 
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           locale,
+          shipping: {
+            method: "inpost_locker",
+            pointName: normalizedLocker,
+            pointAddress: parcelLockerAddress,
+          },
           items: items.map((item) => ({
             productId: item.product.id,
             size: item.size,
@@ -66,7 +86,7 @@ export function CartContent({locale, dict}: {locale: Locale; dict: Dictionary}) 
     );
   }
 
-  const shipping = subtotal >= 50 ? 0 : 5.99;
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD_PLN ? 0 : INPOST_LOCKER_PRICE_PLN;
   const total = subtotal + shipping;
 
   return (
@@ -168,6 +188,20 @@ export function CartContent({locale, dict}: {locale: Locale; dict: Dictionary}) 
       <div className="h-fit rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200/80">
         <h2 className="font-display text-lg font-bold text-charcoal">{dict.cart.summary}</h2>
 
+        <InPostLockerSelector
+          locale={locale}
+          dict={dict}
+          token={inPostToken}
+          value={parcelLocker}
+          address={parcelLockerAddress}
+          shippingLabel={shipping === 0 ? dict.cart.free : formatPrice(shipping, locale)}
+          onChange={(point) => {
+            setParcelLocker(point.name);
+            setParcelLockerAddress(point.address);
+            setCheckoutError("");
+          }}
+        />
+
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between">
             <dt className="text-stone-500">{dict.cart.subtotal}</dt>
@@ -179,9 +213,9 @@ export function CartContent({locale, dict}: {locale: Locale; dict: Dictionary}) 
               {shipping === 0 ? dict.cart.free : formatPrice(shipping, locale)}
             </dd>
           </div>
-          {subtotal < 50 && (
+          {subtotal < FREE_SHIPPING_THRESHOLD_PLN && (
             <p className="text-xs text-sage">
-              {dict.cart.freeShipping.replace("{amount}", formatPrice(50 - subtotal, locale))}
+              {dict.cart.freeShipping.replace("{amount}", formatPrice(FREE_SHIPPING_THRESHOLD_PLN - subtotal, locale))}
             </p>
           )}
           <div className="border-t border-stone-100 pt-3 flex justify-between">

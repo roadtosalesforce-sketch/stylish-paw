@@ -12,6 +12,13 @@ A modern pet clothing e-commerce storefront built with Next.js, React, and Tailw
 
 ## Getting Started
 
+### InPost Parcel Locker delivery
+
+The cart always supports manual InPost parcel locker codes. To also show the
+official embedded InPost map, create a public Geowidget token in InPost Manager
+and set `NEXT_PUBLIC_INPOST_GEOWIDGET_TOKEN` in the local and Vercel
+environments. Redeploy after changing the Vercel environment variable.
+
 ```bash
 npm install
 npm run dev

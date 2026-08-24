@@ -2,6 +2,11 @@ import Stripe from "stripe";
 import {getDictionary, isLocale, type Locale} from "@/i18n/dictionaries";
 import {optionLabel} from "@/i18n/product-labels";
 import {getProducts} from "@/sanity/lib/products";
+import {
+  FREE_SHIPPING_THRESHOLD_GROSZ,
+  INPOST_LOCKER_CODE_PATTERN,
+  INPOST_LOCKER_PRICE_GROSZ,
+} from "@/lib/shipping";
 
 export const runtime = "nodejs";
 
@@ -10,6 +15,12 @@ type CheckoutItem = {
   size: string;
   color: string;
   quantity: number;
+};
+
+type CheckoutShipping = {
+  method: "inpost_locker";
+  pointName: string;
+  pointAddress?: string;
 };
 
 function isCheckoutItem(value: unknown): value is CheckoutItem {
@@ -25,6 +36,18 @@ function isCheckoutItem(value: unknown): value is CheckoutItem {
   );
 }
 
+function isCheckoutShipping(value: unknown): value is CheckoutShipping {
+  if (!value || typeof value !== "object") return false;
+  const shipping = value as Record<string, unknown>;
+  return (
+    shipping.method === "inpost_locker" &&
+    typeof shipping.pointName === "string" &&
+    INPOST_LOCKER_CODE_PATTERN.test(shipping.pointName.trim().toUpperCase()) &&
+    (shipping.pointAddress === undefined ||
+      (typeof shipping.pointAddress === "string" && shipping.pointAddress.length <= 250))
+  );
+}
+
 export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
 
@@ -32,14 +55,14 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return Response.json({error: getDictionary("en").checkout.invalidRequest}, {status: 400});
+    return Response.json({error: getDictionary("pl").checkout.invalidRequest}, {status: 400});
   }
 
   const requestedLocale =
     payload && typeof payload === "object" && "locale" in payload
       ? (payload as {locale?: unknown}).locale
       : undefined;
-  const locale: Locale = typeof requestedLocale === "string" && isLocale(requestedLocale) ? requestedLocale : "en";
+  const locale: Locale = typeof requestedLocale === "string" && isLocale(requestedLocale) ? requestedLocale : "pl";
   const dict = getDictionary(locale);
 
   if (!secretKey) {
@@ -50,6 +73,10 @@ export async function POST(request: Request) {
     payload && typeof payload === "object" && "items" in payload
       ? (payload as {items?: unknown}).items
       : undefined;
+  const requestedShipping =
+    payload && typeof payload === "object" && "shipping" in payload
+      ? (payload as {shipping?: unknown}).shipping
+      : undefined;
 
   if (
     !Array.isArray(requestedItems) ||
@@ -58,6 +85,10 @@ export async function POST(request: Request) {
     !requestedItems.every(isCheckoutItem)
   ) {
     return Response.json({error: dict.checkout.invalidCart}, {status: 400});
+  }
+
+  if (!isCheckoutShipping(requestedShipping)) {
+    return Response.json({error: dict.checkout.invalidLocker}, {status: 400});
   }
 
   const products = await getProducts(locale);
@@ -120,14 +151,14 @@ export async function POST(request: Request) {
         {
           shipping_rate_data: {
             type: "fixed_amount",
-            display_name: subtotal >= 5000 ? dict.checkout.freeShipping : dict.checkout.standardShipping,
+            display_name: subtotal >= FREE_SHIPPING_THRESHOLD_GROSZ ? dict.checkout.freeInPost : dict.checkout.inPostLocker,
             fixed_amount: {
-              amount: subtotal >= 5000 ? 0 : 599,
+              amount: subtotal >= FREE_SHIPPING_THRESHOLD_GROSZ ? 0 : INPOST_LOCKER_PRICE_GROSZ,
               currency: "pln",
             },
             delivery_estimate: {
-              minimum: {unit: "business_day", value: 2},
-              maximum: {unit: "business_day", value: 5},
+              minimum: {unit: "business_day", value: 1},
+              maximum: {unit: "business_day", value: 3},
             },
           },
         },
@@ -135,7 +166,12 @@ export async function POST(request: Request) {
       phone_number_collection: {enabled: true},
       allow_promotion_codes: true,
       locale,
-      metadata: {store: "Furry Fairy Pets"},
+      metadata: {
+        store: "Furry Fairy Pets",
+        shipping_method: requestedShipping.method,
+        inpost_point: requestedShipping.pointName.trim().toUpperCase(),
+        inpost_point_address: requestedShipping.pointAddress?.trim() || "",
+      },
     });
 
     if (!session.url) {
