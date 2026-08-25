@@ -7,6 +7,7 @@ import {
   INPOST_LOCKER_CODE_PATTERN,
   INPOST_LOCKER_PRICE_GROSZ,
 } from "@/lib/shipping";
+import {getCurrentUser} from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -139,12 +140,15 @@ export async function POST(request: Request) {
       : new URL(request.url).origin;
 
     const stripe = new Stripe(secretKey, {maxNetworkRetries: 2});
+    const user = await getCurrentUser();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/cart?checkout=cancelled`,
       customer_creation: "always",
+      customer_email: user?.email || undefined,
+      client_reference_id: user?.id,
       billing_address_collection: "auto",
       shipping_address_collection: {allowed_countries: ["PL"]},
       shipping_options: [
@@ -171,6 +175,7 @@ export async function POST(request: Request) {
         shipping_method: requestedShipping.method,
         inpost_point: requestedShipping.pointName.trim().toUpperCase(),
         inpost_point_address: requestedShipping.pointAddress?.trim() || "",
+        user_id: user?.id || "",
       },
     });
 

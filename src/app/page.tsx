@@ -67,18 +67,19 @@ export default async function Home() {
       <section className="border-y border-stone-200 bg-[#fbf8f2] py-20"><div className="mx-auto max-w-4xl px-4 text-center sm:px-6"><Heart className="mx-auto h-7 w-7 text-coral"/><p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-coral">{dict.home.promise}</p><h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{story?.title || dict.home.storyTitle}</h2><p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{story?.text || dict.home.storyText}</p></div></section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-sage to-sage-dark px-8 py-12 text-center text-white sm:px-16">
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">
+        <div className="overflow-hidden rounded-[2rem] border border-sage/30 bg-[#e5eee3] px-8 py-12 text-center shadow-sm sm:px-16">
+          <p className="text-xs font-bold uppercase tracking-[.18em] text-sage-dark">Furry Fairy Club</p>
+          <h2 className="mt-3 font-display text-2xl font-bold text-charcoal sm:text-3xl">
             {newsletter?.title || dict.home.newsletterTitle}
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-white/90">
+          <p className="mx-auto mt-3 max-w-md font-medium text-stone-700">
             {newsletter?.text || dict.home.newsletterText}
           </p>
           <form className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
             <input
               type="email"
               placeholder={dict.home.emailPlaceholder}
-              className="flex-1 rounded-full px-5 py-3 text-sm text-charcoal placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="flex-1 rounded-full border border-stone-300 bg-white px-5 py-3 text-sm text-charcoal shadow-sm placeholder:text-stone-500 focus:border-coral focus:outline-none focus:ring-2 focus:ring-coral/20"
             />
             <button
               type="button"

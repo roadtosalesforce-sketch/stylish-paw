@@ -17,7 +17,7 @@ export const dictionaries = {
       announcement: "Designed for comfort, made for memorable moments",
       clothing: "Clothing", discover: "Discover", byPet: "By Pet", newArrivals: "New Arrivals", bestSellers: "Best Sellers", shopAll: "Shop All",
       giftsDogs: "Gifts for Dogs", giftsCats: "Gifts for Cats", essentials: "Everyday Essentials", celebration: "Celebration Looks", sizeFit: "Size & Fit",
-      seasonalEdit: "Seasonal edit", rainyTitle: "Ready for rainy walks", exploreRainwear: "Explore rainwear", openMenu: "Open menu", language: "Language",
+      seasonalEdit: "Seasonal edit", rainyTitle: "Ready for rainy walks", exploreRainwear: "Explore rainwear", openMenu: "Open menu", language: "Language", signIn: "Sign in", signInRegister: "Sign in / Register", myAccount: "My account",
     },
     footer: {
       description: "Comfortable pet clothing with a playful point of view, created for everyday adventures and special moments.",
@@ -90,7 +90,7 @@ export const dictionaries = {
       announcement: "Zaprojektowane z myślą o komforcie i wyjątkowych chwilach",
       clothing: "Ubrania", discover: "Odkrywaj", byPet: "Dla pupila", newArrivals: "Nowości", bestSellers: "Bestsellery", shopAll: "Wszystkie produkty",
       giftsDogs: "Prezenty dla psów", giftsCats: "Prezenty dla kotów", essentials: "Na co dzień", celebration: "Na wyjątkowe okazje", sizeFit: "Rozmiar i dopasowanie",
-      seasonalEdit: "Sezonowa kolekcja", rainyTitle: "Gotowi na deszczowe spacery", exploreRainwear: "Zobacz kurtki", openMenu: "Otwórz menu", language: "Język",
+      seasonalEdit: "Sezonowa kolekcja", rainyTitle: "Gotowi na deszczowe spacery", exploreRainwear: "Zobacz kurtki", openMenu: "Otwórz menu", language: "Język", signIn: "Zaloguj się", signInRegister: "Logowanie / Rejestracja", myAccount: "Moje konto",
     },
     footer: {
       description: "Wygodne ubrania dla pupili z odrobiną fantazji — na codzienne przygody i wyjątkowe chwile.",

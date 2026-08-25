@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import {getShopSettings} from "@/sanity/lib/content";
 import {getDictionary} from "@/i18n/dictionaries";
 import {getLocale} from "@/i18n/server";
+import {getCurrentUser} from "@/lib/supabase/server";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -42,13 +43,13 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const dict = getDictionary(locale);
-  const settings = await getShopSettings(locale);
+  const [settings, user] = await Promise.all([getShopSettings(locale), getCurrentUser()]);
 
   return (
     <html lang={locale} className={`${nunito.variable} ${fraunces.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-cream font-sans text-charcoal antialiased">
         <Providers>
-          <Header announcement={settings?.announcement} shopName={settings?.shopName} locale={locale} dict={dict} />
+          <Header announcement={settings?.announcement} shopName={settings?.shopName} locale={locale} dict={dict} signedIn={Boolean(user)} />
           <main className="flex-1">{children}</main>
           <Footer settings={settings} dict={dict} />
         </Providers>
