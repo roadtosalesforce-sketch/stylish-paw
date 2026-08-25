@@ -43,18 +43,22 @@ export const dictionaries = {
     },
     shop: {
       newArrivals: "New Arrivals", bestSellers: "Best Sellers", forDogs: "For Dogs", forCats: "For Cats", allProducts: "All Products", item: "item", items: "items",
-      noProducts: "No products found", tryFilter: "Try a different category filter", colours: "colours", sizes: "sizes",
+      noProducts: "No styles match these filters yet", tryFilter: "Clear the filters or explore the full collection", colours: "colours", sizes: "sizes", viewProduct: "View product",
+      filterByPet: "Filter by pet", filterByCategory: "Filter by category", allPets: "All pets", clearFilters: "View all products", quickAdd: "Quick add", quickViewTitle: "Choose options", closeQuickView: "Close quick view",
     },
     product: {
       for: "For", bothPets: "dogs & cats", comfortFit: "Comfort-led fit", secureCheckout: "Secure checkout", clearSupport: "Clear support",
       chooseSize: "Choose size", chooseColour: "Choose colour", quantity: "Quantity", added: "Added to cart ✓", add: "Add to Cart", buy: "Buy Now",
       fitCare: "Fit & care", fitCareText: "Check the size guide before ordering. Follow the care label supplied with the product to preserve its shape and colour.",
       shippingReturns: "Shipping & returns", shippingText: "InPost Parcel Locker delivery within Poland costs 17.99 zł and is free from 149 zł. Choose your locker in the cart; delivery usually takes 1–3 business days after dispatch.",
+      inpostTitle: "InPost delivery", inpostText: "1–3 business days after dispatch · free from 149 zł", guestTitle: "No account needed", guestText: "Checkout quickly as a guest", returnsTitle: "Clear purchase terms", returnsLink: "Delivery & returns",
+      reviewEyebrow: "Loved by pets and their people", reviewTitle: "How it looks in real life", verifiedReview: "Approved customer review",
     },
     sizeGuide: {
       link: "Size guide & how to measure", eyebrow: "A better fit starts here", title: "Measure your pet", close: "Close size guide",
       steps: [["Neck", "Measure where the collar naturally sits."], ["Chest", "Measure the widest point behind the front legs."], ["Back", "Measure from the collar line to the base of the tail."]],
       note: "If your pet falls between sizes, choose the larger size for comfort. Product-specific measurements will appear here when entered in Sanity.",
+      finderTitle: "Find your pet's size", finderText: "Chest measurement is the most important. Weight helps us check the result.", breed: "Breed", chooseBreed: "Choose breed", breeds: ["French Bulldog", "Toy Poodle", "British Shorthair", "Shih Tzu", "Dachshund", "Mixed / Other"], weight: "Weight (kg)", chest: "Chest (cm)", recommendation: "Suggested size", checkMeasurements: "Check the full table before ordering.", noMatch: "These measurements fall between our listed sizes. Choose the larger size or contact us before ordering.", measurementsPending: "Product-specific measurements have not been entered in Sanity yet.", size: "Size", neck: "Neck", chestShort: "Chest", back: "Back", weightShort: "Weight",
     },
     cart: {
       title: "Shopping Cart", emptyTitle: "Your cart is empty", emptyText: "Looks like your pet's wardrobe needs some love!", startShopping: "Start Shopping", remove: "Remove", clear: "Clear cart",
@@ -63,6 +67,7 @@ export const dictionaries = {
       lockerCode: "Your InPost parcel locker", lockerCodeAlternative: "Or enter the parcel locker code", lockerPlaceholder: "e.g. WAW01M", findLocker: "Find locker",
       lockerHint: "Open the official InPost map, choose a locker and enter its short code here.", lockerRequired: "Choose or enter a valid InPost parcel locker before checkout.",
       checkout: "Secure Checkout", opening: "Opening secure checkout…", powered: "Secure payment powered by Stripe", error: "Checkout could not be started.", cartLabel: "Shopping cart with {count} items",
+      guestCheckout: "No account required", stripeProtection: "Encrypted checkout powered by Stripe", deliveryReturns: "Review delivery and returns",
     },
     checkout: {
       received: "Payment received", thanks: "Thank you for your order", text: "Stripe will email your payment confirmation. We'll prepare your pet's new look and contact you with shipping updates.",
@@ -111,18 +116,22 @@ export const dictionaries = {
     },
     shop: {
       newArrivals: "Nowości", bestSellers: "Bestsellery", forDogs: "Dla psów", forCats: "Dla kotów", allProducts: "Wszystkie produkty", item: "produkt", items: "produktów",
-      noProducts: "Nie znaleziono produktów", tryFilter: "Wybierz inną kategorię", colours: "kolory", sizes: "rozmiary",
+      noProducts: "Nie mamy jeszcze modeli pasujących do tych filtrów", tryFilter: "Wyczyść filtry lub zobacz całą kolekcję", colours: "kolory", sizes: "rozmiary", viewProduct: "Zobacz produkt",
+      filterByPet: "Filtruj według pupila", filterByCategory: "Filtruj według kategorii", allPets: "Wszystkie pupile", clearFilters: "Zobacz wszystkie produkty", quickAdd: "Szybki wybór", quickViewTitle: "Wybierz opcje", closeQuickView: "Zamknij szybki podgląd",
     },
     product: {
       for: "Dla", bothPets: "psów i kotów", comfortFit: "Wygodny krój", secureCheckout: "Bezpieczna płatność", clearSupport: "Jasne zasady",
       chooseSize: "Wybierz rozmiar", chooseColour: "Wybierz kolor", quantity: "Ilość", added: "Dodano do koszyka ✓", add: "Dodaj do koszyka", buy: "Kup teraz",
       fitCare: "Dopasowanie i pielęgnacja", fitCareText: "Przed zamówieniem sprawdź tabelę rozmiarów. Postępuj zgodnie z instrukcją pielęgnacji dołączoną do produktu, aby zachować jego kształt i kolor.",
       shippingReturns: "Dostawa i zwroty", shippingText: "Dostawa InPost Paczkomat® 24/7 na terenie Polski kosztuje 17,99 zł i jest bezpłatna od 149 zł. Paczkomat wybierzesz w koszyku; dostawa zwykle trwa 1–3 dni robocze od nadania.",
+      inpostTitle: "Dostawa InPost", inpostText: "1–3 dni robocze od nadania · bezpłatnie od 149 zł", guestTitle: "Bez zakładania konta", guestText: "Szybkie zakupy jako gość", returnsTitle: "Jasne zasady zakupu", returnsLink: "Dostawa i zwroty",
+      reviewEyebrow: "Pokochane przez pupile i ich opiekunów", reviewTitle: "Jak wygląda na naszych pupilach", verifiedReview: "Zatwierdzona opinia klienta",
     },
     sizeGuide: {
       link: "Tabela rozmiarów i sposób pomiaru", eyebrow: "Lepsze dopasowanie zaczyna się tutaj", title: "Zmierz swojego pupila", close: "Zamknij tabelę rozmiarów",
       steps: [["Szyja", "Zmierz obwód w miejscu, w którym naturalnie leży obroża."], ["Klatka piersiowa", "Zmierz najszersze miejsce za przednimi łapami."], ["Grzbiet", "Zmierz od linii obroży do nasady ogona."]],
       note: "Jeśli pupil jest pomiędzy rozmiarami, dla wygody wybierz większy. Szczegółowe wymiary produktu pojawią się tutaj po wpisaniu ich w Sanity.",
+      finderTitle: "Dobierz rozmiar pupila", finderText: "Najważniejszy jest obwód klatki piersiowej. Waga pomaga sprawdzić wynik.", breed: "Rasa", chooseBreed: "Wybierz rasę", breeds: ["Buldog francuski", "Pudel toy", "Kot brytyjski krótkowłosy", "Shih Tzu", "Jamnik", "Mieszaniec / inna"], weight: "Waga (kg)", chest: "Klatka piersiowa (cm)", recommendation: "Sugerowany rozmiar", checkMeasurements: "Przed zamówieniem sprawdź pełną tabelę.", noMatch: "Te wymiary wypadają pomiędzy podanymi rozmiarami. Wybierz większy lub skontaktuj się z nami przed zamówieniem.", measurementsPending: "Wymiary tego produktu nie zostały jeszcze wpisane w Sanity.", size: "Rozmiar", neck: "Szyja", chestShort: "Klatka", back: "Grzbiet", weightShort: "Waga",
     },
     cart: {
       title: "Koszyk", emptyTitle: "Twój koszyk jest pusty", emptyText: "Wygląda na to, że garderoba Twojego pupila potrzebuje odrobiny miłości!", startShopping: "Rozpocznij zakupy", remove: "Usuń", clear: "Wyczyść koszyk",
@@ -131,6 +140,7 @@ export const dictionaries = {
       lockerCode: "Twój Paczkomat InPost", lockerCodeAlternative: "Lub wpisz kod Paczkomatu", lockerPlaceholder: "np. WAW01M", findLocker: "Znajdź punkt",
       lockerHint: "Otwórz oficjalną mapę InPost, wybierz Paczkomat i wpisz tutaj jego krótki kod.", lockerRequired: "Przed płatnością wybierz lub wpisz prawidłowy Paczkomat InPost.",
       checkout: "Bezpieczna płatność", opening: "Otwieranie bezpiecznej płatności…", powered: "Bezpieczne płatności obsługuje Stripe", error: "Nie udało się rozpocząć płatności.", cartLabel: "Koszyk: {count} produktów",
+      guestCheckout: "Konto nie jest wymagane", stripeProtection: "Szyfrowana płatność obsługiwana przez Stripe", deliveryReturns: "Sprawdź dostawę i zwroty",
     },
     checkout: {
       received: "Płatność otrzymana", thanks: "Dziękujemy za zamówienie", text: "Stripe wyśle e-mail z potwierdzeniem płatności. Przygotujemy nowy strój Twojego pupila i skontaktujemy się z informacją o wysyłce.",

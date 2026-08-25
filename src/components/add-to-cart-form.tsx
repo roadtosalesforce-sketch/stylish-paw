@@ -26,7 +26,7 @@ export function AddToCartForm({ product, locale, dict }: { product: Product; loc
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <div className="mb-3 flex items-center justify-between gap-4"><label className="block text-sm font-semibold text-charcoal">{dict.product.chooseSize}</label><SizeGuideDialog dict={dict} /></div>
+        <div className="mb-3 flex items-center justify-between gap-4"><label className="block text-sm font-semibold text-charcoal">{dict.product.chooseSize}</label><SizeGuideDialog dict={dict} product={product} /></div>
         <div className="flex flex-wrap gap-2">
           {product.sizes.map((s) => (
             <button

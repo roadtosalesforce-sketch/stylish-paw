@@ -34,7 +34,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-white/60 py-20">
+      {featured.length > 0 && <section className="bg-white/60 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex items-end justify-between">
             <div>
@@ -60,7 +60,7 @@ export default async function Home() {
             </Link>
           </div>
         </div>
-      </section>
+      </section>}
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-20 sm:px-6 md:grid-cols-2 lg:px-8"><div className="flex min-h-80 flex-col justify-end overflow-hidden rounded-[2rem] bg-charcoal p-8 text-white sm:p-10"><Sparkles className="h-6 w-6 text-coral"/><p className="mt-auto text-xs font-bold uppercase tracking-[.18em] text-stone-300">{dict.home.seasonal}</p><h2 className="mt-3 max-w-md font-display text-4xl font-bold">{dict.home.rainTitle}</h2><Link className="mt-6 inline-flex items-center gap-2 font-bold text-coral" href="/shop?category=raincoats">{dict.home.exploreRainwear} <ArrowRight className="h-4 w-4"/></Link></div><div className="flex min-h-80 flex-col justify-end rounded-[2rem] bg-[#e5eee3] p-8 sm:p-10"><Ruler className="h-7 w-7 text-sage-dark"/><p className="mt-auto text-xs font-bold uppercase tracking-[.18em] text-sage-dark">{dict.home.fitEyebrow}</p><h2 className="mt-3 max-w-md font-display text-4xl font-bold">{dict.home.fitTitle}</h2><Link className="mt-6 inline-flex items-center gap-2 font-bold text-charcoal" href="/pages/size-guide">{dict.home.viewSizeGuide} <ArrowRight className="h-4 w-4"/></Link></div></section>
 

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { AddToCartForm } from "@/components/add-to-cart-form";
 import { getProductBySlug } from "@/sanity/lib/products";
 import { formatPrice } from "@/lib/format";
-import { Check, PackageCheck, ShieldCheck } from "lucide-react";
+import { Check, LockKeyhole, PackageCheck, ShieldCheck, Star, Truck } from "lucide-react";
 import {getLocale} from "@/i18n/server";
 import {getDictionary} from "@/i18n/dictionaries";
 
@@ -72,9 +72,45 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="mt-8 border-t border-stone-100 pt-8">
             <AddToCartForm product={product} locale={locale} dict={dict} />
           </div>
+          <div className="mt-6 grid gap-3 rounded-2xl bg-[#fbf8f2] p-4 text-sm sm:grid-cols-3">
+            <div className="flex gap-2.5">
+              <Truck className="mt-0.5 h-4 w-4 shrink-0 text-coral" />
+              <div><p className="font-bold text-charcoal">{dict.product.inpostTitle}</p><p className="mt-0.5 text-xs leading-relaxed text-stone-500">{dict.product.inpostText}</p></div>
+            </div>
+            <div className="flex gap-2.5">
+              <LockKeyhole className="mt-0.5 h-4 w-4 shrink-0 text-coral" />
+              <div><p className="font-bold text-charcoal">{dict.product.guestTitle}</p><p className="mt-0.5 text-xs leading-relaxed text-stone-500">{dict.product.guestText}</p></div>
+            </div>
+            <div className="flex gap-2.5">
+              <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-coral" />
+              <div><p className="font-bold text-charcoal">{dict.product.returnsTitle}</p><Link href="/pages/shipping-returns" className="mt-0.5 inline-block text-xs font-semibold text-coral hover:text-coral-dark">{dict.product.returnsLink} →</Link></div>
+            </div>
+          </div>
           <div className="mt-7 divide-y divide-stone-200 border-y border-stone-200 text-sm"><details className="group py-4"><summary className="cursor-pointer list-none font-bold">{dict.product.fitCare} <span className="float-right">+</span></summary><p className="pt-3 leading-relaxed text-stone-600">{dict.product.fitCareText}</p></details><details className="group py-4"><summary className="cursor-pointer list-none font-bold">{dict.product.shippingReturns} <span className="float-right">+</span></summary><p className="pt-3 leading-relaxed text-stone-600">{dict.product.shippingText}</p></details></div>
         </div>
       </div>
+
+      {product.reviews && product.reviews.length > 0 && (
+        <section className="mt-20 border-t border-stone-200 pt-16">
+          <p className="text-xs font-bold uppercase tracking-[.18em] text-coral">{dict.product.reviewEyebrow}</p>
+          <h2 className="mt-3 font-display text-3xl font-bold text-charcoal">{dict.product.reviewTitle}</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {product.reviews.map((review, index) => (
+              <article key={`${review.customerName}-${index}`} className="overflow-hidden rounded-3xl bg-white shadow-[0_10px_35px_rgba(61,44,44,.08)] ring-1 ring-stone-200/80">
+                {review.photo && <div className="relative aspect-[4/3] bg-stone-100"><Image src={review.photo} alt={review.petName || review.customerName} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>}
+                <div className="p-6">
+                  <div className="flex gap-0.5 text-coral" aria-label={`${review.rating}/5`}>
+                    {Array.from({length: review.rating}, (_, star) => <Star key={star} className="h-4 w-4 fill-current" />)}
+                  </div>
+                  <blockquote className="mt-4 leading-relaxed text-stone-700">“{review.quote}”</blockquote>
+                  <p className="mt-5 font-bold text-charcoal">{review.petName || review.customerName}</p>
+                  {review.petName && <p className="text-xs text-stone-500">{review.customerName} · {dict.product.verifiedReview}</p>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

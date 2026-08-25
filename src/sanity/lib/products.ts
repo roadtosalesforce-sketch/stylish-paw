@@ -10,6 +10,21 @@ const client = projectId
   ? createClient({projectId, dataset, apiVersion: "2026-08-13", useCdn: true})
   : null;
 
+// Publishing a document in Sanity is not the same as making it ready for sale.
+// This shared filter keeps unfinished products out of every storefront route.
+const sellableProductFilter = `
+  _type == "product" &&
+  status == "active" &&
+  defined(slug.current) &&
+  defined(name) &&
+  defined(price) && price > 0 &&
+  defined(image.asset) &&
+  defined(category) &&
+  count(sizes) > 0 &&
+  count(colors) > 0 &&
+  length(pt::text(description)) > 0
+`;
+
 const productFields = `
   "id": _id,
   "slug": slug.current,
@@ -25,6 +40,18 @@ const productFields = `
   "colors": colors[].name,
   "colorOptions": colors[]{name, namePl},
   "image": image.asset->url,
+  "sizeGuide": sizeGuide->{
+    "title": select($locale == "pl" => coalesce(titlePl, title), title),
+    "instructions": select($locale == "pl" => coalesce(instructionsPl, instructions), instructions),
+    rows[]{size, neck, chest, back, weight}
+  },
+  "reviews": reviews[approved == true]{
+    customerName,
+    petName,
+    rating,
+    "quote": select($locale == "pl" => coalesce(quotePl, quote), quote),
+    "photo": photo.asset->url
+  },
   featured,
   badge
 `;
@@ -54,16 +81,20 @@ export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
   const fallbackProducts = getFallbackProducts(locale);
   if (!client) return fallbackProducts;
   try {
-    const items = await client.fetch<SanityProduct[]>(`*[_type == "product"] | order(sortOrder asc, name asc) {${productFields}}`);
-    return items.length ? items.map((item) => localizeProduct(item, locale)) : fallbackProducts;
+    const items = await client.fetch<SanityProduct[]>(
+      `*[${sellableProductFilter}] | order(sortOrder asc, name asc) {${productFields}}`,
+      {locale},
+    );
+    return items.map((item) => localizeProduct(item, locale));
   } catch {
-    return fallbackProducts;
+    return [];
   }
 }
 
 export async function getFeaturedProducts(locale: Locale = "en"): Promise<Product[]> {
   const items = await getProducts(locale);
-  return items.filter((item) => item.featured);
+  const featured = items.filter((item) => item.featured);
+  return (featured.length ? featured : items).slice(0, 4);
 }
 
 export async function getProductBySlug(slug: string, locale: Locale = "en"): Promise<Product | undefined> {
@@ -71,11 +102,11 @@ export async function getProductBySlug(slug: string, locale: Locale = "en"): Pro
   if (!client) return fallbackProducts.find((item) => item.slug === slug);
   try {
     const product = await client.fetch<SanityProduct | null>(
-      `*[_type == "product" && slug.current == $slug][0] {${productFields}}`,
-      {slug},
+      `*[${sellableProductFilter} && slug.current == $slug][0] {${productFields}}`,
+      {slug, locale},
     );
-    return product ? localizeProduct(product, locale) : fallbackProducts.find((item) => item.slug === slug);
+    return product ? localizeProduct(product, locale) : undefined;
   } catch {
-    return fallbackProducts.find((item) => item.slug === slug);
+    return undefined;
   }
 }

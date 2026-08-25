@@ -8,6 +8,7 @@ import {InPostLockerSelector} from "@/components/inpost-locker-selector";
 import type {Dictionary, Locale} from "@/i18n/dictionaries";
 import {optionLabel, productName} from "@/i18n/product-labels";
 import { formatPrice } from "@/lib/format";
+import {LockKeyhole, PackageCheck, UserRoundCheck} from "lucide-react";
 import {
   FREE_SHIPPING_THRESHOLD_PLN,
   INPOST_LOCKER_CODE_PATTERN,
@@ -88,6 +89,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
 
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD_PLN ? 0 : INPOST_LOCKER_PRICE_PLN;
   const total = subtotal + shipping;
+  const freeShippingProgress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD_PLN) * 100);
 
   return (
     <div className="grid gap-10 lg:grid-cols-3">
@@ -214,9 +216,14 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
             </dd>
           </div>
           {subtotal < FREE_SHIPPING_THRESHOLD_PLN && (
-            <p className="text-xs text-sage">
-              {dict.cart.freeShipping.replace("{amount}", formatPrice(FREE_SHIPPING_THRESHOLD_PLN - subtotal, locale))}
-            </p>
+            <div className="rounded-xl bg-[#eef3ec] p-3">
+              <p className="text-xs font-semibold text-sage-dark">
+                {dict.cart.freeShipping.replace("{amount}", formatPrice(FREE_SHIPPING_THRESHOLD_PLN - subtotal, locale))}
+              </p>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white">
+                <div className="h-full rounded-full bg-sage transition-all" style={{width: `${freeShippingProgress}%`}} />
+              </div>
+            </div>
           )}
           <div className="border-t border-stone-100 pt-3 flex justify-between">
             <dt className="font-semibold text-charcoal">{dict.cart.total}</dt>
@@ -243,6 +250,11 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
             {dict.cart.powered}
           </p>
         )}
+        <div className="mt-5 grid gap-2 border-t border-stone-100 pt-4 text-xs text-stone-500">
+          <span className="flex items-center gap-2"><UserRoundCheck className="h-4 w-4 text-sage" />{dict.cart.guestCheckout}</span>
+          <span className="flex items-center gap-2"><LockKeyhole className="h-4 w-4 text-sage" />{dict.cart.stripeProtection}</span>
+          <Link href="/pages/shipping-returns" className="flex items-center gap-2 transition-colors hover:text-coral"><PackageCheck className="h-4 w-4 text-sage" />{dict.cart.deliveryReturns} →</Link>
+        </div>
       </div>
     </div>
   );
