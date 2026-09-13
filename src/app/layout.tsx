@@ -3,6 +3,7 @@ import { Nunito, Fraunces } from "next/font/google";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Providers } from "@/components/providers";
+import {MobileBottomNav} from "@/components/mobile-bottom-nav";
 import {getShopSettings} from "@/sanity/lib/content";
 import {getDictionary} from "@/i18n/dictionaries";
 import {getLocale} from "@/i18n/server";
@@ -47,11 +48,12 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${nunito.variable} ${fraunces.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-cream font-sans text-charcoal antialiased">
+      <body className="min-h-full flex flex-col bg-cream pb-22 font-sans text-charcoal antialiased md:pb-0">
         <Providers>
           <Header announcement={settings?.announcement} shopName={settings?.shopName} locale={locale} dict={dict} signedIn={Boolean(user)} />
           <main className="flex-1">{children}</main>
           <Footer settings={settings} dict={dict} />
+          <MobileBottomNav dict={dict} signedIn={Boolean(user)} />
         </Providers>
       </body>
     </html>

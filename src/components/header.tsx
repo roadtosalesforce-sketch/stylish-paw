@@ -53,14 +53,7 @@ export function Header({announcement, shopName, locale, dict, signedIn = false}:
             <UserRound className="h-4 w-4" />
             <span>{signedIn ? dict.header.myAccount : dict.header.signIn}</span>
           </Link>
-          <Link
-            href={signedIn ? "/account" : "/account/login"}
-            aria-label={signedIn ? dict.header.myAccount : dict.header.signIn}
-            className="rounded-full border border-stone-200 bg-white p-2 text-charcoal shadow-sm sm:hidden"
-          >
-            <UserRound className="h-5 w-5" />
-          </Link>
-          <CartButton label={dict.cart.cartLabel} />
+          <div className="hidden sm:block"><CartButton label={dict.cart.cartLabel} /></div>
           <button onClick={() => setMobileOpen(!mobileOpen)} className="rounded-full p-2 text-charcoal md:hidden" aria-label={dict.header.openMenu}>{mobileOpen ? <X /> : <Menu />}</button>
         </div>
       </div>

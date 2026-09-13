@@ -29,6 +29,12 @@ export const dictionaries = {
       eyebrow: "Thoughtful design · Comfortable fit", title: "Made to fit. Designed to delight.",
       text: "Comfortable clothing for dogs and cats, designed for everyday walks, celebrations and all the moments worth remembering.",
       primary: "Shop New Arrivals", secondary: "Find Your Pet's Size", imageAlt: "Happy dog wearing a cozy outfit", help: "Need help choosing?", guidance: "Simple size guidance",
+      carouselLabel: "Featured collections", previousSlide: "Previous slide", nextSlide: "Next slide", pauseSlides: "Pause slides", playSlides: "Play slides", goToSlide: "Go to slide",
+      fallbackSlides: [
+        {eyebrow: "Thoughtful design · Comfortable fit", title: "Made to fit. Designed to delight.", text: "Comfortable clothing for dogs and cats, designed for everyday walks, celebrations and all the moments worth remembering.", imageAlt: "Happy dog enjoying an outdoor walk", primaryLabel: "Shop New Arrivals", primaryLink: "/shop?category=new", secondaryLabel: "Find Your Pet's Size", secondaryLink: "/pages/size-guide"},
+        {eyebrow: "Weather-ready comfort", title: "Tiny coats. Big adventures.", text: "Lightweight layers and rain-ready looks that keep every walk comfortable, whatever the forecast.", imageAlt: "Dog ready for an outdoor adventure", primaryLabel: "Explore Outerwear", primaryLink: "/shop?category=outerwear", secondaryLabel: "Shop Raincoats", secondaryLink: "/shop?category=raincoats"},
+        {eyebrow: "A little everyday magic", title: "Looks made for celebrations.", text: "Playful costumes and thoughtful accessories for birthdays, holidays and camera-ready moments.", imageAlt: "Dog posing for a special occasion", primaryLabel: "Shop Costumes", primaryLink: "/shop?category=costumes", secondaryLabel: "Browse Accessories", secondaryLink: "/shop?category=accessories"},
+      ],
     },
     trust: [
       ["Easy size guidance", "Measure with confidence"], ["Comfort first", "Thoughtful materials and fit"],
@@ -102,6 +108,12 @@ export const dictionaries = {
       eyebrow: "Przemyślany design · Wygodne dopasowanie", title: "Idealne dopasowanie. Zachwycający styl.",
       text: "Wygodne ubrania dla psów i kotów — na codzienne spacery, świętowanie i wszystkie chwile warte zapamiętania.",
       primary: "Zobacz nowości", secondary: "Dobierz rozmiar pupila", imageAlt: "Szczęśliwy pies w wygodnym ubranku", help: "Potrzebujesz pomocy?", guidance: "Prosty dobór rozmiaru",
+      carouselLabel: "Polecane kolekcje", previousSlide: "Poprzedni slajd", nextSlide: "Następny slajd", pauseSlides: "Zatrzymaj slajdy", playSlides: "Wznów slajdy", goToSlide: "Przejdź do slajdu",
+      fallbackSlides: [
+        {eyebrow: "Przemyślany design · Wygodne dopasowanie", title: "Idealne dopasowanie. Zachwycający styl.", text: "Wygodne ubrania dla psów i kotów — na codzienne spacery, świętowanie i wszystkie chwile warte zapamiętania.", imageAlt: "Szczęśliwy pies na spacerze", primaryLabel: "Zobacz nowości", primaryLink: "/shop?category=new", secondaryLabel: "Dobierz rozmiar pupila", secondaryLink: "/pages/size-guide"},
+        {eyebrow: "Komfort na każdą pogodę", title: "Małe kurtki. Wielkie przygody.", text: "Lekkie warstwy i modele na deszcz, które zapewniają wygodę na każdym spacerze — bez względu na pogodę.", imageAlt: "Pies gotowy na przygodę na świeżym powietrzu", primaryLabel: "Zobacz odzież wierzchnią", primaryLink: "/shop?category=outerwear", secondaryLabel: "Kup kurtki przeciwdeszczowe", secondaryLink: "/shop?category=raincoats"},
+        {eyebrow: "Odrobina codziennej magii", title: "Stylizacje stworzone do świętowania.", text: "Pełne fantazji kostiumy i przemyślane akcesoria na urodziny, święta i wyjątkowe zdjęcia.", imageAlt: "Pies gotowy na wyjątkową okazję", primaryLabel: "Zobacz kostiumy", primaryLink: "/shop?category=costumes", secondaryLabel: "Zobacz akcesoria", secondaryLink: "/shop?category=accessories"},
+      ],
     },
     trust: [
       ["Łatwy dobór rozmiaru", "Mierz bez obaw"], ["Komfort przede wszystkim", "Przemyślane materiały i krój"],

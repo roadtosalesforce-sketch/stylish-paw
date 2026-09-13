@@ -21,7 +21,7 @@ export default async function Home() {
 
   return (
     <>
-      <Hero content={homepage?.hero} dict={dict} />
+      <Hero content={homepage?.hero} slides={homepage?.heroSlides} dict={dict} />
       <TrustBar dict={dict} />
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

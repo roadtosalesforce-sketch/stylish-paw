@@ -1,65 +1,172 @@
-import Link from "next/link";
-import { ArrowRight, Ruler } from "lucide-react";
-import type {HomepageContent} from "@/sanity/lib/content";
-import type {Dictionary} from "@/i18n/dictionaries";
+"use client";
 
-export function Hero({content, dict}: {content?: HomepageContent["hero"]; dict: Dictionary}) {
-  const eyebrow = content?.eyebrow || dict.hero.eyebrow;
-  const title = content?.title || dict.hero.title;
-  const text = content?.text || dict.hero.text;
-  const primaryLabel = content?.primaryLabel || dict.hero.primary;
-  const primaryLink = content?.primaryLink || "/shop?category=new";
-  const secondaryLabel = content?.secondaryLabel || dict.hero.secondary;
-  const secondaryLink = content?.secondaryLink || "/pages/size-guide";
-  const image = content?.image || "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80";
+import Link from "next/link";
+import {ArrowRight, ChevronLeft, ChevronRight, Pause, Play} from "lucide-react";
+import {useEffect, useMemo, useState} from "react";
+import type {Dictionary} from "@/i18n/dictionaries";
+import type {HeroSlide, HomepageContent} from "@/sanity/lib/content";
+
+type HeroProps = {
+  content?: HomepageContent["hero"];
+  slides?: HeroSlide[];
+  dict: Dictionary;
+};
+
+const fallbackImages = [
+  "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1800&q=88",
+  "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=1800&q=88",
+  "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=1800&q=88",
+];
+
+export function Hero({content, slides, dict}: HeroProps) {
+  const items = useMemo<HeroSlide[]>(() => {
+    const publishedSlides = slides?.filter((slide) => slide.active !== false && slide.image);
+    if (publishedSlides?.length) return publishedSlides;
+
+    return dict.hero.fallbackSlides.map((slide, index) => ({
+      _key: `fallback-${index}`,
+      eyebrow: index === 0 ? content?.eyebrow || dict.hero.eyebrow : slide.eyebrow,
+      title: index === 0 ? content?.title || dict.hero.title : slide.title,
+      text: index === 0 ? content?.text || dict.hero.text : slide.text,
+      image: index === 0 ? content?.image || fallbackImages[index] : fallbackImages[index],
+      imageAlt: slide.imageAlt,
+      primaryLabel: index === 0 ? content?.primaryLabel || dict.hero.primary : slide.primaryLabel,
+      primaryLink: index === 0 ? content?.primaryLink || "/shop?category=new" : slide.primaryLink,
+      secondaryLabel: index === 0 ? content?.secondaryLabel || dict.hero.secondary : slide.secondaryLabel,
+      secondaryLink: index === 0 ? content?.secondaryLink || "/pages/size-guide" : slide.secondaryLink,
+      showText: false,
+      textPosition: index === 1 ? "right" : "left",
+    }));
+  }, [content, dict, slides]);
+
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const multipleSlides = items.length > 1;
+
+  useEffect(() => {
+    if (!multipleSlides || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setInterval(() => {
+      setCurrent((index) => (index + 1) % items.length);
+    }, 6500);
+
+    return () => window.clearInterval(timer);
+  }, [items.length, multipleSlides, paused]);
+
+  function selectSlide(index: number) {
+    setCurrent((index + items.length) % items.length);
+  }
 
   return (
-    <section className="relative overflow-hidden border-b border-stone-200/70 bg-gradient-to-br from-[#fbf8f2] via-white to-[#eef3ec]">
-      <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-coral/10 blur-3xl" />
-      <div className="absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sage/15 blur-3xl" />
+    <section
+      className="group relative isolate h-[70svh] min-h-[520px] max-h-[760px] overflow-hidden bg-[#f6f2ec]"
+      aria-roledescription="carousel"
+      aria-label={dict.hero.carouselLabel}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
+      {!items.some((slide) => slide.showText === true && slide.title) && (
+        <h1 className="sr-only">{dict.meta.title}</h1>
+      )}
+      {items.map((slide, index) => {
+        const active = index === current;
+        const showText = slide.showText === true && Boolean(slide.title);
+        const alignRight = slide.textPosition === "right";
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 md:grid-cols-[.9fr_1.1fr] md:py-20 lg:px-8">
-        <div>
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-coral/10 px-4 py-1.5 text-sm font-medium text-coral">
-            <span>{eyebrow}</span>
-          </p>
-          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-charcoal sm:text-5xl lg:text-6xl">
-            {title}
-          </h1>
-          <p className="mt-5 max-w-md text-lg leading-relaxed text-stone-600">
-            {text}
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href={primaryLink}
-              className="inline-flex items-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-coral-dark hover:shadow-lg"
-            >
-              {primaryLabel} <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link
-              href={secondaryLink}
-              className="inline-flex items-center rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-charcoal ring-1 ring-stone-200 transition-all hover:ring-coral/40"
-            >
-              <Ruler className="mr-2 h-4 w-4" /> {secondaryLabel}
-            </Link>
-          </div>
-        </div>
+        return (
+          <article
+            key={slide._key}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none ${active ? "z-10 opacity-100" : "opacity-0"}`}
+            aria-hidden={!active}
+          >
+            <picture>
+              {slide.mobileImage && <source media="(max-width: 639px)" srcSet={slide.mobileImage} />}
+              <img
+                src={slide.image}
+                alt={slide.imageAlt || dict.hero.imageAlt}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </picture>
 
-        <div className="relative mx-auto w-full max-w-md">
-          <div className="relative aspect-[5/4] overflow-hidden rounded-[2rem] bg-stone-200 shadow-2xl ring-1 ring-stone-200/50">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image}
-              alt={dict.hero.imageAlt}
-              className="h-full w-full object-cover"
-            />
+            {showText && (
+              <>
+                <div className={`absolute inset-0 ${alignRight ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-black/72 via-black/25 to-transparent`} />
+                <div className="relative mx-auto flex h-full max-w-7xl items-center px-5 pb-16 pt-16 sm:px-8 lg:px-12">
+                  <div className={`max-w-xl text-white ${alignRight ? "ml-auto lg:text-right" : ""}`}>
+                    {slide.eyebrow && (
+                      <p className="mb-4 text-xs font-bold uppercase tracking-[.2em] text-white/80">{slide.eyebrow}</p>
+                    )}
+                    <h1 className="font-display text-4xl font-bold leading-[1.04] tracking-tight sm:text-6xl">{slide.title}</h1>
+                    {slide.text && <p className={`mt-5 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg ${alignRight ? "lg:ml-auto" : ""}`}>{slide.text}</p>}
+                    <div className={`mt-7 flex flex-wrap gap-3 ${alignRight ? "lg:justify-end" : ""}`}>
+                      {slide.primaryLabel && slide.primaryLink && (
+                        <Link href={slide.primaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center rounded-full bg-coral px-7 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-coral-dark">
+                          {slide.primaryLabel} <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      )}
+                      {slide.secondaryLabel && slide.secondaryLink && (
+                        <Link href={slide.secondaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center rounded-full border border-white/45 bg-white/10 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white hover:text-charcoal">
+                          {slide.secondaryLabel}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </article>
+        );
+      })}
+
+      {multipleSlides && (
+        <>
+          <button
+            type="button"
+            onClick={() => selectSlide(current - 1)}
+            className="absolute left-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/40 bg-black/20 text-white opacity-90 backdrop-blur-md transition hover:bg-white hover:text-charcoal sm:left-6"
+            aria-label={dict.hero.previousSlide}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => selectSlide(current + 1)}
+            className="absolute right-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/40 bg-black/20 text-white opacity-90 backdrop-blur-md transition hover:bg-white hover:text-charcoal sm:right-6"
+            aria-label={dict.hero.nextSlide}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          <div className="absolute inset-x-0 bottom-5 z-20 flex items-center justify-center gap-3">
+            <div className="flex items-center gap-2 rounded-full bg-black/25 px-3 py-2 backdrop-blur-md">
+              {items.map((slide, index) => (
+                <button
+                  key={slide._key}
+                  type="button"
+                  onClick={() => selectSlide(index)}
+                  className={`h-1.5 rounded-full transition-all ${index === current ? "w-8 bg-white" : "w-3 bg-white/50 hover:bg-white/80"}`}
+                  aria-label={`${dict.hero.goToSlide} ${index + 1}`}
+                  aria-current={index === current ? "true" : undefined}
+                />
+              ))}
+              <button
+                type="button"
+                onClick={() => setPaused((value) => !value)}
+                className="ml-1 grid h-6 w-6 place-items-center rounded-full text-white/85 transition hover:bg-white/15 hover:text-white"
+                aria-label={paused ? dict.hero.playSlides : dict.hero.pauseSlides}
+              >
+                {paused ? <Play className="h-3 w-3 fill-current" /> : <Pause className="h-3 w-3 fill-current" />}
+              </button>
+            </div>
           </div>
-          <div className="absolute -bottom-4 left-4 rounded-2xl bg-white px-5 py-3 shadow-lg ring-1 ring-stone-100 sm:-left-4">
-            <p className="text-xs font-medium text-stone-500">{dict.hero.help}</p>
-            <p className="font-display text-base font-bold text-charcoal">{dict.hero.guidance}</p>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
+
+      <p className="sr-only" aria-live="polite">
+        {current + 1} / {items.length}: {items[current]?.title || items[current]?.imageAlt}
+      </p>
     </section>
   );
 }

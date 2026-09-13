@@ -12,7 +12,25 @@ const client = createClient({
   useCdn: true,
 });
 
+export type HeroSlide = {
+  _key: string;
+  active?: boolean;
+  eyebrow?: string;
+  title?: string;
+  text?: string;
+  image: string;
+  mobileImage?: string;
+  imageAlt?: string;
+  primaryLabel?: string;
+  primaryLink?: string;
+  secondaryLabel?: string;
+  secondaryLink?: string;
+  showText?: boolean;
+  textPosition?: "left" | "right";
+};
+
 export type HomepageContent = {
+  heroSlides?: HeroSlide[];
   hero?: {
     eyebrow?: string;
     title?: string;
@@ -61,8 +79,25 @@ export type ContentPage = {
 export const getHomepageContent = cache(async (locale: Locale = "en"): Promise<HomepageContent | null> => {
   try {
     const localizedHero = locale === "pl" ? "heroPl" : "hero";
+    const localizedHeroSlides = locale === "pl" ? "heroSlidesPl" : "heroSlides";
     const localizedSections = locale === "pl" ? "sectionsPl" : "sections";
     return await client.fetch<HomepageContent | null>(`*[_type == "homepage"][0]{
+      "heroSlides": ${localizedHeroSlides}[active != false]{
+        _key,
+        active,
+        eyebrow,
+        title,
+        text,
+        "image": image.asset->url,
+        "mobileImage": mobileImage.asset->url,
+        imageAlt,
+        primaryLabel,
+        primaryLink,
+        secondaryLabel,
+        secondaryLink,
+        showText,
+        textPosition
+      },
       "hero": ${localizedHero}{
         eyebrow,
         title,
