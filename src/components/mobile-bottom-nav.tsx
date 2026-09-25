@@ -17,11 +17,11 @@ export function MobileBottomNav({dict, signedIn}: {dict: Dictionary; signedIn: b
   ];
 
   return (
-    <nav className="fixed inset-x-3 bottom-3 z-50 rounded-2xl border border-stone-200/80 bg-white/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_14px_45px_rgba(0,0,0,.16)] backdrop-blur-xl md:hidden" aria-label="Mobile">
+    <nav className="fixed inset-x-3 bottom-3 z-50 rounded-2xl border border-[#ded9cc] bg-[#fbfaf6]/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_14px_45px_rgba(79,89,65,.16)] backdrop-blur-xl md:hidden" aria-label="Mobile">
       <ul className="grid grid-cols-4">
         {links.map(({href, label, icon: Icon, active}) => (
           <li key={href}>
-            <Link href={href} aria-current={active ? "page" : undefined} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold transition ${active ? "bg-coral/10 text-coral" : "text-stone-500 hover:bg-stone-100 hover:text-charcoal"}`}>
+            <Link href={href} aria-current={active ? "page" : undefined} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold transition ${active ? "bg-[#e7e9dc] text-sage-dark" : "text-[#756f65] hover:bg-[#f1eee4] hover:text-sage-dark"}`}>
               <span className="relative">
                 <Icon className="h-5 w-5" strokeWidth={active ? 2.3 : 1.8} />
                 {href === "/cart" && itemCount > 0 && (

@@ -2,11 +2,11 @@
 
 :root {
   --cream: #ffffff;
-  --coral: #707565;
-  --coral-dark: #505648;
-  --sage: #a4a695;
-  --sage-dark: #62675b;
-  --charcoal: #24241f;
+  --coral: #6f7658;
+  --coral-dark: #4f5941;
+  --sage: #adb39a;
+  --sage-dark: #646d52;
+  --charcoal: #292a23;
 }
 
 @theme inline {

@@ -52,7 +52,7 @@ export function CategoryFilter({dict}: {dict: Dictionary}) {
             key={value as string}
             type="button"
             onClick={() => selectPet(value as string)}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${activePet === value ? "bg-charcoal text-white shadow-sm" : "bg-white text-stone-700 ring-1 ring-stone-200 hover:ring-charcoal/30"}`}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${activePet === value ? "bg-sage-dark text-white shadow-sm" : "bg-[#faf8f2] text-[#5f5b52] ring-1 ring-[#ded9cc] hover:bg-[#f1eee4] hover:ring-sage-dark/40"}`}
           >
             <Icon className="h-4 w-4" /> {label as string}
           </button>
@@ -67,15 +67,15 @@ export function CategoryFilter({dict}: {dict: Dictionary}) {
             className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
               active === cat.id
                 ? "bg-coral text-white shadow-sm"
-                : "bg-white text-stone-600 ring-1 ring-stone-200 hover:ring-coral/40"
+                : "bg-[#faf8f2] text-[#5f5b52] ring-1 ring-[#ded9cc] hover:bg-[#f1eee4] hover:ring-coral/50"
             }`}
           >
             {dict.common.categories[cat.id]}
           </button>
         ))}
       </div>
-      <div className="border-t border-stone-200 pt-4">
-        <p className="mb-3 text-[10px] font-semibold uppercase tracking-[.18em] text-stone-500">{dict.shop.specialFits}</p>
+      <div className="border-t border-[#ded9cc] pt-4">
+        <p className="mb-3 text-[10px] font-semibold uppercase tracking-[.18em] text-sage-dark">{dict.shop.specialFits}</p>
         <div className="flex flex-wrap gap-2" aria-label={dict.shop.filterByFit}>
           {[
             ["all", dict.shop.allFits],
@@ -86,7 +86,7 @@ export function CategoryFilter({dict}: {dict: Dictionary}) {
             ["large-dog", dict.shop.fitLargeDog],
             ["puppy", dict.shop.fitPuppy],
           ].map(([value, label]) => (
-            <button key={value} type="button" onClick={() => selectFit(value)} className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[.08em] transition ${activeFit === value ? "border-charcoal bg-charcoal text-white" : "border-stone-300 bg-white text-stone-600 hover:border-charcoal"}`}>
+            <button key={value} type="button" onClick={() => selectFit(value)} className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[.08em] transition ${activeFit === value ? "border-sage-dark bg-sage-dark text-white" : "border-[#d7d1c3] bg-[#faf8f2] text-[#5f5b52] hover:border-sage-dark hover:bg-[#f1eee4]"}`}>
               {label}
             </button>
           ))}

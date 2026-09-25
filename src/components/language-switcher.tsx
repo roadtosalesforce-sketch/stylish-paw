@@ -16,14 +16,14 @@ export function LanguageSwitcher({locale, label}: {locale: Locale; label: string
   }
 
   return (
-    <div className="flex items-center rounded-full bg-stone-100 p-1" aria-label={label}>
+    <div className="flex items-center rounded-full bg-[#f1eee4] p-1" aria-label={label}>
       {(["en", "pl"] as const).map((value) => (
         <button
           key={value}
           type="button"
           onClick={() => changeLocale(value)}
           aria-pressed={locale === value}
-          className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider transition ${locale === value ? "bg-white text-charcoal shadow-sm" : "text-stone-500 hover:text-charcoal"}`}
+          className={`rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition ${locale === value ? "bg-[#e1e5d8] text-sage-dark" : "text-[#756f65] hover:text-sage-dark"}`}
         >
           {value}
         </button>

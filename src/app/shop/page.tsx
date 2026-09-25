@@ -32,7 +32,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <nav className="mb-6 text-sm text-stone-500">
+      <nav className="mb-6 text-sm text-[#756f65]">
         <Link href="/" className="hover:text-coral transition-colors">
           {dict.common.home}
         </Link>
@@ -44,7 +44,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         <h1 className="font-display text-3xl font-medium text-charcoal sm:text-4xl">
           {activeCategory}
         </h1>
-        <p className="mt-2 text-stone-500">
+        <p className="mt-2 text-sage-dark">
           {filtered.length} {filtered.length === 1 ? dict.shop.item : dict.shop.items}
         </p>
       </div>
