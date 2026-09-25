@@ -7,7 +7,10 @@ import { useCart } from "@/context/cart-context";
 import {InPostLockerSelector} from "@/components/inpost-locker-selector";
 import type {Dictionary, Locale} from "@/i18n/dictionaries";
 import {optionLabel, productName} from "@/i18n/product-labels";
-import { formatPrice } from "@/lib/format";
+import {formatPrice} from "@/lib/format";
+import {convertFromPln} from "@/lib/currency";
+import {useCurrency} from "@/context/currency-context";
+import {variantStock} from "@/lib/inventory";
 import {LockKeyhole, PackageCheck, UserRoundCheck} from "lucide-react";
 import {
   FREE_SHIPPING_THRESHOLD_PLN,
@@ -17,6 +20,7 @@ import {
 
 export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: Dictionary; inPostToken?: string}) {
   const { items, subtotal, updateQuantity, removeItem, clearCart } = useCart();
+  const {currency, eurRate} = useCurrency();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const [parcelLocker, setParcelLocker] = useState("");
@@ -39,6 +43,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           locale,
+          currency,
           shipping: {
             method: "inpost_locker",
             pointName: normalizedLocker,
@@ -90,12 +95,14 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD_PLN ? 0 : INPOST_LOCKER_PRICE_PLN;
   const total = subtotal + shipping;
   const freeShippingProgress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD_PLN) * 100);
+  const displayPrice = (amount: number) => formatPrice(convertFromPln(amount, currency, eurRate), locale, currency);
 
   return (
     <div className="grid gap-10 lg:grid-cols-3">
       <div className="lg:col-span-2 space-y-4">
         {items.map((item) => {
           const key = `${item.product.id}-${item.size}-${item.color}`;
+          const stock = variantStock(item.product, item.size, item.color);
           return (
             <div
               key={key}
@@ -139,6 +146,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
                   <div className="inline-flex items-center rounded-lg ring-1 ring-stone-200">
                     <button
                       type="button"
+                      disabled={stock !== null && item.quantity >= stock}
                       onClick={() =>
                         updateQuantity(
                           item.product.id,
@@ -147,7 +155,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
                           item.quantity - 1,
                         )
                       }
-                      className="px-3 py-1 text-stone-500 hover:text-charcoal"
+                      className="px-3 py-1 text-stone-500 hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-30"
                     >
                       −
                     </button>
@@ -170,7 +178,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
                     </button>
                   </div>
                   <p className="font-semibold text-charcoal">
-                    {formatPrice(item.product.price * item.quantity, locale)}
+                    {displayPrice(item.product.price * item.quantity)}
                   </p>
                 </div>
               </div>
@@ -196,7 +204,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
           token={inPostToken}
           value={parcelLocker}
           address={parcelLockerAddress}
-          shippingLabel={shipping === 0 ? dict.cart.free : formatPrice(shipping, locale)}
+          shippingLabel={shipping === 0 ? dict.cart.free : displayPrice(shipping)}
           onChange={(point) => {
             setParcelLocker(point.name);
             setParcelLockerAddress(point.address);
@@ -207,18 +215,18 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between">
             <dt className="text-stone-500">{dict.cart.subtotal}</dt>
-            <dd className="font-medium text-charcoal">{formatPrice(subtotal, locale)}</dd>
+            <dd className="font-medium text-charcoal">{displayPrice(subtotal)}</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-stone-500">{dict.cart.shipping}</dt>
             <dd className="font-medium text-charcoal">
-              {shipping === 0 ? dict.cart.free : formatPrice(shipping, locale)}
+              {shipping === 0 ? dict.cart.free : displayPrice(shipping)}
             </dd>
           </div>
           {subtotal < FREE_SHIPPING_THRESHOLD_PLN && (
             <div className="rounded-xl bg-[#eef3ec] p-3">
               <p className="text-xs font-semibold text-sage-dark">
-                {dict.cart.freeShipping.replace("{amount}", formatPrice(FREE_SHIPPING_THRESHOLD_PLN - subtotal, locale))}
+                {dict.cart.freeShipping.replace("{amount}", displayPrice(FREE_SHIPPING_THRESHOLD_PLN - subtotal))}
               </p>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white">
                 <div className="h-full rounded-full bg-sage transition-all" style={{width: `${freeShippingProgress}%`}} />
@@ -228,7 +236,7 @@ export function CartContent({locale, dict, inPostToken}: {locale: Locale; dict: 
           <div className="border-t border-stone-100 pt-3 flex justify-between">
             <dt className="font-semibold text-charcoal">{dict.cart.total}</dt>
             <dd className="font-display text-xl font-bold text-charcoal">
-              {formatPrice(total, locale)}
+              {displayPrice(total)}
             </dd>
           </div>
         </dl>

@@ -1,5 +1,14 @@
 export type PetType = "dog" | "cat" | "both";
-export type Category = "sweaters" | "raincoats" | "costumes" | "accessories" | "outerwear";
+export type Category = "clothing" | "collars-leashes" | "essentials";
+export type FitProfile = "regular" | "dachshund" | "sighthound" | "bulldog" | "small-dog" | "large-dog" | "puppy";
+
+export interface ProductVariant {
+  key: string;
+  size: string;
+  color: string;
+  sku?: string;
+  stock: number;
+}
 
 export interface ProductSizeRow {
   size: string;
@@ -40,10 +49,20 @@ export interface Product {
   sizeLabelsPl?: Record<string, string>;
   colorLabelsPl?: Record<string, string>;
   image: string;
+  gallery?: Array<{url: string; alt?: string}>;
+  fitProfiles?: FitProfile[];
+  material?: string;
+  careInstructions?: string;
+  fitNotes?: string;
+  relatedProductIds?: string[];
   sizeGuide?: ProductSizeGuide;
   reviews?: ProductReview[];
+  trackInventory?: boolean;
+  variants?: ProductVariant[];
   featured?: boolean;
   badge?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export interface CartItem {

@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --cream: #fff8f0;
-  --coral: #e8734a;
-  --coral-dark: #d05a32;
-  --sage: #7ba67b;
-  --sage-dark: #5f8a5f;
-  --charcoal: #3d2c2c;
+  --cream: #ffffff;
+  --coral: #707565;
+  --coral-dark: #505648;
+  --sage: #a4a695;
+  --sage-dark: #62675b;
+  --charcoal: #24241f;
 }
 
 @theme inline {
@@ -16,8 +16,8 @@
   --color-sage: var(--sage);
   --color-sage-dark: var(--sage-dark);
   --color-charcoal: var(--charcoal);
-  --font-sans: var(--font-nunito), system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-inter), Arial, sans-serif;
+  --font-display: var(--font-inter), Arial, sans-serif;
 }
 
 body {
@@ -25,7 +25,7 @@ body {
   color: var(--charcoal);
 }
 
-::selection { background: color-mix(in srgb, var(--coral) 25%, white); }
+::selection { background: #e5e3da; }
 
 button, a { -webkit-tap-highlight-color: transparent; }
 

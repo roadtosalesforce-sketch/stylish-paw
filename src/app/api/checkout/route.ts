@@ -8,6 +8,9 @@ import {
   INPOST_LOCKER_PRICE_GROSZ,
 } from "@/lib/shipping";
 import {getCurrentUser} from "@/lib/supabase/server";
+import {isVariantAvailable} from "@/lib/inventory";
+import {currencyMinorAmount, isCurrency, type Currency} from "@/lib/currency";
+import {getShopSettings} from "@/sanity/lib/content";
 
 export const runtime = "nodejs";
 
@@ -64,6 +67,11 @@ export async function POST(request: Request) {
       ? (payload as {locale?: unknown}).locale
       : undefined;
   const locale: Locale = typeof requestedLocale === "string" && isLocale(requestedLocale) ? requestedLocale : "pl";
+  const requestedCurrency =
+    payload && typeof payload === "object" && "currency" in payload
+      ? (payload as {currency?: unknown}).currency
+      : undefined;
+  const currency: Currency = isCurrency(requestedCurrency) ? requestedCurrency : "PLN";
   const dict = getDictionary(locale);
 
   if (!secretKey) {
@@ -96,6 +104,8 @@ export async function POST(request: Request) {
   const productsById = new Map(products.map((product) => [product.id, product]));
 
   try {
+    const settings = await getShopSettings(locale);
+    const eurRate = Number(settings?.eurRate) > 0 ? Number(settings?.eurRate) : 0.23;
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
       requestedItems.map((item) => {
         const product = productsById.get(item.productId);
@@ -103,8 +113,11 @@ export async function POST(request: Request) {
         if (!product.sizes.includes(item.size) || !product.colors.includes(item.color)) {
           throw new Error("INVALID_VARIANT");
         }
+        if (!isVariantAvailable(product, item.size, item.color, item.quantity)) {
+          throw new Error("INSUFFICIENT_STOCK");
+        }
 
-        const unitAmount = Math.round(product.price * 100);
+        const unitAmount = currencyMinorAmount(product.price, currency, eurRate);
         if (!Number.isSafeInteger(unitAmount) || unitAmount <= 0) {
           throw new Error("INVALID_PRICE");
         }
@@ -112,7 +125,7 @@ export async function POST(request: Request) {
         return {
           quantity: item.quantity,
           price_data: {
-            currency: "pln",
+            currency: currency.toLowerCase(),
             unit_amount: unitAmount,
             product_data: {
               name: product.name,
@@ -128,11 +141,10 @@ export async function POST(request: Request) {
         };
       });
 
-    const subtotal = lineItems.reduce(
-      (sum, item) =>
-        sum + Number(item.price_data?.unit_amount || 0) * Number(item.quantity || 0),
-      0,
-    );
+    const subtotalPln = requestedItems.reduce((sum, item) => {
+      const product = productsById.get(item.productId);
+      return sum + (product?.price || 0) * item.quantity;
+    }, 0);
 
     const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     const siteUrl = configuredSiteUrl
@@ -155,10 +167,10 @@ export async function POST(request: Request) {
         {
           shipping_rate_data: {
             type: "fixed_amount",
-            display_name: subtotal >= FREE_SHIPPING_THRESHOLD_GROSZ ? dict.checkout.freeInPost : dict.checkout.inPostLocker,
+            display_name: subtotalPln * 100 >= FREE_SHIPPING_THRESHOLD_GROSZ ? dict.checkout.freeInPost : dict.checkout.inPostLocker,
             fixed_amount: {
-              amount: subtotal >= FREE_SHIPPING_THRESHOLD_GROSZ ? 0 : INPOST_LOCKER_PRICE_GROSZ,
-              currency: "pln",
+              amount: subtotalPln * 100 >= FREE_SHIPPING_THRESHOLD_GROSZ ? 0 : currencyMinorAmount(INPOST_LOCKER_PRICE_GROSZ / 100, currency, eurRate),
+              currency: currency.toLowerCase(),
             },
             delivery_estimate: {
               minimum: {unit: "business_day", value: 1},
@@ -176,6 +188,7 @@ export async function POST(request: Request) {
         inpost_point: requestedShipping.pointName.trim().toUpperCase(),
         inpost_point_address: requestedShipping.pointAddress?.trim() || "",
         user_id: user?.id || "",
+        display_currency: currency,
       },
     });
 
@@ -187,7 +200,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (
       error instanceof Error &&
-      ["PRODUCT_NOT_FOUND", "INVALID_VARIANT", "INVALID_PRICE"].includes(error.message)
+      ["PRODUCT_NOT_FOUND", "INVALID_VARIANT", "INVALID_PRICE", "INSUFFICIENT_STOCK"].includes(error.message)
     ) {
       return Response.json(
         {error: dict.checkout.changed},

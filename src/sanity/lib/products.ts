@@ -36,10 +36,18 @@ const productFields = `
   "category": category->slug.current,
   petType,
   "sizes": sizes[].name,
-  "sizeOptions": sizes[]{name, namePl},
+  "sizeOptions": sizes[]{name, namePl, stock},
   "colors": colors[].name,
   "colorOptions": colors[]{name, namePl},
   "image": image.asset->url,
+  "gallery": gallery[]{"url": asset->url, alt},
+  fitProfiles,
+  "material": select($locale == "pl" => coalesce(materialPl, material), material),
+  "careInstructions": select($locale == "pl" => coalesce(careInstructionsPl, careInstructions), careInstructions),
+  "fitNotes": select($locale == "pl" => coalesce(fitNotesPl, fitNotes), fitNotes),
+  "relatedProductIds": relatedProducts[]._ref,
+  trackInventory,
+  "variants": inventoryVariants[]{"key": _key, size, color, sku, stock},
   "sizeGuide": sizeGuide->{
     "title": select($locale == "pl" => coalesce(titlePl, title), title),
     "instructions": select($locale == "pl" => coalesce(instructionsPl, instructions), instructions),
@@ -53,21 +61,48 @@ const productFields = `
     "photo": photo.asset->url
   },
   featured,
-  badge
+  badge,
+  "seoTitle": select($locale == "pl" => coalesce(seoTitlePl, seoTitle), seoTitle),
+  "seoDescription": select($locale == "pl" => coalesce(seoDescriptionPl, seoDescription), seoDescription)
 `;
 
-type SanityProduct = Product & {
+type SanityProduct = Omit<Product, "category"> & {
+  category: string;
   namePl?: string;
   descriptionPl?: string;
   sizeOptions?: Array<{name?: string; namePl?: string}>;
   colorOptions?: Array<{name?: string; namePl?: string}>;
 };
 
+const categoryAliases: Record<string, Product["category"]> = {
+  clothing: "clothing",
+  sweaters: "clothing",
+  raincoats: "clothing",
+  costumes: "clothing",
+  outerwear: "clothing",
+  wear: "clothing",
+  "collars-leashes": "collars-leashes",
+  collars: "collars-leashes",
+  leashes: "collars-leashes",
+  walk: "collars-leashes",
+  accessories: "collars-leashes",
+  essentials: "essentials",
+  play: "essentials",
+  eat: "essentials",
+  care: "essentials",
+  rest: "essentials",
+};
+
+export function normalizeCategory(value: string): Product["category"] {
+  return categoryAliases[value] || "essentials";
+}
+
 function localizeProduct(product: SanityProduct, locale: Locale): Product {
   const sizeLabelsPl = Object.fromEntries((product.sizeOptions || []).filter((item) => item.name && item.namePl).map((item) => [item.name as string, item.namePl as string]));
   const colorLabelsPl = Object.fromEntries((product.colorOptions || []).filter((item) => item.name && item.namePl).map((item) => [item.name as string, item.namePl as string]));
   return {
     ...product,
+    category: normalizeCategory(product.category),
     nameEn: product.name,
     descriptionEn: product.description,
     sizeLabelsPl,

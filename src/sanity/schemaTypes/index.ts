@@ -5,5 +5,6 @@ import {sizeGuideType} from "./sizeGuide";
 import {siteSettingsType} from "./siteSettings";
 import {pageType} from "./page";
 import {homepageType} from "./homepage";
+import {postType} from "./post";
 
-export const schemaTypes = [productType, categoryType, collectionType, sizeGuideType, pageType, homepageType, siteSettingsType];
+export const schemaTypes = [productType, categoryType, collectionType, sizeGuideType, pageType, postType, homepageType, siteSettingsType];

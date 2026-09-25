@@ -1,22 +1,16 @@
 import type { Metadata } from "next";
-import { Nunito, Fraunces } from "next/font/google";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import {Inter} from "next/font/google";
 import { Providers } from "@/components/providers";
-import {MobileBottomNav} from "@/components/mobile-bottom-nav";
+import {SiteChrome} from "@/components/site-chrome";
 import {getShopSettings} from "@/sanity/lib/content";
 import {getDictionary} from "@/i18n/dictionaries";
 import {getLocale} from "@/i18n/server";
 import {getCurrentUser} from "@/lib/supabase/server";
+import {DEFAULT_EUR_RATE} from "@/lib/currency";
 import "./globals.css";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
-  subsets: ["latin", "latin-ext"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
 });
 
@@ -47,13 +41,12 @@ export default async function RootLayout({
   const [settings, user] = await Promise.all([getShopSettings(locale), getCurrentUser()]);
 
   return (
-    <html lang={locale} className={`${nunito.variable} ${fraunces.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-cream pb-22 font-sans text-charcoal antialiased md:pb-0">
-        <Providers>
-          <Header announcement={settings?.announcement} shopName={settings?.shopName} locale={locale} dict={dict} signedIn={Boolean(user)} />
-          <main className="flex-1">{children}</main>
-          <Footer settings={settings} dict={dict} />
-          <MobileBottomNav dict={dict} signedIn={Boolean(user)} />
+    <html lang={locale} className={`${inter.variable} h-full`}>
+      <body className="min-h-full bg-cream font-sans text-charcoal antialiased">
+        <Providers eurRate={settings?.eurRate || DEFAULT_EUR_RATE}>
+          <SiteChrome settings={settings} locale={locale} dict={dict} signedIn={Boolean(user)}>
+            {children}
+          </SiteChrome>
         </Providers>
       </body>
     </html>

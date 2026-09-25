@@ -9,7 +9,7 @@ export const products: Product[] = [
     description:
       "Soft merino-blend knit sweater with a ribbed turtleneck. Perfect for chilly morning walks. Machine washable and designed for comfort without restricting movement.",
     price: 139,
-    category: "sweaters",
+    category: "clothing",
     petType: "dog",
     sizes: ["XS", "S", "M", "L", "XL"],
     colors: ["Cream", "Sage", "Rust"],
@@ -24,7 +24,7 @@ export const products: Product[] = [
     description:
       "Waterproof shell with sealed seams and a cozy fleece lining. Reflective trim keeps your pup visible on gloomy days. Adjustable hood and velcro belly closure.",
     price: 179,
-    category: "raincoats",
+    category: "clothing",
     petType: "dog",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Yellow", "Navy", "Red"],
@@ -38,7 +38,7 @@ export const products: Product[] = [
     description:
       "Lightweight cotton bandana with a snap closure that sits comfortably without tugging fur. Reversible design gives you two looks in one.",
     price: 59,
-    category: "accessories",
+    category: "collars-leashes",
     petType: "cat",
     sizes: ["One Size"],
     colors: ["Plaid Red", "Plaid Green", "Plaid Blue"],
@@ -52,7 +52,7 @@ export const products: Product[] = [
     description:
       "Lightweight felt wings attach with an elastic chest strap. No fuss, no zippers — just slip on and watch your pet steal the show at every party.",
     price: 119,
-    category: "costumes",
+    category: "clothing",
     petType: "both",
     sizes: ["S", "M", "L"],
     colors: ["Black", "Purple"],
@@ -66,7 +66,7 @@ export const products: Product[] = [
     description:
       "Breathable mesh fabric with UPF 30 sun protection. Soak in water, wring out, and put on for hours of cooling relief during hot summer adventures.",
     price: 109,
-    category: "outerwear",
+    category: "clothing",
     petType: "dog",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Sky Blue", "Mint", "Coral"],
@@ -79,7 +79,7 @@ export const products: Product[] = [
     description:
       "Ultra-soft microfleece hoodie with a drawstring hood and kangaroo pocket. Because your pet deserves streetwear-level comfort.",
     price: 159,
-    category: "sweaters",
+    category: "clothing",
     petType: "dog",
     sizes: ["XS", "S", "M", "L"],
     colors: ["Heather Grey", "Blush Pink", "Charcoal"],
@@ -93,7 +93,7 @@ export const products: Product[] = [
     description:
       "360° reflective piping and a lightweight windbreaker shell. Essential gear for evening walks and early-morning jogs.",
     price: 149,
-    category: "outerwear",
+    category: "clothing",
     petType: "dog",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Neon Orange", "Neon Green"],
@@ -106,7 +106,7 @@ export const products: Product[] = [
     description:
       "Festive jacquard knit with embroidered reindeer and a jingle bell collar. The ultimate holiday photo-op sweater for dogs and cats alike.",
     price: 139,
-    category: "sweaters",
+    category: "clothing",
     petType: "both",
     sizes: ["XS", "S", "M", "L"],
     colors: ["Red/Green", "Navy/Gold"],
@@ -117,11 +117,9 @@ export const products: Product[] = [
 
 export const categories = [
   { id: "all", label: "All" },
-  { id: "sweaters", label: "Sweaters" },
-  { id: "raincoats", label: "Raincoats" },
-  { id: "costumes", label: "Costumes" },
-  { id: "accessories", label: "Accessories" },
-  { id: "outerwear", label: "Outerwear" },
+  { id: "clothing", label: "Clothing" },
+  { id: "collars-leashes", label: "Collars & Leashes" },
+  { id: "essentials", label: "Essentials" },
 ] as const;
 
 const polishProducts: Record<string, {name: string; description: string; colors: Record<string, string>; sizes?: Record<string, string>}> = {

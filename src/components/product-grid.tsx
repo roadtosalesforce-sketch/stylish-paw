@@ -8,7 +8,7 @@ export function ProductGrid({ products, locale, dict }: { products: Product[]; l
   if (products.length === 0) {
     return (
       <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white/70 px-6 py-16 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f8eee8] text-coral" aria-hidden="true">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-stone-100 text-charcoal" aria-hidden="true">
           <PawPrint className="h-6 w-6" strokeWidth={1.8} />
         </span>
         <p className="mt-5 text-lg font-bold text-charcoal">{dict.shop.noProducts}</p>
@@ -21,7 +21,7 @@ export function ProductGrid({ products, locale, dict }: { products: Product[]; l
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} locale={locale} dict={dict} />
       ))}

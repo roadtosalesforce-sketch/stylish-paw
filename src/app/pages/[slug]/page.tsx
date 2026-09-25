@@ -32,7 +32,7 @@ export default async function ContentPage({params}: Props) {
           {page.eyebrow}
         </p>
       ) : null}
-      <h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">{page.title}</h1>
+      <h1 className="mt-3 font-display text-4xl font-medium sm:text-5xl">{page.title}</h1>
       {page.intro ? (
         <p className="mt-5 max-w-2xl text-xl leading-relaxed text-stone-600">{page.intro}</p>
       ) : null}
@@ -42,8 +42,8 @@ export default async function ContentPage({params}: Props) {
             value={page.body}
             components={{
               block: {
-                h2: ({children}) => <h2 className="pt-4 font-display text-3xl font-bold text-charcoal">{children}</h2>,
-                h3: ({children}) => <h3 className="pt-3 font-display text-2xl font-bold text-charcoal">{children}</h3>,
+                h2: ({children}) => <h2 className="pt-4 font-display text-3xl font-medium text-charcoal">{children}</h2>,
+                h3: ({children}) => <h3 className="pt-3 font-display text-2xl font-medium text-charcoal">{children}</h3>,
                 normal: ({children}) => <p>{children}</p>,
               },
               list: {

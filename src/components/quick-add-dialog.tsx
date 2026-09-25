@@ -6,8 +6,8 @@ import Link from "next/link";
 import {X} from "lucide-react";
 import type {Product} from "@/types/product";
 import type {Dictionary, Locale} from "@/i18n/dictionaries";
-import {formatPrice} from "@/lib/format";
 import {AddToCartForm} from "./add-to-cart-form";
+import {Price} from "./price";
 
 export function QuickAddDialog({product, locale, dict}: {product: Product; locale: Locale; dict: Dictionary}) {
   const [open, setOpen] = useState(false);
@@ -41,7 +41,7 @@ export function QuickAddDialog({product, locale, dict}: {product: Product; local
               </div>
               <div>
                 <Link href={`/shop/${product.slug}`} className="font-display text-2xl font-bold text-charcoal hover:text-coral">{product.name}</Link>
-                <p className="mt-2 font-bold text-coral">{formatPrice(product.price, locale)}</p>
+                <Price amount={product.price} locale={locale} className="mt-2 block font-bold text-coral" />
                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-stone-600">{product.description}</p>
                 <div className="mt-5 border-t border-stone-100 pt-5">
                   <AddToCartForm product={product} locale={locale} dict={dict} />

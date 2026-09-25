@@ -45,7 +45,7 @@ export function SizeGuideDialog({dict, product}: {dict: Dictionary; product?: Pr
             <button type="button" onClick={() => setOpen(false)} aria-label={dict.sizeGuide.close} className="rounded-full bg-stone-100 p-2"><X className="h-5 w-5"/></button>
           </div>
 
-          <div className="mt-7 grid gap-5 sm:grid-cols-3">{dict.sizeGuide.steps.map(([title,text], index) => <div key={title} className="rounded-2xl bg-[#fbf8f2] p-5"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-coral text-sm font-bold text-white">{index + 1}</span><h3 className="mt-4 font-bold">{title}</h3><p className="mt-1 text-sm leading-relaxed text-stone-600">{text}</p></div>)}</div>
+          <div className="mt-7 grid gap-5 sm:grid-cols-3">{dict.sizeGuide.steps.map(([title,text], index) => <div key={title} className="rounded-2xl bg-stone-50 p-5"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal text-sm font-bold text-white">{index + 1}</span><h3 className="mt-4 font-bold">{title}</h3><p className="mt-1 text-sm leading-relaxed text-stone-600">{text}</p></div>)}</div>
 
           <div className="mt-7 rounded-3xl border border-sage/25 bg-sage/10 p-5 sm:p-6">
             <div className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-sage-dark"/><h3 className="font-display text-xl font-bold text-charcoal">{dict.sizeGuide.finderTitle}</h3></div>

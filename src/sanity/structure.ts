@@ -6,11 +6,17 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Furry Fairy Pets")
     .items([
+      S.listItem().title("Homepage").id("homepage").child(S.document().schemaType("homepage").documentId("homepage")),
       S.listItem()
-        .title("Products")
+        .title("Shop settings")
+        .id("siteSettings")
+        .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
+      S.divider(),
+      S.listItem()
+        .title("Products & stock")
         .child(
           S.list()
-            .title("Products")
+            .title("Products & stock")
             .items([
               S.listItem()
                 .title("Ready to sell")
@@ -18,6 +24,7 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Ready to sell")
                     .schemaType("product")
+                    .apiVersion("2026-08-13")
                     .filter(`_type == "product" && ${readyToSell}`),
                 ),
               S.listItem()
@@ -26,6 +33,7 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Needs finishing")
                     .schemaType("product")
+                    .apiVersion("2026-08-13")
                     .filter(`_type == "product" && !(${readyToSell})`),
                 ),
               S.listItem()
@@ -34,20 +42,26 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Featured on homepage")
                     .schemaType("product")
+                    .apiVersion("2026-08-13")
                     .filter(`_type == "product" && ${readyToSell} && featured == true`),
                 ),
               S.documentTypeListItem("product").title("All products"),
             ]),
         ),
-      S.divider(),
-      S.documentTypeListItem("category").title("Categories"),
+      S.listItem()
+        .title("Shop categories")
+        .child(
+          S.list()
+            .title("Shop categories")
+            .items([
+              S.listItem().title("Clothing").child(S.document().schemaType("category").documentId("category-clothing")),
+              S.listItem().title("Collars & Leashes").child(S.document().schemaType("category").documentId("category-collars-leashes")),
+              S.listItem().title("Essentials").child(S.document().schemaType("category").documentId("category-essentials")),
+            ]),
+        ),
       S.documentTypeListItem("collection").title("Collections"),
       S.documentTypeListItem("sizeGuide").title("Size guides"),
-      S.documentTypeListItem("page").title("Pages"),
       S.divider(),
-      S.listItem().title("Homepage").id("homepage").child(S.document().schemaType("homepage").documentId("homepage")),
-      S.listItem()
-        .title("Shop settings")
-        .id("siteSettings")
-        .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
+      S.documentTypeListItem("page").title("Pages"),
+      S.documentTypeListItem("post").title("Blog posts"),
     ]);

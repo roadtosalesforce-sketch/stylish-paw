@@ -16,7 +16,7 @@ export default function Icon() {
       <div
         style={{
           alignItems: "center",
-          background: "#f47c57",
+          background: "#707565",
           borderRadius: 16,
           display: "flex",
           height: "100%",
@@ -89,7 +89,7 @@ export default function Icon() {
         />
         <div
           style={{
-            background: "#d9675d",
+            background: "#111111",
             borderRadius: "50% 50% 60% 60%",
             display: "flex",
             height: 5,
@@ -102,27 +102,49 @@ export default function Icon() {
         <div
           style={{
             background: ink,
-            borderRadius: 2,
+            borderRadius: "15% 15% 50% 50%",
             display: "flex",
-            height: 2,
-            left: 25,
+            height: 9,
+            left: 26,
             position: "absolute",
-            top: 48,
-            transform: "rotate(-28deg)",
-            width: 8,
+            top: 46,
+            width: 12,
           }}
         />
         <div
           style={{
-            background: ink,
-            borderRadius: 2,
+            background: "#d6d3d1",
+            borderRadius: "50% 50% 40% 40%",
             display: "flex",
-            height: 2,
+            height: 3,
+            left: 29,
             position: "absolute",
-            right: 25,
-            top: 48,
-            transform: "rotate(28deg)",
-            width: 8,
+            top: 51,
+            width: 6,
+          }}
+        />
+        <div
+          style={{
+            background: "#d6d3d1",
+            borderRadius: "50%",
+            display: "flex",
+            height: 3,
+            left: 16,
+            position: "absolute",
+            top: 42,
+            width: 6,
+          }}
+        />
+        <div
+          style={{
+            background: "#d6d3d1",
+            borderRadius: "50%",
+            display: "flex",
+            height: 3,
+            position: "absolute",
+            right: 16,
+            top: 42,
+            width: 6,
           }}
         />
         <div

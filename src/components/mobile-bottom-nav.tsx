@@ -17,7 +17,7 @@ export function MobileBottomNav({dict, signedIn}: {dict: Dictionary; signedIn: b
   ];
 
   return (
-    <nav className="fixed inset-x-3 bottom-3 z-50 rounded-2xl border border-stone-200/80 bg-[#fffdf9]/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_14px_45px_rgba(61,44,44,.2)] backdrop-blur-xl md:hidden" aria-label="Mobile">
+    <nav className="fixed inset-x-3 bottom-3 z-50 rounded-2xl border border-stone-200/80 bg-white/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_14px_45px_rgba(0,0,0,.16)] backdrop-blur-xl md:hidden" aria-label="Mobile">
       <ul className="grid grid-cols-4">
         {links.map(({href, label, icon: Icon, active}) => (
           <li key={href}>

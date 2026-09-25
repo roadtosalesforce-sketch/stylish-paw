@@ -1,93 +1,116 @@
+import type {Metadata} from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { Hero } from "@/components/hero";
-import { CategoryLinks } from "@/components/category-filter";
-import { ProductGrid } from "@/components/product-grid";
-import { getFeaturedProducts } from "@/sanity/lib/products";
-import { TrustBar } from "@/components/trust-bar";
-import { ArrowRight, Heart, Ruler, Sparkles } from "lucide-react";
-import {getHomepageContent} from "@/sanity/lib/content";
+import {ArrowRight} from "lucide-react";
+import {Hero} from "@/components/hero";
+import {CategoryLinks} from "@/components/category-filter";
+import {ProductGrid} from "@/components/product-grid";
+import {getFeaturedProducts} from "@/sanity/lib/products";
+import {getHomepageContent, getShopSettings} from "@/sanity/lib/content";
 import {getLocale} from "@/i18n/server";
 import {getDictionary} from "@/i18n/dictionaries";
+import {InstagramIcon} from "@/components/instagram-icon";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  return {
+    title: dict.meta.title,
+    description: dict.meta.description,
+    alternates: {canonical: "/"},
+  };
+}
 
 export default async function Home() {
   const locale = await getLocale();
   const dict = getDictionary(locale);
-  const [featured, homepage] = await Promise.all([
+  const [featured, homepage, settings] = await Promise.all([
     getFeaturedProducts(locale),
     getHomepageContent(locale),
+    getShopSettings(locale),
   ]);
   const story = homepage?.sections?.find((section) => section._type === "storyBlock");
-  const newsletter = homepage?.sections?.find((section) => section._type === "newsletterBlock");
+  const promise = homepage?.promise;
+  const legacyRewards = homepage?.sections?.find((section) => section._type === "newsletterBlock");
+  const instagram = homepage?.instagram;
+  const instagramUrl = instagram?.profileUrl || settings?.instagram;
+  const instagramPosts = instagram?.posts?.filter((post) => post.image) || [];
+  const philosophy = homepage?.philosophy;
+  const rewards = homepage?.rewards;
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Furry Fairy Pets",
+    url: "https://www.furryfairypets.com/",
+    description: dict.meta.description,
+  };
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c")}} />
       <Hero content={homepage?.hero} slides={homepage?.heroSlides} dict={dict} />
-      <TrustBar dict={dict} />
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <h2 className="font-display text-2xl font-bold text-charcoal sm:text-3xl">
-          {dict.home.categoryTitle}
-        </h2>
-        <p className="mt-2 text-stone-500">{dict.home.categoryText}</p>
-        <div className="mt-8">
-          <CategoryLinks dict={dict} />
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-sage-dark">Furry Fairy Pets</p>
+          <h2 className="mt-3 text-3xl font-medium uppercase tracking-[.055em] text-charcoal sm:text-4xl">{dict.home.categoryTitle}</h2>
+          <p className="mt-3 text-base leading-relaxed text-stone-600">{dict.home.categoryText}</p>
+        </div>
+        <div className="mt-9"><CategoryLinks dict={dict} /></div>
+      </section>
+
+      <section className="border-y border-stone-200 bg-[#f3f1eb] py-24">
+        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[.2em] text-coral">{philosophy?.eyebrow || dict.home.philosophyEyebrow}</p>
+          <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-medium uppercase leading-tight tracking-[.04em] text-charcoal sm:text-5xl">{philosophy?.title || dict.home.philosophyTitle}</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{philosophy?.text || dict.home.philosophyText}</p>
         </div>
       </section>
 
-      {featured.length > 0 && <section className="bg-white/60 py-20">
+      <section className="py-24">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[.18em] text-sage-dark">{promise?.eyebrow || dict.home.promise}</p>
+          <h2 className="mt-4 text-3xl font-medium uppercase tracking-[.04em] text-charcoal sm:text-4xl">{promise?.title || story?.title || dict.home.storyTitle}</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{promise?.text || story?.text || dict.home.storyText}</p>
+        </div>
+      </section>
+
+      <section className="border-y border-stone-200 bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <h2 className="font-display text-2xl font-bold text-charcoal sm:text-3xl">
-                {dict.home.featuredTitle}
-              </h2>
-              <p className="mt-2 text-stone-500">{dict.home.featuredText}</p>
-            </div>
-            <Link
-              href="/shop"
-              className="hidden text-sm font-semibold text-coral hover:text-coral-dark sm:block"
-            >
-              {dict.home.viewAll} →
-            </Link>
+          <div className="mb-9 flex items-end justify-between gap-6">
+            <div><p className="text-[10px] font-semibold uppercase tracking-[.2em] text-sage-dark">Furry Fairy Pets</p><h2 className="mt-3 text-3xl font-medium uppercase tracking-[.055em] text-charcoal sm:text-4xl">{dict.home.featuredTitle}</h2><p className="mt-2 text-stone-600">{dict.home.featuredText}</p></div>
+            <Link href="/shop?category=bestsellers" className="hidden items-center gap-2 text-sm font-bold text-charcoal transition hover:text-coral sm:inline-flex">{dict.home.viewAll} <ArrowRight className="h-4 w-4" /></Link>
           </div>
           <ProductGrid products={featured} locale={locale} dict={dict} />
-          <div className="mt-8 text-center sm:hidden">
-            <Link
-              href="/shop"
-              className="text-sm font-semibold text-coral hover:text-coral-dark"
-            >
-              {dict.home.viewAllProducts} →
-            </Link>
-          </div>
         </div>
-      </section>}
+      </section>
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-20 sm:px-6 md:grid-cols-2 lg:px-8"><div className="flex min-h-80 flex-col justify-end overflow-hidden rounded-[2rem] bg-charcoal p-8 text-white sm:p-10"><Sparkles className="h-6 w-6 text-coral"/><p className="mt-auto text-xs font-bold uppercase tracking-[.18em] text-stone-300">{dict.home.seasonal}</p><h2 className="mt-3 max-w-md font-display text-4xl font-bold">{dict.home.rainTitle}</h2><Link className="mt-6 inline-flex items-center gap-2 font-bold text-coral" href="/shop?category=raincoats">{dict.home.exploreRainwear} <ArrowRight className="h-4 w-4"/></Link></div><div className="flex min-h-80 flex-col justify-end rounded-[2rem] bg-[#e5eee3] p-8 sm:p-10"><Ruler className="h-7 w-7 text-sage-dark"/><p className="mt-auto text-xs font-bold uppercase tracking-[.18em] text-sage-dark">{dict.home.fitEyebrow}</p><h2 className="mt-3 max-w-md font-display text-4xl font-bold">{dict.home.fitTitle}</h2><Link className="mt-6 inline-flex items-center gap-2 font-bold text-charcoal" href="/pages/size-guide">{dict.home.viewSizeGuide} <ArrowRight className="h-4 w-4"/></Link></div></section>
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-[.18em] text-coral">{instagram?.eyebrow || dict.home.instagramEyebrow}</p>
+            <h2 className="mt-3 text-3xl font-medium uppercase tracking-[.055em] text-charcoal sm:text-4xl">{instagram?.title || dict.home.instagramTitle}</h2>
+            <p className="mt-3 text-stone-600">{instagram?.text || dict.home.instagramText}</p>
+          </div>
+          {instagramUrl && <a href={instagramUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-bold text-charcoal transition hover:text-coral"><InstagramIcon className="h-5 w-5" />{instagram?.profileLabel || dict.home.visitInstagram}</a>}
+        </div>
+        {instagramPosts.length > 0 ? (
+          <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+            {instagramPosts.map((post) => {
+              const media = <Image src={post.image as string} alt={post.alt || "Furry Fairy Pets Instagram"} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition duration-500 group-hover:scale-105" />;
+              return post.url ? <a key={post._key} href={post.url} target="_blank" rel="noreferrer" className="group relative aspect-square overflow-hidden bg-stone-100">{media}</a> : <div key={post._key} className="group relative aspect-square overflow-hidden bg-stone-100">{media}</div>;
+            })}
+          </div>
+        ) : null}
+      </section>
 
-      <section className="border-y border-stone-200 bg-[#fbf8f2] py-20"><div className="mx-auto max-w-4xl px-4 text-center sm:px-6"><Heart className="mx-auto h-7 w-7 text-coral"/><p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-coral">{dict.home.promise}</p><h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{story?.title || dict.home.storyTitle}</h2><p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{story?.text || dict.home.storyText}</p></div></section>
-
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="overflow-hidden rounded-[2rem] border border-sage/30 bg-[#e5eee3] px-8 py-12 text-center shadow-sm sm:px-16">
-          <p className="text-xs font-bold uppercase tracking-[.18em] text-sage-dark">Furry Fairy Club</p>
-          <h2 className="mt-3 font-display text-2xl font-bold text-charcoal sm:text-3xl">
-            {newsletter?.title || dict.home.newsletterTitle}
-          </h2>
-          <p className="mx-auto mt-3 max-w-md font-medium text-stone-700">
-            {newsletter?.text || dict.home.newsletterText}
-          </p>
-          <form className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              placeholder={dict.home.emailPlaceholder}
-              className="flex-1 rounded-full border border-stone-300 bg-white px-5 py-3 text-sm text-charcoal shadow-sm placeholder:text-stone-500 focus:border-coral focus:outline-none focus:ring-2 focus:ring-coral/20"
-            />
-            <button
-              type="button"
-              className="rounded-full bg-coral px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-coral-dark"
-            >
-              {dict.home.subscribe}
-            </button>
-          </form>
+      <section className="border-t border-stone-200 bg-[#ebe8df] px-4 py-24 sm:px-6">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[.2em] text-sage-dark">{rewards?.eyebrow || dict.home.rewardsEyebrow}</p>
+          <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-medium uppercase tracking-[.04em] text-charcoal sm:text-5xl">{rewards?.title || legacyRewards?.title || dict.home.rewardsTitle}</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{rewards?.text || legacyRewards?.text || dict.home.rewardsText}</p>
+          <Link href="/account/register" className="mt-8 inline-flex items-center bg-charcoal px-8 py-4 text-xs font-semibold uppercase tracking-[.14em] text-white transition hover:bg-coral-dark">{rewards?.buttonLabel || dict.home.createAccount}<ArrowRight className="ml-2 h-4 w-4" /></Link>
         </div>
       </section>
     </>

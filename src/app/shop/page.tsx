@@ -3,26 +3,25 @@ import { Suspense } from "react";
 import { CategoryFilter } from "@/components/category-filter";
 import { ProductGrid } from "@/components/product-grid";
 import { getProducts } from "@/sanity/lib/products";
-import type { Category } from "@/types/product";
+import type {Category, FitProfile} from "@/types/product";
 import {getLocale} from "@/i18n/server";
 import {getDictionary} from "@/i18n/dictionaries";
 
 interface ShopPageProps {
-  searchParams: Promise<{ category?: string; pet?: string }>;
+  searchParams: Promise<{category?: string; pet?: string; fit?: string}>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const { category, pet } = await searchParams;
+  const {category, pet, fit} = await searchParams;
   const locale = await getLocale();
   const dict = getDictionary(locale);
   const products = await getProducts(locale);
   const filtered = products.filter((p, index) => {
     if (pet && p.petType !== pet && p.petType !== "both") return false;
+    if (fit && !p.fitProfiles?.includes(fit as FitProfile)) return false;
     if (!category || category === "all") return true;
     if (category === "new") return index < 6;
     if (category === "bestsellers") return p.badge?.toLowerCase() === "bestseller" || p.featured;
-    if (category === "essentials") return ["sweaters", "outerwear", "accessories"].includes(p.category);
-    if (category === "celebration") return p.category === "costumes";
     return p.category === (category as Category);
   });
 
@@ -42,7 +41,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </nav>
 
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-charcoal sm:text-4xl">
+        <h1 className="font-display text-3xl font-medium text-charcoal sm:text-4xl">
           {activeCategory}
         </h1>
         <p className="mt-2 text-stone-500">

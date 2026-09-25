@@ -13,9 +13,9 @@ type HeroProps = {
 };
 
 const fallbackImages = [
-  "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1800&q=88",
-  "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=1800&q=88",
-  "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=1800&q=88",
+  "https://images.unsplash.com/photo-1650454027983-e2b8fe55b30b?auto=format&fit=crop&w=1800&q=88",
+  "https://images.unsplash.com/photo-1675613714850-fd2cba4c6deb?auto=format&fit=crop&w=1800&q=88",
+  "https://images.unsplash.com/photo-1527149535940-240e6deec1fe?auto=format&fit=crop&w=1800&q=88",
 ];
 
 export function Hero({content, slides, dict}: HeroProps) {
@@ -34,7 +34,7 @@ export function Hero({content, slides, dict}: HeroProps) {
       primaryLink: index === 0 ? content?.primaryLink || "/shop?category=new" : slide.primaryLink,
       secondaryLabel: index === 0 ? content?.secondaryLabel || dict.hero.secondary : slide.secondaryLabel,
       secondaryLink: index === 0 ? content?.secondaryLink || "/pages/size-guide" : slide.secondaryLink,
-      showText: false,
+      showText: true,
       textPosition: index === 1 ? "right" : "left",
     }));
   }, [content, dict, slides]);
@@ -59,7 +59,7 @@ export function Hero({content, slides, dict}: HeroProps) {
 
   return (
     <section
-      className="group relative isolate h-[70svh] min-h-[520px] max-h-[760px] overflow-hidden bg-[#f6f2ec]"
+      className="group relative isolate h-[66svh] min-h-[520px] max-h-[760px] overflow-hidden bg-stone-100"
       aria-roledescription="carousel"
       aria-label={dict.hero.carouselLabel}
       onMouseEnter={() => setPaused(true)}
@@ -91,30 +91,27 @@ export function Hero({content, slides, dict}: HeroProps) {
             </picture>
 
             {showText && (
-              <>
-                <div className={`absolute inset-0 ${alignRight ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-black/72 via-black/25 to-transparent`} />
-                <div className="relative mx-auto flex h-full max-w-7xl items-center px-5 pb-16 pt-16 sm:px-8 lg:px-12">
-                  <div className={`max-w-xl text-white ${alignRight ? "ml-auto lg:text-right" : ""}`}>
+              <div className="relative mx-auto flex h-full max-w-7xl items-end px-5 pb-16 pt-16 sm:px-8 lg:px-12">
+                  <div className={`max-w-xl bg-[#f5f1e7]/95 p-7 text-charcoal shadow-sm sm:p-9 ${alignRight ? "ml-auto" : ""}`}>
                     {slide.eyebrow && (
-                      <p className="mb-4 text-xs font-bold uppercase tracking-[.2em] text-white/80">{slide.eyebrow}</p>
+                      <p className="mb-4 text-xs font-semibold uppercase tracking-[.2em] text-sage-dark">{slide.eyebrow}</p>
                     )}
-                    <h1 className="font-display text-4xl font-bold leading-[1.04] tracking-tight sm:text-6xl">{slide.title}</h1>
-                    {slide.text && <p className={`mt-5 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg ${alignRight ? "lg:ml-auto" : ""}`}>{slide.text}</p>}
-                    <div className={`mt-7 flex flex-wrap gap-3 ${alignRight ? "lg:justify-end" : ""}`}>
+                    <h1 className="text-4xl font-medium uppercase leading-[1.04] tracking-[.055em] sm:text-6xl">{slide.title}</h1>
+                    {slide.text && <p className="mt-5 max-w-lg text-base leading-relaxed text-stone-700 sm:text-lg">{slide.text}</p>}
+                    <div className="mt-7 flex flex-wrap gap-3">
                       {slide.primaryLabel && slide.primaryLink && (
-                        <Link href={slide.primaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center rounded-full bg-coral px-7 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-coral-dark">
+                        <Link href={slide.primaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center bg-charcoal px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-white transition hover:bg-coral-dark">
                           {slide.primaryLabel} <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       )}
                       {slide.secondaryLabel && slide.secondaryLink && (
-                        <Link href={slide.secondaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center rounded-full border border-white/45 bg-white/10 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white hover:text-charcoal">
+                        <Link href={slide.secondaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center border border-charcoal/40 bg-transparent px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-charcoal transition hover:border-charcoal">
                           {slide.secondaryLabel}
                         </Link>
                       )}
                     </div>
                   </div>
                 </div>
-              </>
             )}
           </article>
         );

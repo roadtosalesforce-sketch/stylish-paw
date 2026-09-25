@@ -41,6 +41,17 @@ export type HomepageContent = {
     secondaryLabel?: string;
     secondaryLink?: string;
   };
+  philosophy?: {eyebrow?: string; title?: string; text?: string};
+  promise?: {eyebrow?: string; title?: string; text?: string};
+  instagram?: {
+    eyebrow?: string;
+    title?: string;
+    text?: string;
+    profileUrl?: string;
+    profileLabel?: string;
+    posts?: Array<{_key: string; image?: string; alt?: string; url?: string}>;
+  };
+  rewards?: {eyebrow?: string; title?: string; text?: string; buttonLabel?: string};
   sections?: Array<{
     _key: string;
     _type: "storyBlock" | "newsletterBlock" | string;
@@ -53,9 +64,15 @@ export type HomepageContent = {
 export type ShopSettings = {
   shopName?: string;
   announcement?: string;
+  eurRate?: number;
   contactEmail?: string;
   supportEmail?: string;
   instagram?: string;
+  loyaltyEnabled?: boolean;
+  pointsPerPln?: number;
+  welcomePoints?: number;
+  rewardThreshold?: number;
+  rewardLabel?: string;
   defaultSeoTitle?: string;
   defaultSeoDescription?: string;
   footerColumns?: Array<{
@@ -76,11 +93,41 @@ export type ContentPage = {
   seoDescription?: string;
 };
 
+export type CategoryLanding = {
+  title: string;
+  slug: string;
+  eyebrow?: string;
+  heroTitle?: string;
+  heroText?: string;
+  image?: string;
+  imageAlt?: string;
+  storyTitle?: string;
+  storyText?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
+export type BlogPost = {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  publishedAt: string;
+  coverImage?: string;
+  coverImageAlt?: string;
+  body?: Array<{_key?: string; _type: string; [key: string]: unknown}>;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
 export const getHomepageContent = cache(async (locale: Locale = "en"): Promise<HomepageContent | null> => {
   try {
     const localizedHero = locale === "pl" ? "heroPl" : "hero";
     const localizedHeroSlides = locale === "pl" ? "heroSlidesPl" : "heroSlides";
     const localizedSections = locale === "pl" ? "sectionsPl" : "sections";
+    const localizedPhilosophy = locale === "pl" ? "philosophyPl" : "philosophy";
+    const localizedInstagram = locale === "pl" ? "instagramPl" : "instagram";
+    const localizedRewards = locale === "pl" ? "rewardsPl" : "rewards";
+    const localizedPromise = locale === "pl" ? "promisePl" : "promise";
     return await client.fetch<HomepageContent | null>(`*[_type == "homepage"][0]{
       "heroSlides": ${localizedHeroSlides}[active != false]{
         _key,
@@ -108,6 +155,17 @@ export const getHomepageContent = cache(async (locale: Locale = "en"): Promise<H
         secondaryLabel,
         secondaryLink
       },
+      "philosophy": ${localizedPhilosophy}{eyebrow, title, text},
+      "promise": ${localizedPromise}{eyebrow, title, text},
+      "instagram": ${localizedInstagram}{
+        eyebrow,
+        title,
+        text,
+        profileUrl,
+        profileLabel,
+        posts[]{_key, "image": image.asset->url, alt, url}
+      },
+      "rewards": ${localizedRewards}{eyebrow, title, text, buttonLabel},
       "sections": ${localizedSections}[]{_key, _type, title, text, offer}
     }`);
   } catch {
@@ -121,16 +179,96 @@ export const getShopSettings = cache(async (locale: Locale = "en"): Promise<Shop
     const seoTitle = locale === "pl" ? "defaultSeoTitlePl" : "defaultSeoTitle";
     const seoDescription = locale === "pl" ? "defaultSeoDescriptionPl" : "defaultSeoDescription";
     const footerColumns = locale === "pl" ? "footerColumnsPl" : "footerColumns";
+    const rewardLabel = locale === "pl" ? "rewardLabelPl" : "rewardLabel";
     return await client.fetch<ShopSettings | null>(`*[_type == "siteSettings"][0]{
       shopName,
       "announcement": ${announcement},
+      eurRate,
       contactEmail,
       supportEmail,
       instagram,
+      loyaltyEnabled,
+      pointsPerPln,
+      welcomePoints,
+      rewardThreshold,
+      "rewardLabel": ${rewardLabel},
       "defaultSeoTitle": ${seoTitle},
       "defaultSeoDescription": ${seoDescription},
       "footerColumns": ${footerColumns}[]{_key, title, links[]{_key, label, href}}
     }`);
+  } catch {
+    return null;
+  }
+});
+
+const categoryFallbacks: Record<Locale, Record<string, CategoryLanding>> = {
+  en: {
+    clothing: {title: "Clothing", slug: "clothing", eyebrow: "Comfort in every season", heroTitle: "Clothing made for real life with pets", heroText: "Thoughtful layers and playful pieces selected for comfort, movement and everyday adventures.", storyTitle: "Comfort comes first", storyText: "Clear sizing and practical details help every piece feel as good as it looks.", seoTitle: "Pet Clothing", seoDescription: "Comfort-led clothing for dogs and cats from Furry Fairy Pets."},
+    "collars-leashes": {title: "Collars & Leashes", slug: "collars-leashes", eyebrow: "Walk beautifully", heroTitle: "Everyday walk essentials with personality", heroText: "Decorative collars, reliable leashes and coordinated details for safer, happier walks.", storyTitle: "Designed for the daily walk", storyText: "Useful hardware, comfortable materials and expressive design belong together.", seoTitle: "Pet Collars & Leashes", seoDescription: "Shop collars and leashes selected for comfort, function and style."},
+    essentials: {title: "Essentials", slug: "essentials", eyebrow: "Less, but better", heroTitle: "Useful essentials for calmer daily routines", heroText: "Toys, feeding accessories and carefully chosen products that make life with pets easier, cleaner and more enjoyable.", storyTitle: "Only what earns its place", storyText: "Every essential should solve a real problem without adding unnecessary clutter.", seoTitle: "Pet Essentials", seoDescription: "Useful toys, feeding accessories and everyday pet essentials."},
+  },
+  pl: {
+    clothing: {title: "Ubrania", slug: "clothing", eyebrow: "Wygoda na każdą porę", heroTitle: "Ubrania stworzone do prawdziwego życia z pupilem", heroText: "Przemyślane warstwy i pełne charakteru modele wybrane z myślą o wygodzie, ruchu i codziennych przygodach.", storyTitle: "Komfort jest najważniejszy", storyText: "Czytelne rozmiary i praktyczne detale sprawiają, że każdy model wygląda dobrze i pozostaje wygodny.", seoTitle: "Ubrania dla zwierząt", seoDescription: "Wygodne ubrania dla psów i kotów od Furry Fairy Pets."},
+    "collars-leashes": {title: "Obroże i smycze", slug: "collars-leashes", eyebrow: "Piękne spacery", heroTitle: "Codzienne akcesoria spacerowe z charakterem", heroText: "Dekoracyjne obroże, solidne smycze i dopasowane dodatki na bezpieczniejsze, przyjemniejsze spacery.", storyTitle: "Na każdy spacer", storyText: "Praktyczne zapięcia, wygodne materiały i wyrazisty design mogą iść w parze.", seoTitle: "Obroże i smycze", seoDescription: "Obroże i smycze wybrane z myślą o wygodzie, funkcji i stylu."},
+    essentials: {title: "Essentials", slug: "essentials", eyebrow: "Mniej, ale lepiej", heroTitle: "Przydatne essentials dla spokojniejszej codzienności", heroText: "Zabawki, akcesoria do karmienia i starannie wybrane produkty, które ułatwiają i porządkują życie z pupilem.", storyTitle: "Tylko to, co naprawdę potrzebne", storyText: "Każdy produkt powinien rozwiązywać realny problem, nie tworząc zbędnego bałaganu.", seoTitle: "Essentials dla zwierząt", seoDescription: "Przydatne zabawki, akcesoria do karmienia i produkty codziennego użytku."},
+  },
+};
+
+export const getCategoryLanding = cache(async (slug: string, locale: Locale = "en"): Promise<CategoryLanding | null> => {
+  const fallback = categoryFallbacks[locale][slug] || null;
+  try {
+    const suffix = locale === "pl" ? "Pl" : "";
+    const category = await client.fetch<CategoryLanding | null>(`*[_type == "category" && slug.current == $slug][0]{
+      "title": coalesce(title${suffix}, title),
+      "slug": slug.current,
+      "eyebrow": coalesce(eyebrow${suffix}, eyebrow),
+      "heroTitle": coalesce(heroTitle${suffix}, heroTitle),
+      "heroText": coalesce(heroText${suffix}, heroText),
+      "image": image.asset->url,
+      "imageAlt": image.alt,
+      "storyTitle": coalesce(storyTitle${suffix}, storyTitle),
+      "storyText": coalesce(storyText${suffix}, storyText),
+      "seoTitle": coalesce(seoTitle${suffix}, seoTitle),
+      "seoDescription": coalesce(seoDescription${suffix}, seoDescription)
+    }`, {slug});
+    return category?.title ? {...fallback, ...category} : fallback;
+  } catch {
+    return fallback;
+  }
+});
+
+export const getBlogPosts = cache(async (locale: Locale = "en"): Promise<BlogPost[]> => {
+  try {
+    const suffix = locale === "pl" ? "Pl" : "";
+    return await client.fetch<BlogPost[]>(`*[_type == "post" && defined(slug.current) && publishedAt <= now()] | order(publishedAt desc){
+      "title": coalesce(title${suffix}, title),
+      "slug": slug.current,
+      "excerpt": coalesce(excerpt${suffix}, excerpt),
+      publishedAt,
+      "coverImage": coverImage.asset->url,
+      "coverImageAlt": coverImage.alt,
+      "seoTitle": coalesce(seoTitle${suffix}, seoTitle),
+      "seoDescription": coalesce(seoDescription${suffix}, seoDescription)
+    }`);
+  } catch {
+    return [];
+  }
+});
+
+export const getBlogPost = cache(async (slug: string, locale: Locale = "en"): Promise<BlogPost | null> => {
+  try {
+    const suffix = locale === "pl" ? "Pl" : "";
+    return await client.fetch<BlogPost | null>(`*[_type == "post" && slug.current == $slug && publishedAt <= now()][0]{
+      "title": coalesce(title${suffix}, title),
+      "slug": slug.current,
+      "excerpt": coalesce(excerpt${suffix}, excerpt),
+      publishedAt,
+      "coverImage": coverImage.asset->url,
+      "coverImageAlt": coverImage.alt,
+      "body": coalesce(body${suffix}, body)[]{..., _type == "image" => {"url": asset->url, alt}},
+      "seoTitle": coalesce(seoTitle${suffix}, seoTitle),
+      "seoDescription": coalesce(seoDescription${suffix}, seoDescription)
+    }`, {slug});
   } catch {
     return null;
   }
