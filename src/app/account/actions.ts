@@ -19,9 +19,9 @@ function validEmail(value: string) {
   return value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-async function confirmPendingAccount(email: string) {
+async function findCustomerAccount(email: string) {
   const admin = createAdminClient();
-  if (!admin) return false;
+  if (!admin) return null;
 
   const normalizedEmail = email.toLowerCase();
   const perPage = 200;
@@ -30,24 +30,45 @@ async function confirmPendingAccount(email: string) {
     const {data, error} = await admin.auth.admin.listUsers({page, perPage});
     if (error) {
       console.error("Unable to find the pending customer account", error.code || "unknown");
-      return false;
+      return null;
     }
 
     const user = data.users.find((candidate) => candidate.email?.toLowerCase() === normalizedEmail);
-    if (user) {
-      if (user.email_confirmed_at) return true;
-      const {error: confirmationError} = await admin.auth.admin.updateUserById(user.id, {email_confirm: true});
-      if (confirmationError) {
-        console.error("Unable to confirm the pending customer account", confirmationError.code || "unknown");
-        return false;
-      }
-      return true;
-    }
+    if (user) return {admin, user};
 
-    if (data.users.length < perPage) return false;
+    if (data.users.length < perPage) return null;
   }
 
-  return false;
+  return null;
+}
+
+async function confirmPendingAccount(email: string) {
+  const account = await findCustomerAccount(email);
+  if (!account) return false;
+  if (account.user.email_confirmed_at) return true;
+
+  const {error} = await account.admin.auth.admin.updateUserById(account.user.id, {email_confirm: true});
+  if (error) {
+    console.error("Unable to confirm the pending customer account", error.code || "unknown");
+    return false;
+  }
+  return true;
+}
+
+async function recoverPendingRegistration(email: string, password: string, fullName: string) {
+  const account = await findCustomerAccount(email);
+  if (!account || account.user.email_confirmed_at) return null;
+
+  const {data, error} = await account.admin.auth.admin.updateUserById(account.user.id, {
+    password,
+    email_confirm: true,
+    user_metadata: {...account.user.user_metadata, full_name: fullName},
+  });
+  if (error) {
+    console.error("Unable to recover the pending customer registration", error.code || "unknown");
+    return null;
+  }
+  return data.user.id;
 }
 
 function signUpErrorMessage(code: string | undefined, pl: boolean) {
@@ -136,7 +157,23 @@ export async function signUp(formData: FormData) {
     console.error("Unable to create customer account", error.code || "unknown");
     redirect(message("/account/register", signUpErrorMessage(error.code, pl)));
   }
-  if (data.user) {
+
+  const duplicateRegistration = data.user?.identities?.length === 0;
+  let accountUserId = duplicateRegistration ? null : data.user?.id;
+  let signedIn = Boolean(data.session);
+
+  if (duplicateRegistration) {
+    accountUserId = await recoverPendingRegistration(email, password, fullName);
+  } else if (data.user && !data.session && (await confirmPendingAccount(email))) {
+    accountUserId = data.user.id;
+  }
+
+  if (accountUserId && !signedIn) {
+    const {error: signInError} = await supabase.auth.signInWithPassword({email, password});
+    signedIn = !signInError;
+  }
+
+  if (accountUserId) {
     const [admin, settings] = await Promise.all([
       Promise.resolve(createAdminClient()),
       getShopSettings(pl ? "pl" : "en"),
@@ -144,16 +181,19 @@ export async function signUp(formData: FormData) {
     const welcomePoints = Math.max(0, Number(settings?.welcomePoints) || 0);
     if (admin && settings?.loyaltyEnabled !== false && welcomePoints > 0) {
       const {error: pointsError} = await admin.rpc("award_loyalty_action", {
-        p_user_id: data.user.id,
+        p_user_id: accountUserId,
         p_source_type: "account_created",
-        p_source_id: data.user.id,
+        p_source_id: accountUserId,
         p_points: welcomePoints,
         p_description: "Welcome points for creating an account",
       });
       if (pointsError) console.error("Unable to award welcome points", pointsError);
     }
   }
-  if (data.session) redirect("/account");
+  if (signedIn) redirect("/account");
+  if (duplicateRegistration) {
+    redirect(message("/account/login", pl ? "Konto już istnieje. Użyj poprzedniego hasła lub zresetuj hasło." : "An account already exists. Use the original password or reset it."));
+  }
   redirect("/account/register?registered=1");
 }
 
