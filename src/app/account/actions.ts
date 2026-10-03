@@ -19,6 +19,37 @@ function validEmail(value: string) {
   return value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+async function confirmPendingAccount(email: string) {
+  const admin = createAdminClient();
+  if (!admin) return false;
+
+  const normalizedEmail = email.toLowerCase();
+  const perPage = 200;
+
+  for (let page = 1; page <= 5; page += 1) {
+    const {data, error} = await admin.auth.admin.listUsers({page, perPage});
+    if (error) {
+      console.error("Unable to find the pending customer account", error.code || "unknown");
+      return false;
+    }
+
+    const user = data.users.find((candidate) => candidate.email?.toLowerCase() === normalizedEmail);
+    if (user) {
+      if (user.email_confirmed_at) return true;
+      const {error: confirmationError} = await admin.auth.admin.updateUserById(user.id, {email_confirm: true});
+      if (confirmationError) {
+        console.error("Unable to confirm the pending customer account", confirmationError.code || "unknown");
+        return false;
+      }
+      return true;
+    }
+
+    if (data.users.length < perPage) return false;
+  }
+
+  return false;
+}
+
 function signUpErrorMessage(code: string | undefined, pl: boolean) {
   switch (code) {
     case "email_address_invalid":
@@ -56,8 +87,18 @@ export async function signIn(formData: FormData) {
   if (!validEmail(email) || password.length === 0 || password.length > 128) {
     redirect(message("/account/login", "Email or password is incorrect."));
   }
-  const {error} = await supabase.auth.signInWithPassword({email, password});
+  let {error} = await supabase.auth.signInWithPassword({email, password});
 
+  // The hosted email provider may not deliver confirmation messages until a
+  // production SMTP sender is connected. A correct password is still required
+  // before a pending account can be activated through the server-only admin API.
+  if (error?.code === "email_not_confirmed" && (await confirmPendingAccount(email))) {
+    ({error} = await supabase.auth.signInWithPassword({email, password}));
+  }
+
+  if (error?.code === "email_not_confirmed") {
+    redirect(message("/account/login", "Your account is waiting for email confirmation. Please use Resend confirmation or contact support."));
+  }
   if (error) redirect(message("/account/login", "Email or password is incorrect."));
   redirect("/account");
 }
