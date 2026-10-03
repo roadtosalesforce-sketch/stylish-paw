@@ -30,8 +30,6 @@ export default async function Home() {
     getHomepageContent(locale),
     getShopSettings(locale),
   ]);
-  const story = homepage?.sections?.find((section) => section._type === "storyBlock");
-  const promise = homepage?.promise;
   const legacyRewards = homepage?.sections?.find((section) => section._type === "newsletterBlock");
   const instagram = homepage?.instagram;
   const instagramUrl = safeHttpsUrl(instagram?.profileUrl || settings?.instagram);
@@ -66,14 +64,6 @@ export default async function Home() {
           <p className="text-xs font-semibold uppercase tracking-[.2em] text-coral">{philosophy?.eyebrow || dict.home.philosophyEyebrow}</p>
           <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-medium uppercase leading-tight tracking-[.04em] text-charcoal sm:text-5xl">{philosophy?.title || dict.home.philosophyTitle}</h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{philosophy?.text || dict.home.philosophyText}</p>
-        </div>
-      </section>
-
-      <section className="py-24">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[.18em] text-sage-dark">{promise?.eyebrow || dict.home.promise}</p>
-          <h2 className="mt-4 text-3xl font-medium uppercase tracking-[.04em] text-charcoal sm:text-4xl">{promise?.title || story?.title || dict.home.storyTitle}</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">{promise?.text || story?.text || dict.home.storyText}</p>
         </div>
       </section>
 
