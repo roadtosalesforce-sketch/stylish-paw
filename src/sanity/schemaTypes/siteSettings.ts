@@ -30,18 +30,18 @@ export const siteSettingsType = defineType({
     defineField({name: "rewardLabel", title: "Reward description (English)", type: "string", group: "loyalty", description: "Describe the approved benefit. Do not promise a discount amount until the commercial rule is confirmed."}),
     defineField({name: "rewardLabelPl", title: "Reward description (Polish)", type: "string", group: "loyalty"}),
 
-    defineField({name: "contactEmail", title: "Contact email", type: "string", group: "contact"}),
-    defineField({name: "supportEmail", title: "Customer support email", type: "string", group: "contact"}),
-    defineField({name: "instagram", title: "Instagram URL", type: "url", group: "contact"}),
-    defineField({name: "socialLinks", title: "Other social links", type: "array", group: "contact", of: [{type: "object", fields: [{name: "platform", title: "Platform", type: "string", options: {list: ["Instagram", "TikTok", "Facebook", "Pinterest"]}}, {name: "url", title: "URL", type: "url"}]}]}),
+    defineField({name: "contactEmail", title: "Contact email", type: "string", group: "contact", validation: (rule) => rule.email()}),
+    defineField({name: "supportEmail", title: "Customer support email", type: "string", group: "contact", validation: (rule) => rule.email()}),
+    defineField({name: "instagram", title: "Instagram URL", type: "url", group: "contact", validation: (rule) => rule.uri({scheme: ["https"]})}),
+    defineField({name: "socialLinks", title: "Other social links", type: "array", group: "contact", of: [{type: "object", fields: [{name: "platform", title: "Platform", type: "string", options: {list: ["Instagram", "TikTok", "Facebook", "Pinterest"]}}, {name: "url", title: "URL", type: "url", validation: (rule) => rule.uri({scheme: ["https"]})}]}]}),
 
     defineField({name: "defaultSeoTitle", title: "Default Google title (English)", type: "string", group: "seo", validation: (rule) => rule.max(60)}),
     defineField({name: "defaultSeoDescription", title: "Default Google description (English)", type: "text", rows: 3, group: "seo", validation: (rule) => rule.max(160)}),
     defineField({name: "defaultSeoTitlePl", title: "Default Google title (Polish)", type: "string", group: "seo", validation: (rule) => rule.max(60)}),
     defineField({name: "defaultSeoDescriptionPl", title: "Default Google description (Polish)", type: "text", rows: 3, group: "seo", validation: (rule) => rule.max(160)}),
 
-    defineField({name: "footerColumns", title: "Footer columns (English)", type: "array", group: "footer", of: [{type: "object", fields: [{name: "title", title: "Column title", type: "string"}, {name: "links", title: "Links", type: "array", of: [{type: "object", fields: [{name: "label", title: "Label", type: "string"}, {name: "href", title: "Link", type: "string"}]}]}]}]}),
-    defineField({name: "footerColumnsPl", title: "Footer columns (Polish)", type: "array", group: "footer", of: [{type: "object", fields: [{name: "title", title: "Column title", type: "string"}, {name: "links", title: "Links", type: "array", of: [{type: "object", fields: [{name: "label", title: "Label", type: "string"}, {name: "href", title: "Link", type: "string"}]}]}]}]}),
+    defineField({name: "footerColumns", title: "Footer columns (English)", type: "array", group: "footer", of: [{type: "object", fields: [{name: "title", title: "Column title", type: "string"}, {name: "links", title: "Links", type: "array", of: [{type: "object", fields: [{name: "label", title: "Label", type: "string"}, {name: "href", title: "Link", type: "string", validation: (rule) => rule.custom((value) => typeof value !== "string" || value.length === 0 || (/^\/(?!\/)/.test(value) && !/[\\\u0000-\u001f\u007f]/.test(value)) || "Use a safe internal link beginning with one slash.")}]}]}]}]}),
+    defineField({name: "footerColumnsPl", title: "Footer columns (Polish)", type: "array", group: "footer", of: [{type: "object", fields: [{name: "title", title: "Column title", type: "string"}, {name: "links", title: "Links", type: "array", of: [{type: "object", fields: [{name: "label", title: "Label", type: "string"}, {name: "href", title: "Link", type: "string", validation: (rule) => rule.custom((value) => typeof value !== "string" || value.length === 0 || (/^\/(?!\/)/.test(value) && !/[\\\u0000-\u001f\u007f]/.test(value)) || "Use a safe internal link beginning with one slash.")}]}]}]}]}),
 
     // Old fields stay readable, but no longer clutter the editor; Homepage is the single source of truth.
     defineField({name: "heroTitle", title: "Legacy homepage headline", type: "string", hidden: true}),

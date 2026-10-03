@@ -13,12 +13,12 @@ export const pageType = defineType({
     defineField({name:"introPl",title:"Introduction (Polish)",type:"text",rows:3,group:"polish"}),
     defineField({name:"heroImage",title:"Hero image",type:"image",options:{hotspot:true},group:"content"}),
     defineField({name:"body",title:"Page content",type:"array",group:"content",of:[
-      defineArrayMember({type:"block",styles:[{title:"Normal",value:"normal"},{title:"Heading 2",value:"h2"},{title:"Heading 3",value:"h3"}],lists:[{title:"Bullets",value:"bullet"},{title:"Numbered",value:"number"}],marks:{annotations:[{name:"link",type:"object",title:"Link",fields:[{name:"href",type:"url",title:"URL"}]}]}}),
+      defineArrayMember({type:"block",styles:[{title:"Normal",value:"normal"},{title:"Heading 2",value:"h2"},{title:"Heading 3",value:"h3"}],lists:[{title:"Bullets",value:"bullet"},{title:"Numbered",value:"number"}],marks:{annotations:[{name:"link",type:"object",title:"Link",fields:[{name:"href",type:"url",title:"URL",validation:r=>r.uri({scheme:["https"]})}]}]}}),
       defineArrayMember({type:"image",options:{hotspot:true},fields:[{name:"alt",title:"Alternative text",type:"string"}]}),
       defineArrayMember({name:"infoBox",title:"Information box",type:"object",fields:[{name:"title",title:"Title",type:"string"},{name:"text",title:"Text",type:"text"},{name:"tone",title:"Tone",type:"string",options:{list:["Helpful","Important","Tip"]}}]}),
     ]}),
     defineField({name:"bodyPl",title:"Page content (Polish)",type:"array",group:"polish",of:[
-      defineArrayMember({type:"block",styles:[{title:"Normal",value:"normal"},{title:"Heading 2",value:"h2"},{title:"Heading 3",value:"h3"}],lists:[{title:"Bullets",value:"bullet"},{title:"Numbered",value:"number"}],marks:{annotations:[{name:"link",type:"object",title:"Link",fields:[{name:"href",type:"url",title:"URL"}]}]}}),
+      defineArrayMember({type:"block",styles:[{title:"Normal",value:"normal"},{title:"Heading 2",value:"h2"},{title:"Heading 3",value:"h3"}],lists:[{title:"Bullets",value:"bullet"},{title:"Numbered",value:"number"}],marks:{annotations:[{name:"link",type:"object",title:"Link",fields:[{name:"href",type:"url",title:"URL",validation:r=>r.uri({scheme:["https"]})}]}]}}),
       defineArrayMember({type:"image",options:{hotspot:true},fields:[{name:"alt",title:"Alternative text",type:"string"}]}),
       defineArrayMember({name:"infoBox",title:"Information box",type:"object",fields:[{name:"title",title:"Title",type:"string"},{name:"text",title:"Text",type:"text"},{name:"tone",title:"Tone",type:"string",options:{list:["Helpful","Important","Tip"]}}]}),
     ]}),

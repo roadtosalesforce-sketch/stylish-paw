@@ -25,8 +25,8 @@ export default async function LoginPage({searchParams}: {searchParams: Promise<{
         <p className="mt-2 text-sm text-stone-500">{pl ? "Witaj ponownie w Furry Fairy Pets." : "Welcome back to Furry Fairy Pets."}</p>
         {message && <p className="mt-5 rounded-xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900">{message}</p>}
         <form action={signIn} className="mt-7 space-y-5">
-          <label className="block text-sm font-bold">E-mail<input required name="email" type="email" autoComplete="email" className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 outline-none focus:border-coral focus:ring-2 focus:ring-coral/20" /></label>
-          <label className="block text-sm font-bold">{pl ? "Hasło" : "Password"}<input required name="password" type="password" autoComplete="current-password" className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 outline-none focus:border-coral focus:ring-2 focus:ring-coral/20" /></label>
+          <label className="block text-sm font-bold">E-mail<input required maxLength={254} name="email" type="email" autoComplete="email" className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 outline-none focus:border-coral focus:ring-2 focus:ring-coral/20" /></label>
+          <label className="block text-sm font-bold">{pl ? "Hasło" : "Password"}<input required maxLength={128} name="password" type="password" autoComplete="current-password" className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 outline-none focus:border-coral focus:ring-2 focus:ring-coral/20" /></label>
           <button className="w-full rounded-full bg-coral px-6 py-3.5 font-bold text-white shadow-sm transition hover:bg-coral-dark">{pl ? "Zaloguj się" : "Sign in"}</button>
         </form>
         <p className="mt-6 text-center text-sm text-stone-600">{pl ? "Nie masz konta?" : "New here?"} <Link className="font-bold text-coral hover:text-coral-dark" href="/account/register">{pl ? "Utwórz konto" : "Create an account"}</Link></p>

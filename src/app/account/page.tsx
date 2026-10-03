@@ -17,10 +17,10 @@ export default async function AccountPage() {
   const supabase = await createClient();
   const [ordersResult, loyaltyResult, settings] = await Promise.all([
     supabase
-      ? supabase.from("orders").select("id, created_at, amount_total, currency, status").order("created_at", {ascending: false})
+      ? supabase.from("orders").select("id, created_at, amount_total, currency, status").eq("user_id", user.id).order("created_at", {ascending: false})
       : Promise.resolve({data: [] as Order[]}),
     supabase
-      ? supabase.from("loyalty_accounts").select("points_balance, lifetime_points").maybeSingle()
+      ? supabase.from("loyalty_accounts").select("points_balance, lifetime_points").eq("user_id", user.id).maybeSingle()
       : Promise.resolve({data: null as LoyaltyAccount | null}),
     getShopSettings(locale),
   ]);

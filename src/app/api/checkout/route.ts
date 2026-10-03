@@ -11,6 +11,7 @@ import {getCurrentUser} from "@/lib/supabase/server";
 import {isVariantAvailable} from "@/lib/inventory";
 import {currencyMinorAmount, isCurrency, type Currency} from "@/lib/currency";
 import {getShopSettings} from "@/sanity/lib/content";
+import {getSiteOrigin, isTrustedRequestOrigin, noStoreJson, readLimitedJson} from "@/lib/security";
 
 export const runtime = "nodejs";
 
@@ -32,8 +33,15 @@ function isCheckoutItem(value: unknown): value is CheckoutItem {
   const item = value as Record<string, unknown>;
   return (
     typeof item.productId === "string" &&
+    /^[A-Za-z0-9._-]{1,128}$/.test(item.productId) &&
     typeof item.size === "string" &&
+    item.size.trim().length > 0 &&
+    item.size.length <= 64 &&
+    !/[\u0000-\u001f\u007f]/.test(item.size) &&
     typeof item.color === "string" &&
+    item.color.trim().length > 0 &&
+    item.color.length <= 64 &&
+    !/[\u0000-\u001f\u007f]/.test(item.color) &&
     Number.isInteger(item.quantity) &&
     Number(item.quantity) >= 1 &&
     Number(item.quantity) <= 10
@@ -48,19 +56,25 @@ function isCheckoutShipping(value: unknown): value is CheckoutShipping {
     typeof shipping.pointName === "string" &&
     INPOST_LOCKER_CODE_PATTERN.test(shipping.pointName.trim().toUpperCase()) &&
     (shipping.pointAddress === undefined ||
-      (typeof shipping.pointAddress === "string" && shipping.pointAddress.length <= 250))
+      (typeof shipping.pointAddress === "string" &&
+        shipping.pointAddress.length <= 250 &&
+        !/[\u0000-\u001f\u007f]/.test(shipping.pointAddress)))
   );
 }
 
 export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
 
-  let payload: unknown;
-  try {
-    payload = await request.json();
-  } catch {
-    return Response.json({error: getDictionary("pl").checkout.invalidRequest}, {status: 400});
+  if (!isTrustedRequestOrigin(request)) {
+    return noStoreJson({error: "Request origin is not allowed"}, {status: 403});
   }
+
+  const parsedBody = await readLimitedJson(request, 64 * 1024);
+  if (!parsedBody.ok) {
+    const status = parsedBody.reason === "too-large" ? 413 : parsedBody.reason === "content-type" ? 415 : 400;
+    return noStoreJson({error: getDictionary("pl").checkout.invalidRequest}, {status});
+  }
+  const payload = parsedBody.value;
 
   const requestedLocale =
     payload && typeof payload === "object" && "locale" in payload
@@ -75,7 +89,7 @@ export async function POST(request: Request) {
   const dict = getDictionary(locale);
 
   if (!secretKey) {
-    return Response.json({error: dict.checkout.activating}, {status: 503});
+    return noStoreJson({error: dict.checkout.activating}, {status: 503});
   }
 
   const requestedItems =
@@ -93,11 +107,28 @@ export async function POST(request: Request) {
     requestedItems.length > 50 ||
     !requestedItems.every(isCheckoutItem)
   ) {
-    return Response.json({error: dict.checkout.invalidCart}, {status: 400});
+    return noStoreJson({error: dict.checkout.invalidCart}, {status: 400});
   }
 
   if (!isCheckoutShipping(requestedShipping)) {
-    return Response.json({error: dict.checkout.invalidLocker}, {status: 400});
+    return noStoreJson({error: dict.checkout.invalidLocker}, {status: 400});
+  }
+
+  const groupedItems = new Map<string, CheckoutItem>();
+  for (const item of requestedItems) {
+    const normalizedItem = {...item, size: item.size.trim(), color: item.color.trim()};
+    const key = `${normalizedItem.productId}\u0000${normalizedItem.size}\u0000${normalizedItem.color}`;
+    const existing = groupedItems.get(key);
+    const quantity = (existing?.quantity || 0) + normalizedItem.quantity;
+    if (quantity > 10) {
+      return noStoreJson({error: dict.checkout.invalidCart}, {status: 400});
+    }
+    groupedItems.set(key, {...normalizedItem, quantity});
+  }
+  const items = [...groupedItems.values()];
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  if (totalQuantity > 100) {
+    return noStoreJson({error: dict.checkout.invalidCart}, {status: 400});
   }
 
   const products = await getProducts(locale);
@@ -107,7 +138,7 @@ export async function POST(request: Request) {
     const settings = await getShopSettings(locale);
     const eurRate = Number(settings?.eurRate) > 0 ? Number(settings?.eurRate) : 0.23;
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
-      requestedItems.map((item) => {
+      items.map((item) => {
         const product = productsById.get(item.productId);
         if (!product) throw new Error("PRODUCT_NOT_FOUND");
         if (!product.sizes.includes(item.size) || !product.colors.includes(item.color)) {
@@ -141,15 +172,12 @@ export async function POST(request: Request) {
         };
       });
 
-    const subtotalPln = requestedItems.reduce((sum, item) => {
+    const subtotalPln = items.reduce((sum, item) => {
       const product = productsById.get(item.productId);
       return sum + (product?.price || 0) * item.quantity;
     }, 0);
 
-    const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const siteUrl = configuredSiteUrl
-      ? configuredSiteUrl.replace(/\/$/, "")
-      : new URL(request.url).origin;
+    const siteUrl = getSiteOrigin(new URL(request.url).origin);
 
     const stripe = new Stripe(secretKey, {maxNetworkRetries: 2});
     const user = await getCurrentUser();
@@ -196,20 +224,20 @@ export async function POST(request: Request) {
       throw new Error("CHECKOUT_URL_MISSING");
     }
 
-    return Response.json({url: session.url});
+    return noStoreJson({url: session.url});
   } catch (error) {
     if (
       error instanceof Error &&
       ["PRODUCT_NOT_FOUND", "INVALID_VARIANT", "INVALID_PRICE", "INSUFFICIENT_STOCK"].includes(error.message)
     ) {
-      return Response.json(
+      return noStoreJson(
         {error: dict.checkout.changed},
         {status: 409},
       );
     }
 
     console.error("Unable to create Stripe Checkout session", error);
-    return Response.json(
+    return noStoreJson(
       {error: dict.checkout.failed},
       {status: 500},
     );

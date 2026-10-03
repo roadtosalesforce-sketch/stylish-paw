@@ -4,6 +4,7 @@ import type {ShopSettings} from "@/sanity/lib/content";
 import type {Dictionary} from "@/i18n/dictionaries";
 import {BrandLogo} from "./brand-logo";
 import {InstagramIcon} from "./instagram-icon";
+import {safeEmailHref, safeHttpsUrl, safeInternalHref} from "@/lib/safe-url";
 
 export function Footer({settings, dict}: {settings?: ShopSettings | null; dict: Dictionary}) {
   const shopName = settings?.shopName || "Furry Fairy Pets";
@@ -12,6 +13,8 @@ export function Footer({settings, dict}: {settings?: ShopSettings | null; dict: 
     {_key: "help", title: dict.footer.help, links: [{_key: "size", label: dict.footer.sizeGuide, href: "/pages/size-guide"}, {_key: "shipping", label: dict.footer.shippingReturns, href: "/pages/shipping-returns"}, {_key: "faq", label: dict.footer.faq, href: "/pages/faq"}]},
   ];
   const columns = settings?.footerColumns?.length ? settings.footerColumns : defaultColumns;
+  const instagramUrl = safeHttpsUrl(settings?.instagram);
+  const emailUrl = safeEmailHref(settings?.contactEmail || settings?.supportEmail);
 
   return (
     <footer className="mt-auto border-t border-stone-700 bg-[#292a25] text-stone-300">
@@ -27,11 +30,14 @@ export function Footer({settings, dict}: {settings?: ShopSettings | null; dict: 
           <div key={column._key}>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white">{column.title}</h3>
             <ul className="space-y-2 text-sm">
-              {column.links?.map((link) => link.href && link.label ? (
+              {column.links?.map((link) => {
+                const href = safeInternalHref(link.href, "");
+                return href && link.label ? (
                 <li key={link._key}>
-                  <Link href={link.href} className="transition-colors hover:text-coral">{link.label}</Link>
+                  <Link href={href} className="transition-colors hover:text-coral">{link.label}</Link>
                 </li>
-              ) : null)}
+                ) : null;
+              })}
             </ul>
           </div>
         ))}
@@ -50,8 +56,8 @@ export function Footer({settings, dict}: {settings?: ShopSettings | null; dict: 
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white">{dict.footer.stayClose}</h3>
           <p className="text-sm leading-relaxed text-stone-400">{dict.footer.stayText}</p>
           <div className="mt-4 flex gap-3">
-            {settings?.instagram && <a href={settings.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="rounded-full bg-white/10 p-2 transition hover:bg-white/20"><InstagramIcon className="h-4 w-4" /></a>}
-            {(settings?.contactEmail || settings?.supportEmail) && <a href={`mailto:${settings.contactEmail || settings.supportEmail}`} aria-label="Email" className="rounded-full bg-white/10 p-2 transition hover:bg-white/20"><Mail className="h-4 w-4" /></a>}
+            {instagramUrl && <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="rounded-full bg-white/10 p-2 transition hover:bg-white/20"><InstagramIcon className="h-4 w-4" /></a>}
+            {emailUrl && <a href={emailUrl} aria-label="Email" className="rounded-full bg-white/10 p-2 transition hover:bg-white/20"><Mail className="h-4 w-4" /></a>}
           </div>
         </div>
       </div>

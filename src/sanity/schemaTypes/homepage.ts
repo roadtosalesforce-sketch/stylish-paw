@@ -24,9 +24,9 @@ function heroSlidesField(name: "heroSlides" | "heroSlidesPl", title: string, gro
           defineField({name: "title", title: "Headline", type: "string", validation: (Rule) => Rule.max(90), hidden: ({parent}) => parent?.showText !== true}),
           defineField({name: "text", title: "Introduction", type: "text", rows: 3, validation: (Rule) => Rule.max(220), hidden: ({parent}) => parent?.showText !== true}),
           defineField({name: "primaryLabel", title: "Primary button", type: "string", hidden: ({parent}) => parent?.showText !== true}),
-          defineField({name: "primaryLink", title: "Primary link", type: "string", description: "Example: /shop?category=new", hidden: ({parent}) => parent?.showText !== true}),
+          defineField({name: "primaryLink", title: "Primary link", type: "string", description: "Example: /shop?category=new", hidden: ({parent}) => parent?.showText !== true, validation: (rule) => rule.custom((value) => !value || (/^\/(?!\/)/.test(value) && !/[\\\u0000-\u001f\u007f]/.test(value)) || "Use a safe internal link beginning with one slash.")}),
           defineField({name: "secondaryLabel", title: "Secondary button", type: "string", hidden: ({parent}) => parent?.showText !== true}),
-          defineField({name: "secondaryLink", title: "Secondary link", type: "string", description: "Example: /pages/size-guide", hidden: ({parent}) => parent?.showText !== true}),
+          defineField({name: "secondaryLink", title: "Secondary link", type: "string", description: "Example: /pages/size-guide", hidden: ({parent}) => parent?.showText !== true, validation: (rule) => rule.custom((value) => !value || (/^\/(?!\/)/.test(value) && !/[\\\u0000-\u001f\u007f]/.test(value)) || "Use a safe internal link beginning with one slash.")}),
           defineField({
             name: "textPosition",
             title: "Text position",
@@ -62,12 +62,12 @@ function instagramField(name: string, title: string, group: "english" | "polish"
     defineField({name: "eyebrow", title: "Small heading", type: "string"}),
     defineField({name: "title", title: "Headline", type: "string"}),
     defineField({name: "text", title: "Introduction", type: "text", rows: 3}),
-    defineField({name: "profileUrl", title: "Instagram profile URL", type: "url"}),
+    defineField({name: "profileUrl", title: "Instagram profile URL", type: "url", validation: (rule) => rule.uri({scheme: ["https"]})}),
     defineField({name: "profileLabel", title: "Profile button label", type: "string"}),
     defineField({name: "posts", title: "Featured Instagram posts", description: "Upload up to four approved images and link each one to its Instagram post.", type: "array", validation: (rule) => rule.max(4), of: [defineArrayMember({name: "instagramPost", title: "Instagram post", type: "object", fields: [
       defineField({name: "image", title: "Image", type: "image", options: {hotspot: true}, validation: (rule) => rule.required()}),
       defineField({name: "alt", title: "Alternative text", type: "string", validation: (rule) => rule.required()}),
-      defineField({name: "url", title: "Instagram post URL", type: "url"}),
+      defineField({name: "url", title: "Instagram post URL", type: "url", validation: (rule) => rule.uri({scheme: ["https"]})}),
     ], preview: {select: {title: "alt", media: "image"}}})]}),
   ]});
 }

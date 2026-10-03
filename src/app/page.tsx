@@ -10,6 +10,7 @@ import {getHomepageContent, getShopSettings} from "@/sanity/lib/content";
 import {getLocale} from "@/i18n/server";
 import {getDictionary} from "@/i18n/dictionaries";
 import {InstagramIcon} from "@/components/instagram-icon";
+import {safeHttpsUrl} from "@/lib/safe-url";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -33,7 +34,7 @@ export default async function Home() {
   const promise = homepage?.promise;
   const legacyRewards = homepage?.sections?.find((section) => section._type === "newsletterBlock");
   const instagram = homepage?.instagram;
-  const instagramUrl = instagram?.profileUrl || settings?.instagram;
+  const instagramUrl = safeHttpsUrl(instagram?.profileUrl || settings?.instagram);
   const instagramPosts = instagram?.posts?.filter((post) => post.image) || [];
   const philosophy = homepage?.philosophy;
   const rewards = homepage?.rewards;
@@ -93,13 +94,14 @@ export default async function Home() {
             <h2 className="mt-3 text-3xl font-medium uppercase tracking-[.055em] text-charcoal sm:text-4xl">{instagram?.title || dict.home.instagramTitle}</h2>
             <p className="mt-3 text-stone-600">{instagram?.text || dict.home.instagramText}</p>
           </div>
-          {instagramUrl && <a href={instagramUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-bold text-charcoal transition hover:text-coral"><InstagramIcon className="h-5 w-5" />{instagram?.profileLabel || dict.home.visitInstagram}</a>}
+          {instagramUrl && <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-bold text-charcoal transition hover:text-coral"><InstagramIcon className="h-5 w-5" />{instagram?.profileLabel || dict.home.visitInstagram}</a>}
         </div>
         {instagramPosts.length > 0 ? (
           <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
             {instagramPosts.map((post) => {
               const media = <Image src={post.image as string} alt={post.alt || "Furry Fairy Pets Instagram"} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition duration-500 group-hover:scale-105" />;
-              return post.url ? <a key={post._key} href={post.url} target="_blank" rel="noreferrer" className="group relative aspect-square overflow-hidden bg-stone-100">{media}</a> : <div key={post._key} className="group relative aspect-square overflow-hidden bg-stone-100">{media}</div>;
+              const postUrl = safeHttpsUrl(post.url);
+              return postUrl ? <a key={post._key} href={postUrl} target="_blank" rel="noopener noreferrer" className="group relative aspect-square overflow-hidden bg-stone-100">{media}</a> : <div key={post._key} className="group relative aspect-square overflow-hidden bg-stone-100">{media}</div>;
             })}
           </div>
         ) : null}

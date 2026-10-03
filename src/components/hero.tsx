@@ -5,6 +5,7 @@ import {ArrowRight, ChevronLeft, ChevronRight, Pause, Play} from "lucide-react";
 import {useEffect, useMemo, useState} from "react";
 import type {Dictionary} from "@/i18n/dictionaries";
 import type {HeroSlide, HomepageContent} from "@/sanity/lib/content";
+import {safeInternalHref} from "@/lib/safe-url";
 
 type HeroProps = {
   content?: HomepageContent["hero"];
@@ -74,6 +75,8 @@ export function Hero({content, slides, dict}: HeroProps) {
         const active = index === current;
         const showText = slide.showText === true && Boolean(slide.title);
         const alignRight = slide.textPosition === "right";
+        const primaryHref = safeInternalHref(slide.primaryLink, "");
+        const secondaryHref = safeInternalHref(slide.secondaryLink, "");
 
         return (
           <article
@@ -99,13 +102,13 @@ export function Hero({content, slides, dict}: HeroProps) {
                     <h1 className="text-4xl font-medium uppercase leading-[1.04] tracking-[.055em] sm:text-6xl">{slide.title}</h1>
                     {slide.text && <p className="mt-5 max-w-lg text-base leading-relaxed text-stone-700 sm:text-lg">{slide.text}</p>}
                     <div className="mt-7 flex flex-wrap gap-3">
-                      {slide.primaryLabel && slide.primaryLink && (
-                        <Link href={slide.primaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center bg-charcoal px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-white transition hover:bg-coral-dark">
+                      {slide.primaryLabel && primaryHref && (
+                        <Link href={primaryHref} tabIndex={active ? 0 : -1} className="inline-flex items-center bg-charcoal px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-white transition hover:bg-coral-dark">
                           {slide.primaryLabel} <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       )}
-                      {slide.secondaryLabel && slide.secondaryLink && (
-                        <Link href={slide.secondaryLink} tabIndex={active ? 0 : -1} className="inline-flex items-center border border-charcoal/40 bg-transparent px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-charcoal transition hover:border-charcoal">
+                      {slide.secondaryLabel && secondaryHref && (
+                        <Link href={secondaryHref} tabIndex={active ? 0 : -1} className="inline-flex items-center border border-charcoal/40 bg-transparent px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-charcoal transition hover:border-charcoal">
                           {slide.secondaryLabel}
                         </Link>
                       )}

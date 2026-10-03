@@ -31,7 +31,7 @@ export function Header({announcement, shopName, locale, dict, signedIn = false}:
 
         <nav className="hidden h-full items-center gap-6 lg:flex" aria-label="Primary">
           <details className="group relative flex h-full items-center">
-            <summary className="flex cursor-pointer list-none items-center gap-1 py-6 text-xs font-semibold uppercase tracking-[.12em] text-stone-700 transition hover:text-coral">
+            <summary className="flex h-full cursor-pointer list-none items-center gap-1 text-xs font-semibold uppercase leading-none tracking-[.12em] text-stone-700 transition hover:text-coral">
               {dict.common.shop} <ChevronDown className="h-3.5 w-3.5 transition group-open:rotate-180" />
             </summary>
             <div className="absolute left-1/2 top-full w-[34rem] -translate-x-1/2 border border-stone-200 bg-white p-7 shadow-xl">
@@ -46,7 +46,7 @@ export function Header({announcement, shopName, locale, dict, signedIn = false}:
               </Link>
             </div>
           </details>
-          {mainLinks.map(([label, href]) => <Link key={href} href={href} className="text-xs font-semibold uppercase tracking-[.12em] text-stone-700 transition hover:text-coral">{label}</Link>)}
+          {mainLinks.map(([label, href]) => <Link key={href} href={href} className="inline-flex h-full items-center text-xs font-semibold uppercase leading-none tracking-[.12em] text-stone-700 transition hover:text-coral">{label}</Link>)}
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">

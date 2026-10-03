@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import {createAdminClient} from "@/lib/supabase/admin";
 import {getShopSettings} from "@/sanity/lib/content";
 import {decrementInventoryForOrder} from "@/sanity/lib/inventory-admin";
+import {noStoreJson} from "@/lib/security";
 
 export const runtime = "nodejs";
 
@@ -9,36 +10,56 @@ export async function POST(request: Request) {
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!stripeSecret || !webhookSecret) {
-    return Response.json({error: "Webhook is not configured"}, {status: 503});
+    return noStoreJson({error: "Webhook is not configured"}, {status: 503});
   }
 
   const signature = request.headers.get("stripe-signature");
-  if (!signature) return Response.json({error: "Missing signature"}, {status: 400});
+  if (!signature) return noStoreJson({error: "Missing signature"}, {status: 400});
+
+  const contentLength = Number(request.headers.get("content-length"));
+  if (Number.isFinite(contentLength) && contentLength > 1024 * 1024) {
+    return noStoreJson({error: "Payload too large"}, {status: 413});
+  }
+
+  const rawBody = await request.text();
+  if (new TextEncoder().encode(rawBody).byteLength > 1024 * 1024) {
+    return noStoreJson({error: "Payload too large"}, {status: 413});
+  }
 
   const stripe = new Stripe(stripeSecret);
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(await request.text(), signature, webhookSecret);
+    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch {
-    return Response.json({error: "Invalid signature"}, {status: 400});
+    return noStoreJson({error: "Invalid signature"}, {status: 400});
   }
 
   if (
     event.type !== "checkout.session.completed" &&
     event.type !== "checkout.session.async_payment_succeeded"
   ) {
-    return Response.json({received: true});
+    return noStoreJson({received: true});
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
+  if (session.payment_status !== "paid") {
+    return noStoreJson({received: true});
+  }
+  if (session.metadata?.store !== "Furry Fairy Pets") {
+    return noStoreJson({error: "Unknown checkout source"}, {status: 400});
+  }
+
   const admin = createAdminClient();
-  if (!admin) return Response.json({error: "Order database is not configured"}, {status: 503});
+  if (!admin) return noStoreJson({error: "Order database is not configured"}, {status: 503});
 
   const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
     limit: 100,
     expand: ["data.price.product"],
   });
-  const userId = session.metadata?.user_id || null;
+  const metadataUserId = session.metadata?.user_id || session.client_reference_id;
+  const userId = metadataUserId && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(metadataUserId)
+    ? metadataUserId
+    : null;
   const lineItemDetails = lineItems.data.map((item) => {
     const stripeProduct = item.price?.product;
     const metadata =
@@ -83,18 +104,18 @@ export async function POST(request: Request) {
 
   if (error) {
     console.error("Unable to store Stripe order", error);
-    return Response.json({error: "Unable to store order"}, {status: 500});
+    return noStoreJson({error: "Unable to store order"}, {status: 500});
   }
 
   try {
     const inventory = await decrementInventoryForOrder(session.id, purchasedItems);
     if (!inventory.configured && purchasedItems.length > 0) {
       console.error("SANITY_WRITE_TOKEN is required for automatic inventory updates");
-      return Response.json({error: "Inventory automation is not configured"}, {status: 503});
+      return noStoreJson({error: "Inventory automation is not configured"}, {status: 503});
     }
   } catch (inventoryError) {
     console.error("Unable to update Sanity inventory", inventoryError);
-    return Response.json({error: "Unable to update inventory"}, {status: 500});
+    return noStoreJson({error: "Unable to update inventory"}, {status: 500});
   }
 
   if (userId) {
@@ -114,11 +135,11 @@ export async function POST(request: Request) {
         });
         if (pointsError) {
           console.error("Unable to award loyalty points", pointsError);
-          return Response.json({error: "Unable to award loyalty points"}, {status: 500});
+          return noStoreJson({error: "Unable to award loyalty points"}, {status: 500});
         }
       }
     }
   }
 
-  return Response.json({received: true});
+  return noStoreJson({received: true});
 }

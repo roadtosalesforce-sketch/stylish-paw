@@ -20,7 +20,6 @@ type InventoryDocument = {
     sku?: string;
     stock?: number;
   }>;
-  processedOrderIds?: string[];
 };
 
 export type InventoryUpdateResult = {
@@ -60,23 +59,41 @@ export async function decrementInventoryForOrder(
   }
 
   const productIds = [...new Set(purchasedItems.map((item) => item.productId))];
+  const markerId = `inventoryOrder.${orderId}`;
+  const alreadyProcessed = await client.fetch<string | null>(
+    `*[_id == $markerId][0]._id`,
+    {markerId},
+  );
+  if (alreadyProcessed) {
+    return {configured: true, updatedProducts: 0, skippedProducts: productIds.length};
+  }
+
   const products = await client.fetch<InventoryDocument[]>(
     `*[_type == "product" && _id in $productIds]{
       _id,
       _rev,
       trackInventory,
-      inventoryVariants[]{_key, size, color, sku, stock},
-      processedOrderIds
+      inventoryVariants[]{_key, size, color, sku, stock}
     }`,
     {productIds},
   );
 
-  let transaction = client.transaction();
+  if (products.length !== productIds.length) {
+    throw new Error("MISSING_PRODUCT");
+  }
+
+  let transaction = client.transaction().createIfNotExists({
+    _id: markerId,
+    _type: "inventoryOrder",
+    orderId,
+    productIds,
+    processedAt: new Date().toISOString(),
+  });
   let updatedProducts = 0;
   let skippedProducts = 0;
 
   for (const product of products) {
-    if (!product.trackInventory || product.processedOrderIds?.includes(orderId)) {
+    if (!product.trackInventory) {
       skippedProducts += 1;
       continue;
     }
@@ -103,16 +120,13 @@ export async function decrementInventoryForOrder(
       if (!matchingVariant) throw new Error(`MISSING_VARIANT:${product._id}`);
     }
 
-    const processedOrderIds = [...(product.processedOrderIds || []).slice(-99), orderId];
     transaction = transaction.patch(product._id, (patch) =>
-      patch.ifRevisionId(product._rev).set({inventoryVariants: nextVariants, processedOrderIds}),
+      patch.ifRevisionId(product._rev).set({inventoryVariants: nextVariants}),
     );
     updatedProducts += 1;
   }
 
-  if (updatedProducts > 0) {
-    await transaction.commit({visibility: "sync"});
-  }
+  await transaction.commit({visibility: "sync"});
 
   return {configured: true, updatedProducts, skippedProducts};
 }

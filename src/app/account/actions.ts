@@ -5,6 +5,7 @@ import {redirect} from "next/navigation";
 import {createClient} from "@/lib/supabase/server";
 import {createAdminClient} from "@/lib/supabase/admin";
 import {getShopSettings} from "@/sanity/lib/content";
+import {getSiteOrigin} from "@/lib/security";
 
 function text(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
@@ -14,12 +15,19 @@ function message(path: string, value: string) {
   return `${path}?message=${encodeURIComponent(value)}`;
 }
 
+function validEmail(value: string) {
+  return value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 export async function signIn(formData: FormData) {
   const supabase = await createClient();
   if (!supabase) redirect(message("/account/login", "Membership is being activated."));
 
   const email = text(formData, "email");
   const password = text(formData, "password");
+  if (!validEmail(email) || password.length === 0 || password.length > 128) {
+    redirect(message("/account/login", "Email or password is incorrect."));
+  }
   const {error} = await supabase.auth.signInWithPassword({email, password});
 
   if (error) redirect(message("/account/login", "Email or password is incorrect."));
@@ -35,11 +43,17 @@ export async function signUp(formData: FormData) {
   const fullName = text(formData, "fullName");
   const email = text(formData, "email");
   const password = text(formData, "password");
-  if (password.length < 8) {
+  if (fullName.length < 2 || fullName.length > 100 || /[\u0000-\u001f\u007f]/.test(fullName)) {
+    redirect(message("/account/register", pl ? "Wpisz prawidłowe imię i nazwisko." : "Enter a valid full name."));
+  }
+  if (!validEmail(email)) {
+    redirect(message("/account/register", pl ? "Wpisz prawidłowy adres e-mail." : "Enter a valid email address."));
+  }
+  if (password.length < 8 || password.length > 128) {
     redirect(message("/account/register", pl ? "Hasło musi zawierać co najmniej 8 znaków." : "Password must contain at least 8 characters."));
   }
 
-  const origin = (await headers()).get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "https://www.furryfairypets.com";
+  const origin = getSiteOrigin((await headers()).get("origin"));
   const {data, error} = await supabase.auth.signUp({
     email,
     password,
@@ -49,7 +63,10 @@ export async function signUp(formData: FormData) {
     },
   });
 
-  if (error) redirect(message("/account/register", error.message));
+  if (error) {
+    console.error("Unable to create customer account", error.code || "unknown");
+    redirect(message("/account/register", pl ? "Nie udało się utworzyć konta. Spróbuj ponownie później." : "We could not create the account. Please try again later."));
+  }
   if (data.user) {
     const [admin, settings] = await Promise.all([
       Promise.resolve(createAdminClient()),

@@ -5,6 +5,7 @@ import {PortableText} from "next-sanity";
 import {getDictionary} from "@/i18n/dictionaries";
 import {getLocale} from "@/i18n/server";
 import {getContentPage} from "@/sanity/lib/content";
+import {PortableLink} from "@/components/portable-link";
 
 type Props = {params: Promise<{slug: string}>};
 
@@ -50,6 +51,7 @@ export default async function ContentPage({params}: Props) {
                 bullet: ({children}) => <ul className="list-disc space-y-2 pl-6">{children}</ul>,
                 number: ({children}) => <ol className="list-decimal space-y-2 pl-6">{children}</ol>,
               },
+              marks: {link: PortableLink},
               types: {
                 infoBox: ({value}) => {
                   const info = value as {title?: string; text?: string};
