@@ -94,6 +94,16 @@ export function Hero({content, slides, dict}: HeroProps) {
             </picture>
 
             {showText && (
+              <div
+                aria-hidden="true"
+                className={`absolute inset-0 ${alignRight
+                  ? "bg-[linear-gradient(270deg,rgba(15,16,14,.6)_0%,rgba(15,16,14,.28)_42%,transparent_76%)]"
+                  : "bg-[linear-gradient(90deg,rgba(15,16,14,.6)_0%,rgba(15,16,14,.28)_42%,transparent_76%)]"
+                }`}
+              />
+            )}
+
+            {showText && (
               <div className="relative mx-auto flex h-full max-w-7xl items-end px-5 pb-16 pt-16 sm:px-8 lg:px-12">
                   <div className={`max-w-xl text-white [text-shadow:0_2px_18px_rgba(0,0,0,.65)] ${alignRight ? "ml-auto" : ""}`}>
                     {slide.eyebrow && (
