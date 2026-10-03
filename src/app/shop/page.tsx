@@ -8,16 +8,15 @@ import {getLocale} from "@/i18n/server";
 import {getDictionary} from "@/i18n/dictionaries";
 
 interface ShopPageProps {
-  searchParams: Promise<{category?: string; pet?: string; fit?: string}>;
+  searchParams: Promise<{category?: string; fit?: string}>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const {category, pet, fit} = await searchParams;
+  const {category, fit} = await searchParams;
   const locale = await getLocale();
   const dict = getDictionary(locale);
   const products = await getProducts(locale);
   const filtered = products.filter((p, index) => {
-    if (pet && p.petType !== pet && p.petType !== "both") return false;
     if (fit && !p.fitProfiles?.includes(fit as FitProfile)) return false;
     if (!category || category === "all") return true;
     if (category === "new") return index < 6;
@@ -28,7 +27,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const activeCategory =
     category && category !== "all"
       ? category === "new" ? dict.shop.newArrivals : category === "bestsellers" ? dict.shop.bestSellers : dict.common.categories[category as keyof typeof dict.common.categories] || category
-      : pet ? (pet === "dog" ? dict.shop.forDogs : dict.shop.forCats) : dict.shop.allProducts;
+      : dict.shop.allProducts;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">

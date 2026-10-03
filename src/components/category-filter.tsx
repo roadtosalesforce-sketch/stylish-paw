@@ -4,17 +4,16 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { categories } from "@/data/products";
 import type {Dictionary} from "@/i18n/dictionaries";
-import {Cat, Dog, PawPrint} from "lucide-react";
 
 export function CategoryFilter({dict}: {dict: Dictionary}) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const active = searchParams.get("category") ?? "all";
-  const activePet = searchParams.get("pet") ?? "all";
   const activeFit = searchParams.get("fit") ?? "all";
 
   function selectCategory(id: string) {
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("pet");
     if (id === "all") {
       params.delete("category");
     } else {
@@ -24,16 +23,9 @@ export function CategoryFilter({dict}: {dict: Dictionary}) {
     router.push(query ? `/shop?${query}` : "/shop");
   }
 
-  function selectPet(pet: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (pet === "all") params.delete("pet");
-    else params.set("pet", pet);
-    const query = params.toString();
-    router.push(query ? `/shop?${query}` : "/shop");
-  }
-
   function selectFit(fit: string) {
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("pet");
     if (fit === "all") params.delete("fit");
     else params.set("fit", fit);
     const query = params.toString();
@@ -42,22 +34,6 @@ export function CategoryFilter({dict}: {dict: Dictionary}) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2" aria-label={dict.shop.filterByPet}>
-        {[
-          ["all", dict.shop.allPets, PawPrint],
-          ["dog", dict.shop.forDogs, Dog],
-          ["cat", dict.shop.forCats, Cat],
-        ].map(([value, label, Icon]) => (
-          <button
-            key={value as string}
-            type="button"
-            onClick={() => selectPet(value as string)}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${activePet === value ? "bg-sage-dark text-white shadow-sm" : "bg-[#faf8f2] text-[#5f5b52] ring-1 ring-[#ded9cc] hover:bg-[#f1eee4] hover:ring-sage-dark/40"}`}
-          >
-            <Icon className="h-4 w-4" /> {label as string}
-          </button>
-        ))}
-      </div>
       <div className="flex flex-wrap gap-2" aria-label={dict.shop.filterByCategory}>
         {categories.map((cat) => (
           <button

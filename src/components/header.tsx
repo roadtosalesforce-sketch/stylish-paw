@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {ChevronDown, Menu, UserRound, X} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {BrandLogo} from "./brand-logo";
 import {CartButton} from "./cart-button";
 import {CurrencySwitcher} from "./currency-switcher";
@@ -11,6 +11,7 @@ import type {Dictionary, Locale} from "@/i18n/dictionaries";
 
 export function Header({announcement, shopName, locale, dict, signedIn = false}: {announcement?: string; shopName?: string; locale: Locale; dict: Dictionary; signedIn?: boolean}) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const shopMenuRef = useRef<HTMLDetailsElement>(null);
   const categoryLinks = [
     [dict.common.categories.clothing, "/categories/clothing"],
     [dict.common.categories["collars-leashes"], "/categories/collars-leashes"],
@@ -23,6 +24,27 @@ export function Header({announcement, shopName, locale, dict, signedIn = false}:
     [dict.header.aboutUs, "/pages/about-us"],
   ] as const;
 
+  function closeShopMenu() {
+    shopMenuRef.current?.removeAttribute("open");
+  }
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (!shopMenuRef.current?.contains(event.target as Node)) closeShopMenu();
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") closeShopMenu();
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200 bg-white/95 backdrop-blur-md">
       <div className="bg-[#ebe8df] px-4 py-2 text-center text-[10px] font-semibold uppercase tracking-[.18em] text-charcoal sm:text-[11px]">{announcement || dict.header.announcement}</div>
@@ -30,16 +52,16 @@ export function Header({announcement, shopName, locale, dict, signedIn = false}:
         <Link href="/" aria-label={`${shopName || "Furry Fairy Pets"} — ${dict.common.home}`}><BrandLogo shopName={shopName} /></Link>
 
         <nav className="hidden h-full items-center gap-6 lg:flex" aria-label="Primary">
-          <details className="group relative flex h-full items-center">
+          <details ref={shopMenuRef} className="group relative flex h-full items-center">
             <summary className="flex h-full cursor-pointer list-none items-center gap-1 text-xs font-semibold uppercase leading-none tracking-[.12em] text-stone-700 transition hover:text-coral">
               {dict.common.shop} <ChevronDown className="h-3.5 w-3.5 transition group-open:rotate-180" />
             </summary>
             <div className="absolute left-1/2 top-full w-[34rem] -translate-x-1/2 border border-stone-200 bg-white p-7 shadow-xl">
               <p className="text-xs font-bold uppercase tracking-[.16em] text-stone-400">{dict.common.shop}</p>
               <div className="mt-4 grid gap-2">
-                {categoryLinks.map(([label, href]) => <Link key={href} href={href} className="border-b border-stone-100 px-1 py-3 text-sm font-semibold uppercase tracking-[.08em] text-charcoal transition last:border-0 hover:text-coral">{label}<span className="float-right" aria-hidden="true">→</span></Link>)}
+                {categoryLinks.map(([label, href]) => <Link onClick={closeShopMenu} key={href} href={href} className="border-b border-stone-100 px-1 py-3 text-sm font-semibold uppercase tracking-[.08em] text-charcoal transition last:border-0 hover:text-coral">{label}<span className="float-right" aria-hidden="true">→</span></Link>)}
               </div>
-              <Link href="/categories/essentials" className="mt-5 block bg-[#f1efe9] p-5">
+              <Link onClick={closeShopMenu} href="/categories/essentials" className="mt-5 block bg-[#f1efe9] p-5">
                 <p className="text-xs font-bold uppercase tracking-[.16em] text-coral">{dict.header.seasonalEdit}</p>
                 <p className="mt-2 font-display text-xl font-bold text-charcoal">{dict.header.rainyTitle}</p>
                 <span className="mt-3 inline-block text-sm font-bold text-charcoal">{dict.header.exploreRainwear} →</span>

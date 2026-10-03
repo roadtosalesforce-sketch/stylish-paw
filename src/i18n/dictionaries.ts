@@ -6,21 +6,21 @@ export const dictionaries = {
   en: {
     meta: {
       title: "Furry Fairy Pets — Premium Pet Essentials",
-      description: "Thoughtfully selected essentials for dogs and cats that make everyday life easier, cleaner, calmer and more enjoyable.",
+      description: "Thoughtfully selected essentials for dogs that make everyday life easier, cleaner, calmer and more enjoyable.",
     },
     common: {
-      home: "Home", shop: "Shop", all: "All", dogs: "Dogs", cats: "Cats",
+      home: "Home", shop: "Shop", all: "All", dogs: "Dogs",
       categories: {all: "All", clothing: "Clothing", "collars-leashes": "Collars & Leashes", essentials: "Essentials", walk: "Walk", play: "Play", eat: "Eat", care: "Care", rest: "Rest", wear: "Wear", sweaters: "Sweaters", raincoats: "Raincoats", costumes: "Costumes", accessories: "Accessories", outerwear: "Outerwear"},
       badges: {New: "New", Bestseller: "Bestseller", Limited: "Limited", Sale: "Sale", Handmade: "Handmade", Seasonal: "Seasonal", Holiday: "Holiday"},
     },
     header: {
       announcement: "Less, but better · Free InPost delivery from 149 PLN",
       clothing: "Clothing", discover: "Discover", byPet: "By Pet", newArrivals: "New Arrivals", bestSellers: "Best Sellers", shopAll: "Shop All",
-      giftsDogs: "Gifts for Dogs", giftsCats: "Gifts for Cats", essentials: "Everyday Essentials", celebration: "Celebration Looks", sizeFit: "Size & Fit",
+      giftsDogs: "Gifts for Dogs", essentials: "Everyday Essentials", celebration: "Celebration Looks", sizeFit: "Size & Fit",
       seasonalEdit: "Seasonal Essentials", rainyTitle: "Useful picks for the season", exploreRainwear: "Explore essentials", blog: "Blog", aboutUs: "About Us", openMenu: "Open menu", language: "Language", currency: "Currency", signIn: "Sign in", signInRegister: "Sign in / Register", myAccount: "My account",
     },
     footer: {
-      description: "Premium pet essentials, carefully selected to make life with dogs and cats easier, cleaner and calmer.",
+      description: "Premium dog essentials, carefully selected to make life with dogs easier, cleaner and calmer.",
       shop: "Shop", help: "Help", about: "About", allProducts: "All Products", newArrivals: "New Arrivals", bestSellers: "Best Sellers",
       sizeGuide: "Size Guide", shippingReturns: "Shipping & Returns", faq: "FAQ", ourStory: "Our Story", careGuide: "Care Guide", contact: "Contact",
       stayClose: "Stay close", stayText: "Useful ideas, selected essentials and a little everyday magic.", copyright: "Less, but better — for life with pets.",
@@ -49,13 +49,13 @@ export const dictionaries = {
       philosophyEyebrow: "Why Furry Fairy Pets", philosophyTitle: "We make everyday life with pets feel easier.", philosophyText: "Fewer, better choices—selected for comfort, usefulness and the moments you share together.", shopBestsellers: "Shop Best Sellers", browseCollections: "Browse the essentials", collectionsTitle: "Shop by Category", collectionsText: "Three simple collections, each with a clear purpose.", bestsellerProof: "Selected for comfort, usefulness and lasting quality — because practical things can look beautiful too.", whyTitle: "Less, but better", whyItems: [["Useful by design", "Every product must solve a real everyday problem."], ["Calm choices", "Clear categories and honest information make choosing easier."], ["Made for real life", "Comfort, care and easy routines come before trends."]], instagramEyebrow: "From our community", instagramTitle: "Follow the everyday magic", instagramText: "See new arrivals, real-life inspiration and moments shared by the Furry Fairy family.", visitInstagram: "Visit Instagram", rewardsEyebrow: "Furry Fairy Club", rewardsTitle: "Join the Family & Start Earning Points", rewardsText: "Create an account today. Your purchases can earn points and bring you closer to member rewards.", createAccount: "Create account",
     },
     shop: {
-      newArrivals: "New Arrivals", bestSellers: "Best Sellers", forDogs: "For Dogs", forCats: "For Cats", allProducts: "All Products", item: "item", items: "items",
+      newArrivals: "New Arrivals", bestSellers: "Best Sellers", allProducts: "All Products", item: "item", items: "items",
       noProducts: "No styles match these filters yet", tryFilter: "Clear the filters or explore the full collection", colours: "colours", sizes: "sizes", viewProduct: "View product",
-      filterByPet: "Filter by pet", filterByCategory: "Filter by category", allPets: "All pets", clearFilters: "View all products", quickAdd: "Quick add", quickViewTitle: "Choose options", closeQuickView: "Close quick view",
+      filterByCategory: "Filter by category", clearFilters: "View all products", quickAdd: "Quick add", quickViewTitle: "Choose options", closeQuickView: "Close quick view",
       specialFits: "Special Fits", filterByFit: "Filter by special fit", allFits: "All fits", fitDachshund: "Dachshund", fitSighthound: "Sighthound", fitBulldog: "Bulldog", fitSmallDog: "Small dogs", fitLargeDog: "Large dogs", fitPuppy: "Puppies",
     },
     product: {
-      for: "For", bothPets: "dogs & cats", comfortFit: "Comfort-led fit", secureCheckout: "Secure checkout", clearSupport: "Clear support",
+      for: "For", comfortFit: "Comfort-led fit", secureCheckout: "Secure checkout", clearSupport: "Clear support",
       chooseSize: "Choose size", chooseColour: "Choose colour", quantity: "Quantity", added: "Added to cart ✓", add: "Add to Cart", buy: "Buy Now",
       outOfStock: "Out of stock", onlyLeft: "Only {count} left",
       fitCare: "Fit & care", fitCareText: "Check the size guide before ordering. Follow the care label supplied with the product to preserve its shape and colour.",
@@ -68,7 +68,7 @@ export const dictionaries = {
       link: "Size guide & how to measure", eyebrow: "A better fit starts here", title: "Measure your pet", close: "Close size guide",
       steps: [["Neck", "Measure where the collar naturally sits."], ["Chest", "Measure the widest point behind the front legs."], ["Back", "Measure from the collar line to the base of the tail."]],
       note: "If your pet falls between sizes, choose the larger size for comfort. Product-specific measurements will appear here when entered in Sanity.",
-      finderTitle: "Find your pet's size", finderText: "Chest measurement is the most important. Weight helps us check the result.", breed: "Breed", chooseBreed: "Choose breed", breeds: ["French Bulldog", "Toy Poodle", "British Shorthair", "Shih Tzu", "Dachshund", "Mixed / Other"], weight: "Weight (kg)", chest: "Chest (cm)", recommendation: "Suggested size", checkMeasurements: "Check the full table before ordering.", noMatch: "These measurements fall between our listed sizes. Choose the larger size or contact us before ordering.", measurementsPending: "Product-specific measurements have not been entered in Sanity yet.", size: "Size", neck: "Neck", chestShort: "Chest", back: "Back", weightShort: "Weight",
+      finderTitle: "Find your dog's size", finderText: "Chest measurement is the most important. Weight helps us check the result.", breed: "Breed", chooseBreed: "Choose breed", breeds: ["French Bulldog", "Toy Poodle", "Shih Tzu", "Dachshund", "Mixed / Other"], weight: "Weight (kg)", chest: "Chest (cm)", recommendation: "Suggested size", checkMeasurements: "Check the full table before ordering.", noMatch: "These measurements fall between our listed sizes. Choose the larger size or contact us before ordering.", measurementsPending: "Product-specific measurements have not been entered in Sanity yet.", size: "Size", neck: "Neck", chestShort: "Chest", back: "Back", weightShort: "Weight",
     },
     cart: {
       title: "Shopping Cart", emptyTitle: "Your cart is empty", emptyText: "Looks like your pet's wardrobe needs some love!", startShopping: "Start Shopping", remove: "Remove", clear: "Clear cart",
@@ -90,17 +90,17 @@ export const dictionaries = {
   pl: {
     meta: {
       title: "Furry Fairy Pets — Premium Pet Essentials",
-      description: "Starannie wybrane akcesoria dla psów i kotów, które ułatwiają codzienne życie, pomagają zachować czystość i wprowadzają więcej spokoju.",
+      description: "Starannie wybrane akcesoria dla psów, które ułatwiają codzienne życie, pomagają zachować czystość i wprowadzają więcej spokoju.",
     },
     common: {
-      home: "Strona główna", shop: "Sklep", all: "Wszystkie", dogs: "Psy", cats: "Koty",
+      home: "Strona główna", shop: "Sklep", all: "Wszystkie", dogs: "Psy",
       categories: {all: "Wszystkie", clothing: "Ubrania", "collars-leashes": "Obroże i smycze", essentials: "Essentials", walk: "Spacer", play: "Zabawa", eat: "Jedzenie", care: "Pielęgnacja", rest: "Odpoczynek", wear: "Ubrania", sweaters: "Swetry", raincoats: "Kurtki przeciwdeszczowe", costumes: "Kostiumy", accessories: "Akcesoria", outerwear: "Odzież wierzchnia"},
       badges: {New: "Nowość", Bestseller: "Bestseller", Limited: "Limitowany", Sale: "Wyprzedaż", Handmade: "Ręcznie wykonany", Seasonal: "Sezonowy", Holiday: "Świąteczny"},
     },
     header: {
       announcement: "Mniej, ale lepiej · Darmowa dostawa InPost od 149 PLN",
       clothing: "Ubrania", discover: "Odkrywaj", byPet: "Dla pupila", newArrivals: "Nowości", bestSellers: "Bestsellery", shopAll: "Wszystkie produkty",
-      giftsDogs: "Prezenty dla psów", giftsCats: "Prezenty dla kotów", essentials: "Na co dzień", celebration: "Na wyjątkowe okazje", sizeFit: "Rozmiar i dopasowanie",
+      giftsDogs: "Prezenty dla psów", essentials: "Na co dzień", celebration: "Na wyjątkowe okazje", sizeFit: "Rozmiar i dopasowanie",
       seasonalEdit: "Sezonowe essentials", rainyTitle: "Przydatne wybory na ten sezon", exploreRainwear: "Odkryj essentials", blog: "Blog", aboutUs: "O nas", openMenu: "Otwórz menu", language: "Język", currency: "Waluta", signIn: "Zaloguj się", signInRegister: "Logowanie / Rejestracja", myAccount: "Moje konto",
     },
     footer: {
@@ -133,13 +133,13 @@ export const dictionaries = {
       philosophyEyebrow: "Dlaczego Furry Fairy Pets", philosophyTitle: "Ułatwiamy codzienne życie z pupilem.", philosophyText: "Mniej, ale lepiej — wybory stworzone z myślą o wygodzie, funkcji i wspólnych chwilach.", shopBestsellers: "Zobacz bestsellery", browseCollections: "Odkryj essentials", collectionsTitle: "Kupuj według kategorii", collectionsText: "Trzy proste kolekcje, każda z jasnym przeznaczeniem.", bestsellerProof: "Wybrane z myślą o wygodzie, funkcjonalności i jakości — bo praktyczne rzeczy też mogą wyglądać pięknie.", whyTitle: "Mniej, ale lepiej", whyItems: [["Funkcja w każdym detalu", "Każdy produkt musi rozwiązywać realny, codzienny problem."], ["Spokojny wybór", "Czytelne kategorie i uczciwe informacje ułatwiają decyzję."], ["Do prawdziwego życia", "Komfort, pielęgnacja i łatwe rytuały są ważniejsze niż chwilowe trendy."]], instagramEyebrow: "Od naszej społeczności", instagramTitle: "Obserwuj codzienną magię", instagramText: "Zobacz nowości, inspiracje z prawdziwego życia i chwile udostępniane przez rodzinę Furry Fairy.", visitInstagram: "Odwiedź Instagram", rewardsEyebrow: "Furry Fairy Club", rewardsTitle: "Dołącz do rodziny i zacznij zbierać punkty", rewardsText: "Utwórz konto już dziś. Zakupy mogą dawać punkty i przybliżać Cię do nagród klubowych.", createAccount: "Utwórz konto",
     },
     shop: {
-      newArrivals: "Nowości", bestSellers: "Bestsellery", forDogs: "Dla psów", forCats: "Dla kotów", allProducts: "Wszystkie produkty", item: "produkt", items: "produktów",
+      newArrivals: "Nowości", bestSellers: "Bestsellery", allProducts: "Wszystkie produkty", item: "produkt", items: "produktów",
       noProducts: "Nie mamy jeszcze modeli pasujących do tych filtrów", tryFilter: "Wyczyść filtry lub zobacz całą kolekcję", colours: "kolory", sizes: "rozmiary", viewProduct: "Zobacz produkt",
-      filterByPet: "Filtruj według pupila", filterByCategory: "Filtruj według kategorii", allPets: "Wszystkie pupile", clearFilters: "Zobacz wszystkie produkty", quickAdd: "Szybki wybór", quickViewTitle: "Wybierz opcje", closeQuickView: "Zamknij szybki podgląd",
+      filterByCategory: "Filtruj według kategorii", clearFilters: "Zobacz wszystkie produkty", quickAdd: "Szybki wybór", quickViewTitle: "Wybierz opcje", closeQuickView: "Zamknij szybki podgląd",
       specialFits: "Specjalne kroje", filterByFit: "Filtruj według kroju", allFits: "Wszystkie kroje", fitDachshund: "Jamnik", fitSighthound: "Chart", fitBulldog: "Buldog", fitSmallDog: "Małe psy", fitLargeDog: "Duże psy", fitPuppy: "Szczenięta",
     },
     product: {
-      for: "Dla", bothPets: "psów i kotów", comfortFit: "Wygodny krój", secureCheckout: "Bezpieczna płatność", clearSupport: "Jasne zasady",
+      for: "Dla", comfortFit: "Wygodny krój", secureCheckout: "Bezpieczna płatność", clearSupport: "Jasne zasady",
       chooseSize: "Wybierz rozmiar", chooseColour: "Wybierz kolor", quantity: "Ilość", added: "Dodano do koszyka ✓", add: "Dodaj do koszyka", buy: "Kup teraz",
       outOfStock: "Brak w magazynie", onlyLeft: "Pozostało tylko: {count}",
       fitCare: "Dopasowanie i pielęgnacja", fitCareText: "Przed zamówieniem sprawdź tabelę rozmiarów. Postępuj zgodnie z instrukcją pielęgnacji dołączoną do produktu, aby zachować jego kształt i kolor.",
@@ -152,7 +152,7 @@ export const dictionaries = {
       link: "Tabela rozmiarów i sposób pomiaru", eyebrow: "Lepsze dopasowanie zaczyna się tutaj", title: "Zmierz swojego pupila", close: "Zamknij tabelę rozmiarów",
       steps: [["Szyja", "Zmierz obwód w miejscu, w którym naturalnie leży obroża."], ["Klatka piersiowa", "Zmierz najszersze miejsce za przednimi łapami."], ["Grzbiet", "Zmierz od linii obroży do nasady ogona."]],
       note: "Jeśli pupil jest pomiędzy rozmiarami, dla wygody wybierz większy. Szczegółowe wymiary produktu pojawią się tutaj po wpisaniu ich w Sanity.",
-      finderTitle: "Dobierz rozmiar pupila", finderText: "Najważniejszy jest obwód klatki piersiowej. Waga pomaga sprawdzić wynik.", breed: "Rasa", chooseBreed: "Wybierz rasę", breeds: ["Buldog francuski", "Pudel toy", "Kot brytyjski krótkowłosy", "Shih Tzu", "Jamnik", "Mieszaniec / inna"], weight: "Waga (kg)", chest: "Klatka piersiowa (cm)", recommendation: "Sugerowany rozmiar", checkMeasurements: "Przed zamówieniem sprawdź pełną tabelę.", noMatch: "Te wymiary wypadają pomiędzy podanymi rozmiarami. Wybierz większy lub skontaktuj się z nami przed zamówieniem.", measurementsPending: "Wymiary tego produktu nie zostały jeszcze wpisane w Sanity.", size: "Rozmiar", neck: "Szyja", chestShort: "Klatka", back: "Grzbiet", weightShort: "Waga",
+      finderTitle: "Dobierz rozmiar psa", finderText: "Najważniejszy jest obwód klatki piersiowej. Waga pomaga sprawdzić wynik.", breed: "Rasa", chooseBreed: "Wybierz rasę", breeds: ["Buldog francuski", "Pudel toy", "Shih Tzu", "Jamnik", "Mieszaniec / inna"], weight: "Waga (kg)", chest: "Klatka piersiowa (cm)", recommendation: "Sugerowany rozmiar", checkMeasurements: "Przed zamówieniem sprawdź pełną tabelę.", noMatch: "Te wymiary wypadają pomiędzy podanymi rozmiarami. Wybierz większy lub skontaktuj się z nami przed zamówieniem.", measurementsPending: "Wymiary tego produktu nie zostały jeszcze wpisane w Sanity.", size: "Rozmiar", neck: "Szyja", chestShort: "Klatka", back: "Grzbiet", weightShort: "Waga",
     },
     cart: {
       title: "Koszyk", emptyTitle: "Twój koszyk jest pusty", emptyText: "Wygląda na to, że garderoba Twojego pupila potrzebuje odrobiny miłości!", startShopping: "Rozpocznij zakupy", remove: "Usuń", clear: "Wyczyść koszyk",

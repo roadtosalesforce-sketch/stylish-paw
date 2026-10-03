@@ -60,11 +60,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     "large-dog": dict.shop.fitLargeDog,
     puppy: dict.shop.fitPuppy,
   } as const;
-  const petLabel = product.petType === "both"
-    ? dict.product.bothPets
-    : locale === "pl"
-      ? product.petType === "dog" ? "psów" : "kotów"
-      : product.petType === "dog" ? "dogs" : "cats";
+  const petLabel = locale === "pl" ? "psów" : "dogs";
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",

@@ -22,7 +22,8 @@ const sellableProductFilter = `
   defined(category) &&
   count(sizes) > 0 &&
   count(colors) > 0 &&
-  length(pt::text(description)) > 0
+  length(pt::text(description)) > 0 &&
+  petType in ["dog", "both"]
 `;
 
 const productFields = `
@@ -103,6 +104,7 @@ function localizeProduct(product: SanityProduct, locale: Locale): Product {
   return {
     ...product,
     category: normalizeCategory(product.category),
+    petType: "dog",
     nameEn: product.name,
     descriptionEn: product.description,
     sizeLabelsPl,
@@ -113,7 +115,7 @@ function localizeProduct(product: SanityProduct, locale: Locale): Product {
 }
 
 export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
-  const fallbackProducts = getFallbackProducts(locale);
+  const fallbackProducts = getFallbackProducts(locale).filter((item) => item.petType !== "cat");
   if (!client) return fallbackProducts;
   try {
     const items = await client.fetch<SanityProduct[]>(
@@ -133,7 +135,7 @@ export async function getFeaturedProducts(locale: Locale = "en"): Promise<Produc
 }
 
 export async function getProductBySlug(slug: string, locale: Locale = "en"): Promise<Product | undefined> {
-  const fallbackProducts = getFallbackProducts(locale);
+  const fallbackProducts = getFallbackProducts(locale).filter((item) => item.petType !== "cat");
   if (!client) return fallbackProducts.find((item) => item.slug === slug);
   try {
     const product = await client.fetch<SanityProduct | null>(

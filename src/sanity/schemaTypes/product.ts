@@ -46,7 +46,7 @@ export const productType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({name: "collections", title: "Collections", type: "array", of: [{type: "reference", to: [{type: "collection"}]}], group: "basic"}),
-    defineField({name: "petType", title: "Pet type", type: "string", group: "basic", options: {layout: "radio", list: [{title: "Dog", value: "dog"}, {title: "Cat", value: "cat"}, {title: "Dogs & cats", value: "both"}]}, validation: (rule) => rule.required()}),
+    defineField({name: "petType", title: "Pet type", type: "string", group: "basic", initialValue: "dog", hidden: true, options: {list: [{title: "Dog", value: "dog"}]}, validation: (rule) => rule.required()}),
     defineField({
       name: "status",
       title: "Sales status",

@@ -32,20 +32,6 @@ export const products: Product[] = [
     featured: true,
   },
   {
-    id: "3",
-    slug: "classic-plaid-cat-bandana",
-    name: "Classic Plaid Cat Bandana",
-    description:
-      "Lightweight cotton bandana with a snap closure that sits comfortably without tugging fur. Reversible design gives you two looks in one.",
-    price: 59,
-    category: "collars-leashes",
-    petType: "cat",
-    sizes: ["One Size"],
-    colors: ["Plaid Red", "Plaid Green", "Plaid Blue"],
-    image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80",
-    featured: true,
-  },
-  {
     id: "4",
     slug: "halloween-bat-wings-costume",
     name: "Halloween Bat Wings Costume",
@@ -53,7 +39,7 @@ export const products: Product[] = [
       "Lightweight felt wings attach with an elastic chest strap. No fuss, no zippers — just slip on and watch your pet steal the show at every party.",
     price: 119,
     category: "clothing",
-    petType: "both",
+    petType: "dog",
     sizes: ["S", "M", "L"],
     colors: ["Black", "Purple"],
     image: "https://images.unsplash.com/photo-1530281700549-e82e7ebb37da?w=800&q=80",
@@ -104,10 +90,10 @@ export const products: Product[] = [
     slug: "holiday-reindeer-sweater",
     name: "Holiday Reindeer Sweater",
     description:
-      "Festive jacquard knit with embroidered reindeer and a jingle bell collar. The ultimate holiday photo-op sweater for dogs and cats alike.",
+      "Festive jacquard knit with embroidered reindeer and a jingle bell collar. The ultimate holiday photo-op sweater for dogs.",
     price: 139,
     category: "clothing",
-    petType: "both",
+    petType: "dog",
     sizes: ["XS", "S", "M", "L"],
     colors: ["Red/Green", "Navy/Gold"],
     image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80",
@@ -125,12 +111,11 @@ export const categories = [
 const polishProducts: Record<string, {name: string; description: string; colors: Record<string, string>; sizes?: Record<string, string>}> = {
   "cozy-knit-dog-sweater": {name: "Przytulny dzianinowy sweter dla psa", description: "Miękki sweter z mieszanki wełny merino z prążkowanym golfem. Idealny na chłodne poranne spacery, wygodny i nieograniczający ruchów.", colors: {Cream: "Kremowy", Sage: "Szałwiowy", Rust: "Rdzawy"}},
   "rainy-day-pup-parka": {name: "Parka dla psa na deszczowe dni", description: "Wodoodporna warstwa zewnętrzna, uszczelnione szwy i przytulna polarowa podszewka. Odblaskowe elementy poprawiają widoczność w pochmurne dni.", colors: {Yellow: "Żółty", Navy: "Granatowy", Red: "Czerwony"}},
-  "classic-plaid-cat-bandana": {name: "Klasyczna bandana w kratę dla kota", description: "Lekka bawełniana bandana z wygodnym zapięciem na napy. Dwustronny wzór daje dwa różne wyglądy.", colors: {"Plaid Red": "Czerwona krata", "Plaid Green": "Zielona krata", "Plaid Blue": "Niebieska krata"}, sizes: {"One Size": "Jeden rozmiar"}},
   "halloween-bat-wings-costume": {name: "Kostium z nietoperzymi skrzydłami na Halloween", description: "Lekkie filcowe skrzydła mocowane elastycznym paskiem na klatce piersiowej. Bez zamków i zbędnego zamieszania — gotowe na każdą imprezę.", colors: {Black: "Czarny", Purple: "Fioletowy"}},
   "summer-mesh-cooling-vest": {name: "Letnia kamizelka chłodząca z siateczki", description: "Oddychająca siateczka z ochroną przeciwsłoneczną UPF 30. Namocz, wyciśnij i załóż, aby zapewnić pupilowi ulgę w upalne dni.", colors: {"Sky Blue": "Błękitny", Mint: "Miętowy", Coral: "Koralowy"}},
   "luxury-fleece-hoodie": {name: "Luksusowa bluza polarowa", description: "Wyjątkowo miękka bluza z mikropolaru z kapturem i kieszenią kangurką. Komfort w prawdziwie miejskim stylu.", colors: {"Heather Grey": "Szary melanż", "Blush Pink": "Pudrowy róż", Charcoal: "Antracytowy"}},
   "reflective-safety-jacket": {name: "Odblaskowa kurtka bezpieczeństwa", description: "Odblaskowa lamówka 360° i lekka, wiatroodporna warstwa. Niezbędna na wieczorne spacery i poranne bieganie.", colors: {"Neon Orange": "Neonowy pomarańczowy", "Neon Green": "Neonowy zielony"}},
-  "holiday-reindeer-sweater": {name: "Świąteczny sweter z reniferem", description: "Świąteczna dzianina żakardowa z haftowanym reniferem. Idealny sweter do zimowych zdjęć zarówno dla psów, jak i kotów.", colors: {"Red/Green": "Czerwony/zielony", "Navy/Gold": "Granatowy/złoty"}},
+  "holiday-reindeer-sweater": {name: "Świąteczny sweter z reniferem", description: "Świąteczna dzianina żakardowa z haftowanym reniferem. Idealny sweter do zimowych zdjęć dla psów.", colors: {"Red/Green": "Czerwony/zielony", "Navy/Gold": "Granatowy/złoty"}},
 };
 
 export function getFallbackProducts(locale: Locale): Product[] {

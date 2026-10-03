@@ -95,20 +95,20 @@ export function Hero({content, slides, dict}: HeroProps) {
 
             {showText && (
               <div className="relative mx-auto flex h-full max-w-7xl items-end px-5 pb-16 pt-16 sm:px-8 lg:px-12">
-                  <div className={`max-w-xl bg-[#f5f1e7]/95 p-7 text-charcoal shadow-sm sm:p-9 ${alignRight ? "ml-auto" : ""}`}>
+                  <div className={`max-w-xl text-white [text-shadow:0_2px_18px_rgba(0,0,0,.65)] ${alignRight ? "ml-auto" : ""}`}>
                     {slide.eyebrow && (
-                      <p className="mb-4 text-xs font-semibold uppercase tracking-[.2em] text-sage-dark">{slide.eyebrow}</p>
+                      <p className="mb-4 text-xs font-semibold uppercase tracking-[.2em] text-white/90">{slide.eyebrow}</p>
                     )}
                     <h1 className="text-4xl font-medium uppercase leading-[1.04] tracking-[.055em] sm:text-6xl">{slide.title}</h1>
-                    {slide.text && <p className="mt-5 max-w-lg text-base leading-relaxed text-stone-700 sm:text-lg">{slide.text}</p>}
+                    {slide.text && <p className="mt-5 max-w-lg text-base leading-relaxed text-white/95 sm:text-lg">{slide.text}</p>}
                     <div className="mt-7 flex flex-wrap gap-3">
                       {slide.primaryLabel && primaryHref && (
-                        <Link href={primaryHref} tabIndex={active ? 0 : -1} className="inline-flex items-center bg-charcoal px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-white transition hover:bg-coral-dark">
+                        <Link href={primaryHref} tabIndex={active ? 0 : -1} className="inline-flex items-center bg-white px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-charcoal shadow-sm [text-shadow:none] transition hover:bg-coral hover:text-white">
                           {slide.primaryLabel} <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       )}
                       {slide.secondaryLabel && secondaryHref && (
-                        <Link href={secondaryHref} tabIndex={active ? 0 : -1} className="inline-flex items-center border border-charcoal/40 bg-transparent px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-charcoal transition hover:border-charcoal">
+                        <Link href={secondaryHref} tabIndex={active ? 0 : -1} className="inline-flex items-center border border-white/80 bg-black/15 px-7 py-3.5 text-xs font-semibold uppercase tracking-[.12em] text-white backdrop-blur-sm [text-shadow:none] transition hover:bg-white hover:text-charcoal">
                           {slide.secondaryLabel}
                         </Link>
                       )}

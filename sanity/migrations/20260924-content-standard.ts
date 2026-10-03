@@ -30,8 +30,8 @@ const categories: CategorySeed[] = [
     storyTextPl: "Czytelne rozmiary i praktyczne detale sprawiają, że każdy model wygląda dobrze i pozostaje wygodny.",
     seoTitle: "Pet Clothing",
     seoTitlePl: "Ubrania dla zwierząt",
-    seoDescription: "Comfort-led clothing for dogs and cats from Furry Fairy Pets.",
-    seoDescriptionPl: "Wygodne ubrania dla psów i kotów od Furry Fairy Pets.",
+    seoDescription: "Comfort-led clothing for dogs from Furry Fairy Pets.",
+    seoDescriptionPl: "Wygodne ubrania dla psów od Furry Fairy Pets.",
     sortOrder: 10,
   },
   {
