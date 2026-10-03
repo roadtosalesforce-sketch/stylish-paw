@@ -9,7 +9,7 @@ Furry Fairy Pets mağazası; yüksek sesli kampanya tasarımından uzak, sakin v
 
 İçerik yönetimi, teknik bilgi gerektirmeden kullanılabilmesi için Sanity Studio içinde görev odaklı biçimde yeniden düzenlendi. Ana sayfa, mağaza ayarları, ürün ve stok, üç ana kategori, koleksiyonlar, beden rehberleri, sayfalar ve blog ayrı yönetim alanlarıdır.
 
-Kod, Sanity şeması ve temel uygulama güvenliği üretim derlemesinden başarıyla geçmiştir. Ancak mağaza henüz gerçek satışa hazır değildir: Supabase bağlantısı yerel ortamda yapılandırılmadığı için gerçek hesap oluşturma doğrulanamamış, canlı ürünler ve diğer üçüncü taraf servis ayarları da tamamlanmamıştır. Canlı satışın açılmasından önce gerçek ürünlerin, marka fotoğraflarının, hukuki metinlerin ve servis anahtarlarının eklenmesi; gerçek siparişle uçtan uca kabul testi yapılması gerekir. Sistemde eksik ürün varmış gibi sahte ürün gösterilmez; yalnızca satışa hazır ve `Active` durumundaki ürünler mağazada görünür.
+Kod, Sanity şeması ve temel uygulama güvenliği üretim derlemesinden başarıyla geçmiştir. Canlı ortamda Supabase'in genel bağlantı değişkenleri bulunmasına rağmen gerçek hesap oluşturma ve e-posta teslimi uçtan uca doğrulanamamıştır; kullanıcı denemesi başarısız olmuştur. Bu nedenle kayıt hataları anlaşılır hâle getirilmiş, doğrulama e-postasını yeniden gönderme ve güvenli şifre yenileme akışları eklenmiştir. Mağaza yine de henüz gerçek satışa hazır değildir: canlı ürünler, hukuki metinler ve üçüncü taraf servislerin kabul testleri tamamlanmalıdır. Sistemde sahte ürün gösterilmez; yalnızca satışa hazır ve `Active` durumundaki ürünler mağazada görünür.
 
 ## 2. Belge kontrol listesi
 
@@ -17,7 +17,7 @@ Kod, Sanity şeması ve temel uygulama güvenliği üretim derlemesinden başar�
 |---|---|---|
 | Stok yönetimi | Tamamlandı | Beden + renk bazlı stok, ödeme öncesi adet kontrolü ve başarılı Stripe ödemesi sonrası tek seferlik otomatik stok düşümü eklendi. |
 | Metin ve görsellerin kolay yönetimi | Tamamlandı | Ana sayfa, kategori sayfaları, ürünler, footer, SEO, blog ve iletişim alanları Sanity'den düzenlenebilir. |
-| Hazırlanan logonun her yerde kullanılması | Tamamlandı | Header, footer, uygulama ikonu ve tarayıcı ikonları ortak marka sistemiyle eşleştirildi. |
+| Hazırlanan logonun her yerde kullanılması | Tamamlandı | İletilen orijinal köpek illüstrasyonlu logo arşivlendi; header, footer ve favicon için çizime sadık şeffaf köpek işareti hazırlandı. |
 | Beyaz zemin, sade palet, koyu footer | Tamamlandı | Saf beyaz ve sıcak krem zeminler; zeytin/haki, kum ve antrasit renkleri; sıcak koyu footer kullanıldı. Parlak turuncu/sarı vurgu kaldırıldı. |
 | Google'da marka aramasının ana sayfaya yönelmesi | Teknik hazırlık tamam | Ana sayfa canonical adresi, varsayılan SEO başlığı/açıklaması, sitemap ve robots eklendi. Google Search Console'dan yeniden indeksleme dış aksiyon olarak gereklidir. |
 | Tam üç kategori | Tamamlandı | Clothing, Collars & Leashes ve Essentials; menü, footer, filtre ve Sanity referansları bu üç kategoriye sabitlendi. |
@@ -28,7 +28,7 @@ Kod, Sanity şeması ve temel uygulama güvenliği üretim derlemesinden başar�
 | New Arrivals yerine About Us; Blog eklenmesi | Tamamlandı | Üst navigasyon `Shop · Best Sellers · Size & Fit · Blog · About Us` olarak düzenlendi. |
 | Shop açılır menüsünde üç kategori | Tamamlandı | Açılır menü yalnızca üç ana mağaza kategorisini gösterir. |
 | Çift promosyonun kaldırılması | Tamamlandı | Header'da tek, ince ve Sanity'den düzenlenen duyuru şeridi bırakıldı. |
-| Kayıt/giriş deneyimi | Kod tamamlandı; bağlantı bekliyor | İki dilli kayıt/giriş, başarılı kayıt penceresi, e-posta doğrulama akışı ve markalı e-posta şablonu eklendi. Gerçek kullanım için Supabase anahtarları, migration ve SMTP ayarları gerekir. |
+| Kayıt/giriş deneyimi | Kod tamamlandı; kabul testi bekliyor | İki dilli kayıt/giriş, anlaşılır kayıt hataları, e-posta doğrulama, yeniden doğrulama gönderimi, şifremi unuttum/yenileme akışı ve markalı e-posta şablonu eklendi. Gerçek e-posta ile kabul testi gerekir. |
 | Boş landing pages alanı | Tamamlandı | Kategori landing sayfaları ve genel içerik sayfaları gerçek rotalara ve Sanity alanlarına bağlandı. |
 
 ## 3. Cloud7 yaklaşımından uyarlanan tasarım sistemi
@@ -86,14 +86,15 @@ Bir ürünün mağazada görünmesi için durumunun `Active` olması ve ad, URL,
 - TypeScript: başarılı.
 - Sanity schema validation: **0 hata, 0 uyarı**.
 - ESLint: uygulama kodunda hata yok; yalnızca proje kapsamı dışındaki `.tmp/workshop-template` dosyalarında 3 mevcut uyarı.
-- Next.js üretim derlemesi: başarılı; 21 sayfa/rota üretildi.
+- Next.js üretim derlemesi: başarılı; 23 sayfa/rota üretildi.
 - Üretim bağımlılıkları: Next.js `16.3.6`, Sanity `6.16.0`, next-sanity `13.3.4` sürümlerine güncellendi; bilinen kritik açık sayısı **0**.
 - Kalan bağımlılık uyarıları: Sanity'nin Studio/CLI derleme araçlarındaki dolaylı paketlerde raporlanmaktadır. NPM yalnızca Sanity'yi geriye alan kırıcı bir `--force` değişikliği önerdiği için otomatik uygulanmamıştır; Sanity'nin üst paket düzeltmesi çıktığında yeniden taranmalıdır.
 - HTTP güvenlik testi: CSP/HSTS ve ek güvenlik başlıkları doğrulandı; `X-Powered-By` kaldırıldı; sahte dış kaynaklı API istekleri `403`, yanlış içerik türü `415` ile reddedildi.
 - Rota testi: ana sayfa, mağaza ve kayıt sayfası `200`; bilinmeyen sayfa markalı `404` döndürdü.
+- Canlı dağıtım: GitHub ana dalı iki Vercel projesinde başarıyla tamamlandı; `www.furryfairypets.com` güvenlik başlıkları, yeni köpek logosu, mağaza, kayıt ve hesap kurtarma sayfalarıyla doğrulandı.
 - Görsel kontrol: masaüstü ve mobil ana sayfa, mağaza filtreleri ve Sanity Studio doğrulandı.
 - Canlı Sanity standardizasyonu: üç kategori, mağaza ayarları, ödül metni ve hoş geldin puanı başarıyla güncellendi.
-- Hesap oluşturma kabul testi: **başarısız/bloke**. Yerel ortamda `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` ve `SUPABASE_SERVICE_ROLE_KEY` bulunmadığı için gerçek kullanıcı kaydı henüz doğrulanamaz.
+- Hesap oluşturma kabul testi: **tamamlanmadı**. Canlı formun Supabase istemcisini oluşturabildiği, gerçek hesap oluşturmayan geçersiz veri testiyle doğrulandı. Ancak kullanıcının gerçek kayıt denemesi başarısız olduğu için SMTP, redirect izinleri, Auth ayarları ve migration sonuçları Supabase panelinde kontrol edilmelidir. Yerel `.env.local` dosyasında Supabase anahtarları bulunmamaktadır.
 
 ## 9. Güvenlik sertleştirmesi
 
@@ -119,7 +120,7 @@ Bu katmanlar güçlü bir uygulama temeli sağlar; hiçbir internet mağazası y
 | Öncelik | İş | Neden |
 |---|---|---|
 | Kritik | Gerçek ürünleri, fiyatları, beden/renk stoklarını ve en az bir lifestyle fotoğrafı Sanity'ye girme | Canlı dataset'te şu anda satışa açık gerçek ürün bulunmuyor; sistem sahte ürün göstermiyor. |
-| Kritik | Supabase proje URL'si, publishable/anon anahtarı ve yalnızca sunucuda kullanılacak service-role anahtarını yerel ve Vercel ortamlarına ekleme | Hesap oluşturma, giriş, sipariş geçmişi ve puan sistemi bu bağlantı olmadan çalışmaz. |
+| Kritik | Vercel ve Supabase panelinde publishable/anon ile yalnızca sunucuda kullanılacak service-role anahtarını doğrulama; yerel geliştirme anahtarlarını `.env.local` dosyasına ekleme | Canlıda genel bağlantı mevcut görünse de sipariş geçmişi ve puan sistemi için service-role erişimi ayrıca kanıtlanmalıdır. |
 | Kritik | Supabase migration dosyalarını üretim projesinde çalıştırma | Üyelik, sipariş ve puan tablolarını/kurallarını etkinleştirir. |
 | Kritik | Gerçek e-posta ile kayıt, doğrulama, giriş, çıkış ve parola sıfırlama kabul testi | Formun açılması hesabın çalıştığını kanıtlamaz; kimlik doğrulama ve e-posta teslimi uçtan uca doğrulanmalıdır. |
 | Kritik | Stripe anahtarları, webhook sırrı ve `SANITY_WRITE_TOKEN` ekleme | Gerçek ödeme, sipariş kaydı ve otomatik stok düşümü için gereklidir. |
@@ -148,7 +149,7 @@ Belgedeki yapısal ve teknik maddeler uygulanmıştır. Furry Fairy Pets artık 
 
 **Tasarım ve içerik altyapısı açısından:** yayına hazır.
 
-**Üyelik açısından:** kod hazır, Supabase yapılandırması ve gerçek kayıt testi bekliyor.
+**Üyelik açısından:** kod ve kurtarma akışları hazır; Supabase panel kontrolü ile gerçek kayıt/e-posta/giriş testi bekliyor.
 
 **Gerçek para ile sipariş kabulü açısından:** bölüm 10'daki kritik maddeler kapanmadan satış açılmamalı.
 

@@ -29,6 +29,10 @@ export default async function LoginPage({searchParams}: {searchParams: Promise<{
           <label className="block text-sm font-bold">{pl ? "Hasło" : "Password"}<input required maxLength={128} name="password" type="password" autoComplete="current-password" className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 outline-none focus:border-coral focus:ring-2 focus:ring-coral/20" /></label>
           <button className="w-full rounded-full bg-coral px-6 py-3.5 font-bold text-white shadow-sm transition hover:bg-coral-dark">{pl ? "Zaloguj się" : "Sign in"}</button>
         </form>
+        <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-center text-sm">
+          <Link className="font-semibold text-sage-dark hover:text-charcoal" href="/account/forgot-password">{pl ? "Nie pamiętasz hasła?" : "Forgot password?"}</Link>
+          <Link className="font-semibold text-sage-dark hover:text-charcoal" href="/account/resend-confirmation">{pl ? "Wyślij ponownie potwierdzenie" : "Resend confirmation"}</Link>
+        </div>
         <p className="mt-6 text-center text-sm text-stone-600">{pl ? "Nie masz konta?" : "New here?"} <Link className="font-bold text-coral hover:text-coral-dark" href="/account/register">{pl ? "Utwórz konto" : "Create an account"}</Link></p>
       </div>
     </section>
